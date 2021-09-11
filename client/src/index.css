@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace !important;
+}
+
+#root {
+  --black: #171717;
+  --white: #ededed;
+  --red: #da0037;
+  --gray: #444444;
+  background-color: var(--white);
+}

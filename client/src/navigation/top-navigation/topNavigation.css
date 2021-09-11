@@ -1,0 +1,34 @@
+#top-navigation {
+  background-color: var(--black) !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+}
+
+#top-navigation .mr-auto {
+  margin-right: auto;
+}
+
+#top-navigation .ml-auto {
+  margin-left: auto;
+}
+
+#top-navigation .nav-link {
+  color: var(--white);
+  opacity: 0.65;
+}
+
+#top-navigation .nav-link:hover {
+  color: var(--red);
+}
+
+#top-navigation .navbar-toggler {
+  border-radius: 0px;
+  border: 0px;
+  box-shadow: none;
+}
+
+#top-navigation .navbar-collapse {
+  margin-left: -10px;
+  margin-right: -10px;
+}
