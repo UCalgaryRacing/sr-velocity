@@ -1,11 +1,11 @@
 import React from "react";
-import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./dashboard.css";
 
 const Dashboard: React.FC = () => {
   return (
-    <div>
+    <div id='dashboard'>
       <ProSidebar>
         <Menu iconShape="square">
           <MenuItem>Dashboard</MenuItem>
@@ -16,6 +16,7 @@ const Dashboard: React.FC = () => {
           </SubMenu>
         </Menu>
       </ProSidebar>
+      <div id='content'></div>
     </div>
   );
 };

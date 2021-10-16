@@ -1,0 +1,25 @@
+#dashboard {
+    display: flex;
+    position: relative;
+    margin-top: 56px;
+    height: calc(100vh - 56px)
+}
+
+#dashboard .pro-sidebar {
+    color: #b3b8d4;
+    height: 100%;
+    width: 270px;
+    min-width: 270px;
+    text-align: left;
+    transition: width,left,right,.3s;
+    position: relative;
+    z-index: 1009;
+}
+
+#dashboard #content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
