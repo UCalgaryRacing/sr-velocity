@@ -12,10 +12,17 @@ code {
 }
 
 #root {
+  /* Core Colors */
   --black: #171717;
   --white: #ededed;
   --red: #da0037;
   --gray: #444444;
   --lightgray: #f5f5f5;
+
+  /* Accent Colors */
+
+  /* Fonts & Sizes */
+
+  /* Styling */
   background-color: var(--white);
 }

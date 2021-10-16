@@ -21,19 +21,11 @@ const TopNavigation: React.FC = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        {signedIn && (
-          <Nav className="mr-auto">
-            <Nav.Link href="/streaming">
-              <b>Streaming</b>
-            </Nav.Link>
-            <Nav.Link href="/historical">
-              <b>Historical</b>
-            </Nav.Link>
-            <Nav.Link href="/manage">
-              <b>Manage</b>
-            </Nav.Link>
-          </Nav>
-        )}
+        <Nav className="mr-auto">
+          <Nav.Link href="/dashboard">
+            <b>Dashboard</b>
+          </Nav.Link>
+        </Nav>
         <Nav className="ml-auto">
           <Nav.Link href="/about">
             <b>About</b>

@@ -4,7 +4,8 @@ import ReactDOM from "react-dom";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
 
 // Component Imports
-import TopNavigation from "./navigation/top-navigation/topNavigation";
+import TopNavigation from "navigation/top-navigation/topNavigation";
+import Dashboard from "pages/dashboard/dashboard";
 
 // Service Imports
 import reportWebVitals from "./reportWebVitals";
@@ -20,6 +21,7 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route exact path="/" />
+          <Route exact path="/dashboard" component={Dashboard} />
         </Switch>
       </Router>
     </React.Fragment>
