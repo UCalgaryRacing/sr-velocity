@@ -9,13 +9,13 @@ const Dashboard: React.FC = () => {
       <ProSidebar>
         <Menu iconShape="square">
           <MenuItem>Dashboard</MenuItem>
-          <SubMenu title="Components">
-            <MenuItem>Component 1</MenuItem>
-            <MenuItem>Component 2</MenuItem>
+          <SubMenu title="Dashboard">
+            <MenuItem>Streaming</MenuItem>
+            <MenuItem>Historical</MenuItem>
+            <MenuItem>Manage</MenuItem>
           </SubMenu>
         </Menu>
       </ProSidebar>
-      ;
     </div>
   );
 };
