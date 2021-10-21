@@ -10,13 +10,15 @@ const Dashboard: React.FC = () => {
         <Menu iconShape="square">
           <MenuItem>Dashboard</MenuItem>
           <SubMenu title="Dashboard">
-            <MenuItem>Streaming</MenuItem>
+            <MenuItem onClick={() => {
+              console.log("here")
+            }}>Streaming</MenuItem>
             <MenuItem>Historical</MenuItem>
             <MenuItem>Manage</MenuItem>
           </SubMenu>
         </Menu>
       </ProSidebar>
-      <div id='content'></div>
+      <div id='content'>Message</div>
     </div>
   );
 };
