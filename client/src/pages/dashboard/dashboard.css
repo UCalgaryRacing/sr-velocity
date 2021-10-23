@@ -24,3 +24,15 @@
     width: 100%;
     font-size: 50px;
 }
+
+.pro-sidebar .pro-menu {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout .pro-sidebar-header {
+    border-bottom: 1px solid rgba(173, 173, 173, 0.2);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}

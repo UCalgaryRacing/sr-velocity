@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./dashboard.css";
+import Hamburger from "hamburger-react"
 
 const Dashboard: React.FC = () => {
-  const [title, setTitle] = useState("DASHBOARD");
+  const [title, setTitle] = useState("Streaming - A");
 
   return (
     <div id='dashboard'>
       <ProSidebar>
+        <SidebarHeader>{
+          "Collapse Button(?)"}</SidebarHeader>
         <Menu iconShape="square">
           <SubMenu defaultOpen={true} title="Streaming">
             <MenuItem onClick={() => {
@@ -16,9 +19,10 @@ const Dashboard: React.FC = () => {
             }}>A</MenuItem>
             <MenuItem onClick={() => {
               setTitle("Streaming - B")
-              console.log("here")
             }}>B</MenuItem>
-            <MenuItem>C</MenuItem>
+            <MenuItem onClick={() => {
+              setTitle("Streaming - C")
+            }}>C</MenuItem>
           </SubMenu>
 
           <SubMenu title="Historical">
