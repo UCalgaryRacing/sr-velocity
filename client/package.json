@@ -13,6 +13,7 @@
     "@types/react-dom": "^17.0.8",
     "bootstrap": "^5.0.2",
     "firebase": "^8.6.8",
+    "hamburger-react": "^2.4.1",
     "react": "^16.14.0",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^16.14.0",

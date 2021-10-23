@@ -1,19 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./dashboard.css";
 
 const Dashboard: React.FC = () => {
+  const [title, setTitle] = useState("DASHBOARD");
+
   return (
     <div id='dashboard'>
       <ProSidebar>
         <Menu iconShape="square">
-
-          <SubMenu title="Streaming">
+          <SubMenu defaultOpen={true} title="Streaming">
             <MenuItem onClick={() => {
-              console.log("here")
+              setTitle("Streaming - A")
             }}>A</MenuItem>
-            <MenuItem>B</MenuItem>
+            <MenuItem onClick={() => {
+              setTitle("Streaming - B")
+              console.log("here")
+            }}>B</MenuItem>
             <MenuItem>C</MenuItem>
           </SubMenu>
 
@@ -37,7 +41,7 @@ const Dashboard: React.FC = () => {
 
         </Menu>
       </ProSidebar>
-      <div id='content'>STREAMING</div>
+      <div id='content'>{title}</div>
     </div>
   );
 };
