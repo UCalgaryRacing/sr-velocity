@@ -8,17 +8,36 @@ const Dashboard: React.FC = () => {
     <div id='dashboard'>
       <ProSidebar>
         <Menu iconShape="square">
-          <MenuItem>Dashboard</MenuItem>
-          <SubMenu title="Dashboard">
+
+          <SubMenu title="Streaming">
             <MenuItem onClick={() => {
               console.log("here")
-            }}>Streaming</MenuItem>
-            <MenuItem>Historical</MenuItem>
-            <MenuItem>Manage</MenuItem>
+            }}>A</MenuItem>
+            <MenuItem>B</MenuItem>
+            <MenuItem>C</MenuItem>
           </SubMenu>
+
+          <SubMenu title="Historical">
+            <MenuItem>A</MenuItem>
+            <MenuItem>B</MenuItem>
+            <MenuItem>C</MenuItem>
+          </SubMenu>
+
+          <SubMenu title="Manage">
+          <MenuItem>A</MenuItem>
+          <MenuItem>B</MenuItem>
+          <MenuItem>C</MenuItem>
+          </SubMenu>
+
+          <SubMenu title="Sensor Fusion">
+          <MenuItem>A</MenuItem>
+          <MenuItem>B</MenuItem>
+          <MenuItem>C</MenuItem>
+          </SubMenu>
+
         </Menu>
       </ProSidebar>
-      <div id='content'>DASHBOARD</div>
+      <div id='content'>STREAMING</div>
     </div>
   );
 };
