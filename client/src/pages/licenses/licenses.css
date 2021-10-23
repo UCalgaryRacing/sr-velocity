@@ -1,0 +1,26 @@
+.content {
+  text-align: left;
+  max-width: 50%;
+  font-size: small;
+  margin: 2% auto 0;
+}
+
+.content h4 {
+  color: var(--red);
+  font-weight: bold;
+}
+
+.content a {
+  color: var(--gray);
+}
+
+.content a:hover {
+  color: var(--red);
+}
+
+/* Modify css for small screens */
+@media only screen and (max-width: 1000px) {
+  .content {
+    margin: 30px auto 0;
+  }
+}
