@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
           </SubMenu>
         </Menu>
       </ProSidebar>
-      <div id='content'>Message</div>
+      <div id='content'>DASHBOARD</div>
     </div>
   );
 };
