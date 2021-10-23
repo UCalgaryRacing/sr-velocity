@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Kevin",
+    "src": "../assets/teamPictures/Kevin.jpg",
+    "description": "Electrical Lead"
+  },
+  {
+    "name": "Tyler",
+    "src": "images/teamPictures/Tyler.jpg",
+    "description": "Electrical Lead",
+    "linkedin": "http://linkedin.com/in/tyler-sawatzky"
+  },
+  {
+    "name": "Justin",
+    "src": "images/teamPictures/Justin.jpg",
+    "description": "Software Lead",
+    "linkedin": "https://www.linkedin.com/in/justintijun/"
+  },
+  {
+    "name": "Jeremy",
+    "src": "images/teamPictures/Jeremy.jpg",
+    "description": "Software Lead"
+  }
+]
