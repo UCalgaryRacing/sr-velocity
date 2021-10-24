@@ -5,11 +5,11 @@ import licenses from "./licenses.json";
 
 const Licenses: React.FC = () => {
   return (
-    <div>
+    <div id="licenses">
       <h1>Licenses</h1>
       {licenses.map((data, key) => {
         return (
-          <div key={key} className="content">
+          <div key={key} className="license-entry" id="license">
             <h4>{data.name}</h4>
             <p>
               {data.copyright}

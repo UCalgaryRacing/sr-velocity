@@ -1,26 +1,23 @@
-.content {
-  text-align: left;
-  max-width: 50%;
-  font-size: small;
-  margin: 2% auto 0;
+div #licenses {
+  padding-top: 5em;
+  text-align: center;
 }
 
-.content h4 {
+.license-entry {
+  text-align: left;
+  font-size: small;
+  margin: 0 30%;
+}
+
+.license-entry h4 {
   color: var(--red);
   font-weight: bold;
 }
 
-.content a {
+.license-entry a {
   color: var(--gray);
 }
 
-.content a:hover {
+.license-entry a:hover {
   color: var(--red);
-}
-
-/* Modify css for small screens */
-@media only screen and (max-width: 1000px) {
-  .content {
-    margin: 30px auto 0;
-  }
 }
