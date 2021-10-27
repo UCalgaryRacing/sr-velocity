@@ -4,16 +4,21 @@ import "react-pro-sidebar/dist/css/styles.css";
 import "./dashboard.css";
 import Hamburger from "hamburger-react"
 
+// <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 const Dashboard: React.FC = () => {
   const [title, setTitle] = useState("Streaming - A");
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <div id='dashboard'>
-      <ProSidebar>
-        <SidebarHeader>{
-          "Collapse Button(?)"}</SidebarHeader>
+      <ProSidebar collapsed={true}>
+        <SidebarHeader onClick={() => {
+          setCollapsed(!collapsed)
+        }}>
+          Collapse Button</SidebarHeader>
         <Menu iconShape="square">
-          <SubMenu defaultOpen={true} title="Streaming">
+          <SubMenu defaultOpen={true} title="Streaming" icon>
             <MenuItem onClick={() => {
               setTitle("Streaming - A")
             }}>A</MenuItem>
@@ -25,19 +30,19 @@ const Dashboard: React.FC = () => {
             }}>C</MenuItem>
           </SubMenu>
 
-          <SubMenu title="Historical">
+          <SubMenu title="Historical" icon>
             <MenuItem>A</MenuItem>
             <MenuItem>B</MenuItem>
             <MenuItem>C</MenuItem>
           </SubMenu>
 
-          <SubMenu title="Manage">
+          <SubMenu title="Manage" icon>
           <MenuItem>A</MenuItem>
           <MenuItem>B</MenuItem>
           <MenuItem>C</MenuItem>
           </SubMenu>
 
-          <SubMenu title="Sensor Fusion">
+          <SubMenu title="Sensor Fusion" icon>
           <MenuItem>A</MenuItem>
           <MenuItem>B</MenuItem>
           <MenuItem>C</MenuItem>
