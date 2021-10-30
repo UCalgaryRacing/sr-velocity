@@ -12,11 +12,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <div id='dashboard'>
-      <ProSidebar collapsed={true}>
+      <ProSidebar collapsed={false} collapsedWidth={80}>
         <SidebarHeader onClick={() => {
           setCollapsed(!collapsed)
         }}>
-          Collapse Button</SidebarHeader>
+          Collapse icon</SidebarHeader>
         <Menu iconShape="square">
           <SubMenu defaultOpen={true} title="Streaming" icon>
             <MenuItem onClick={() => {
