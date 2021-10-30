@@ -8,16 +8,18 @@ import Hamburger from "hamburger-react"
 
 const Dashboard: React.FC = () => {
   const [title, setTitle] = useState("Streaming - A");
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div id='dashboard'>
-      <ProSidebar collapsed={false} collapsedWidth={80}>
-        <SidebarHeader onClick={() => {
-          setCollapsed(!collapsed)
-        }}>
+      <ProSidebar collapsed={collapsed} collapsedWidth={90}>
+        <SidebarHeader 
+          onClick={() => {
+          setCollapsed(!collapsed)}}
+          >
           Collapse icon</SidebarHeader>
         <Menu iconShape="square">
+
           <SubMenu defaultOpen={true} title="Streaming" icon>
             <MenuItem onClick={() => {
               setTitle("Streaming - A")
