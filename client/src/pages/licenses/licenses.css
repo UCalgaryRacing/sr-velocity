@@ -1,0 +1,23 @@
+div #licenses {
+  padding-top: 5em;
+  text-align: center;
+}
+
+.license-entry {
+  text-align: left;
+  font-size: small;
+  margin: 0 30%;
+}
+
+.license-entry h4 {
+  color: var(--red);
+  font-weight: bold;
+}
+
+.license-entry a {
+  color: var(--gray);
+}
+
+.license-entry a:hover {
+  color: var(--red);
+}
