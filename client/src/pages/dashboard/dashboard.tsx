@@ -9,15 +9,16 @@ import Hamburger from "hamburger-react"
 const Dashboard: React.FC = () => {
   const [title, setTitle] = useState("Streaming - A");
   const [collapsed, setCollapsed] = useState(false);
+  const [isOpen, setOpen] = useState(false)
 
   return (
     <div id='dashboard'>
       <ProSidebar collapsed={collapsed} collapsedWidth={90}>
-        <SidebarHeader 
-          onClick={() => {
-          setCollapsed(!collapsed)}}
-          >
-          Collapse icon</SidebarHeader>
+        
+        <SidebarHeader onClick={() => {
+          setCollapsed(!collapsed)
+          }}> <Hamburger> toggled={isOpen} toggle={setOpen} </Hamburger> </SidebarHeader>
+        
         <Menu iconShape="square">
 
           <SubMenu defaultOpen={true} title="Streaming" icon>
@@ -26,7 +27,7 @@ const Dashboard: React.FC = () => {
             }}>A</MenuItem>
             <MenuItem onClick={() => {
               setTitle("Streaming - B")
-            }}>B</MenuItem>
+            }} >B</MenuItem>
             <MenuItem onClick={() => {
               setTitle("Streaming - C")
             }}>C</MenuItem>
