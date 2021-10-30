@@ -14,7 +14,7 @@ const io = require('socket.io')(process.env.REACT_SOCKETIO_PORT);
 const socketIOClient = require('socket.io-client');
 
 // SocketIO
-const socket = socketIOClient('http://' + process.env.IOT_MS_IP + ':' + process.env.IOT_MS_SOCKETIO_PORT, {
+const socket = socketIOClient('http://' + process.env.IOT_MS_IP + ':' + process.env.DATA_API_SOCKETIO, {
   //CHANGE WHEN DEPLOYING!
   reconnection: true,
 });
