@@ -15,9 +15,10 @@ const Dashboard: React.FC = () => {
     <div id='dashboard'>
       <ProSidebar collapsed={collapsed} collapsedWidth={90}>
         
-        <SidebarHeader onClick={() => {
+        <SidebarHeader> <Hamburger onToggle={() => {
           setCollapsed(!collapsed)
-          }}> <Hamburger> toggled={isOpen} toggle={setOpen} </Hamburger> </SidebarHeader>
+          }} toggled={isOpen} toggle={setOpen}></Hamburger> 
+          </SidebarHeader>
         
         <Menu iconShape="square">
 
