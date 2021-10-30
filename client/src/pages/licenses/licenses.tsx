@@ -9,7 +9,7 @@ const Licenses: React.FC = () => {
       <h1>Licenses</h1>
       {licenses.map((data, key) => {
         return (
-          <div key={key} className="license-entry" id="license">
+          <div key={key} className="license-entry">
             <h4>{data.name}</h4>
             <p>
               {data.copyright}
