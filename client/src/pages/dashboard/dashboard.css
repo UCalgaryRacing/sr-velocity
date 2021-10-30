@@ -2,11 +2,11 @@
     display: flex;
     position: relative;
     margin-top: 56px;
-    height: calc(100vh - 56px)
+    height: calc(100vh - 56px);
 }
 
 #dashboard .pro-sidebar {
-    color: #f5f5f5;
+    color: var(--lightGray);
     height: 100%;
     width: 270px;
     min-width: 270px;
@@ -14,6 +14,8 @@
     transition: width,left,right,.3s;
     position: relative;
     z-index: 1009;
+    background-color: var(--red) !important;
+    color: var(--white) !important;
 }
 
 #dashboard #content {
@@ -26,13 +28,43 @@
 }
 
 .pro-sidebar .pro-menu {
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
 }
 
 .pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout .pro-sidebar-header {
-    border-bottom: 1px solid rgba(173, 173, 173, 0.2);
+    border-bottom: 1px solid var(--lightGray);
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
+}
+
+.pro-sidebar .hamburger-react  {
+    margin-left: 4px
+}
+
+.pro-sidebar.collapsed .hamburger-react {
+    margin-left: 4px;
+}
+
+.pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 101;
+    background-color: var(--red);
+}
+
+.pro-sidebar .pro-menu .pro-menu-item.pro-sub-menu > .pro-inner-item > .pro-arrow-wrapper .pro-arrow {
+    display: inline-block;
+    border-style: solid;
+    border-color: var(--white);
+    border-width: 0 2px 2px 0;
+    padding: 2.5px;
+    vertical-align: middle;
+    transition: transform 0.3s;
+    transform: rotate(-45deg);
 }
