@@ -3,25 +3,25 @@
 // Set up env
 require("dotenv").config();
 
-// Library Imports
+// Library imports
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const path = require("path");
 const socketIOClient = require("socket.io-client");
 
-// Express Setup
+// Express configuration
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // All routes except those starting with /api/ should serve web pages
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
-app.get(new RegExp("(?!/api/).+"), (req, res) => {
+app.get(new RegExp("(?!/api/).+"), (_, res) => {
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
-// Setup Routes
+// Setup routes
 const database = require("./routes/database");
 app.use("/api/database", database);
 const data = require("./routes/data");
@@ -29,7 +29,7 @@ app.use("/api/data", data);
 const iot = require("./routes/iot");
 app.use("/api/iot", iot);
 
-// Server and client sockets for proxy socket io data forwarding
+// Server and client sockets for socket-io data proxy
 const io = require("socket.io")(process.env.CLIENT_SOCKET_PORT);
 const socket = socketIOClient(process.env.DATA_API_SOCKET_ROUTE, {
   reconnection: true,
