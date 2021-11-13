@@ -14,6 +14,7 @@ import {
   RiFileHistoryLine,
   RiAddBoxLine,
   RiSensorLine,
+  RiSkullLine,
 } from "react-icons/ri";
 
 const Sidebar: React.FC = () => {
@@ -35,7 +36,11 @@ const Sidebar: React.FC = () => {
         </SidebarHeader>
 
         <Menu>
-          <SubMenu title="Streaming" icon={<RiLineChartLine size={32} />}>
+          <SubMenu
+            title="Streaming"
+            icon={<RiLineChartLine size={32} />}
+            defaultOpen={isOpen}
+          >
             <MenuItem
               onClick={() => {
                 setTitle("Streaming - A");
@@ -79,6 +84,9 @@ const Sidebar: React.FC = () => {
         </Menu>
       </ProSidebar>
       <div id="content">{title}</div>
+      <div id="mobile-btn">
+        <RiSkullLine />
+      </div>
     </div>
   );
 };

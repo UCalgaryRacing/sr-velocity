@@ -76,11 +76,23 @@
   border-color: var(--white);
 }
 
-@media only screen and (max-width: 750px) {
-  .pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout {
-    background-color: blue;
+.mobile-btn {
+  height: 100px;
+}
+@media only screen and (max-width: 768.9px) {
+  #sidebar {
+    display: block;
   }
-  .pro-sidebar .pro-menu > ul > .pro-sub-menu > .pro-inner-list-item {
-    background-color: blue;
+  #sidebar #content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    font-size: 50px;
+    height: 100%;
+  }
+  #sidebar .pro-sidebar {
+    position: fixed;
   }
 }
