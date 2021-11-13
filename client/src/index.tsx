@@ -2,16 +2,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
-import { store } from './redux/store'
-import { Provider } from 'react-redux'
+import { store } from "./state/store";
+import { Provider } from "react-redux";
 
 // Component Imports
 import TopNavigation from "navigation/top-navigation/topNavigation";
 import Dashboard from "pages/dashboard/dashboard";
 import Licenses from "pages/licenses/licenses";
-
-// Service Imports
-import reportWebVitals from "./reportWebVitals";
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -40,5 +37,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
-
-reportWebVitals();
