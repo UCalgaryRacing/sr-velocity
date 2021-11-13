@@ -2,6 +2,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
 
 // Component Imports
 import TopNavigation from "navigation/top-navigation/topNavigation";
@@ -31,9 +33,11 @@ const App: React.FC = () => {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById("root")
 );
 
