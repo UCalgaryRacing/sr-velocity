@@ -9,9 +9,12 @@ import {
 import "react-pro-sidebar/dist/css/styles.css";
 import "./sidebar.css";
 import Hamburger from "hamburger-react";
-//import "./in-time.png";
-
-// <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+import {
+  RiLineChartLine,
+  RiFileHistoryLine,
+  RiAddBoxLine,
+  RiSensorLine,
+} from "react-icons/ri";
 
 const Sidebar: React.FC = () => {
   const [title, setTitle] = useState("Streaming - A");
@@ -32,7 +35,7 @@ const Sidebar: React.FC = () => {
         </SidebarHeader>
 
         <Menu>
-          <SubMenu title="Streaming">
+          <SubMenu title="Streaming" icon={<RiLineChartLine size={32} />}>
             <MenuItem
               onClick={() => {
                 setTitle("Streaming - A");
@@ -56,19 +59,19 @@ const Sidebar: React.FC = () => {
             </MenuItem>
           </SubMenu>
 
-          <SubMenu title="Historical">
+          <SubMenu title="Historical" icon={<RiFileHistoryLine size={32} />}>
             <MenuItem>A</MenuItem>
             <MenuItem>B</MenuItem>
             <MenuItem>C</MenuItem>
           </SubMenu>
 
-          <SubMenu title="Manage">
+          <SubMenu title="Manage" icon={<RiAddBoxLine size={32} />}>
             <MenuItem>A</MenuItem>
             <MenuItem>B</MenuItem>
             <MenuItem>C</MenuItem>
           </SubMenu>
 
-          <SubMenu title="Sensor Fusion">
+          <SubMenu title="Sensor Fusion" icon={<RiSensorLine size={32} />}>
             <MenuItem>A</MenuItem>
             <MenuItem>B</MenuItem>
             <MenuItem>C</MenuItem>
