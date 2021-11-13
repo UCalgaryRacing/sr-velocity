@@ -2,10 +2,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
 
 // Component Imports
 import TopNavigation from "navigation/top-navigation/topNavigation";
 import Dashboard from "pages/dashboard/dashboard";
+import Licenses from "pages/licenses/licenses";
 
 // Service Imports
 import reportWebVitals from "./reportWebVitals";
@@ -22,6 +25,7 @@ const App: React.FC = () => {
         <Switch>
           <Route exact path="/" />
           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/licenses" component={Licenses} />
         </Switch>
       </Router>
     </React.Fragment>
@@ -29,9 +33,11 @@ const App: React.FC = () => {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById("root")
 );
 
