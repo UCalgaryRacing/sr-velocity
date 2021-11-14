@@ -1,76 +1,47 @@
 "use strict";
-// Set up env
-require('dotenv').config()
 
-// Library Imports
+// Set up env
+require("dotenv").config();
+
+// Library imports
 const express = require("express");
 const app = express();
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const path = require('path');
+const cors = require("cors");
+const path = require("path");
+const socketIOClient = require("socket.io-client");
 
-const io = require('socket.io')(process.env.REACT_SOCKETIO_PORT);
-const socketIOClient = require('socket.io-client');
-
-// SocketIO
-const socket = socketIOClient('http://' + process.env.IOT_MS_IP + ':' + process.env.DATA_API_SOCKETIO, {
-  //CHANGE WHEN DEPLOYING!
-  reconnection: true,
-});
-
-// Forward incoming data to React
-socket.on('new data', (data) => {
-    io.emit(data);
-  });
-  
-
-// Express Setup
+// Express configuration
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-    session({
-      secret: 'xCufvwEyu14Tuu7l',
-      resave: true,
-      saveUninitialized: true,
-      secure: true,
-    })
-);
-app.use(cookieParser());
 
-// What the fuck (just copy pasted from last one lol)
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/streaming', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/historical', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/manage', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/signin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
-app.get('/licenses', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+// All routes except those starting with /api/ should serve web pages
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
+app.get(new RegExp("(?!/api/).+"), (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
-// Import Routes
-const sensor = require('./routes/sensor')
+// Setup routes
+const database = require("./routes/database");
+app.use("/api/database", database);
+const data = require("./routes/data");
+app.use("/api/data", data);
+const iot = require("./routes/iot");
+app.use("/api/iot", iot);
 
-// Setup Routes
-app.use('/sensor', sensor)
+// Server and client sockets for socket-io data proxy
+const io = require("socket.io")(process.env.CLIENT_SOCKET_PORT);
+const socket = socketIOClient(process.env.DATA_API_SOCKET_ROUTE, {
+  reconnection: true,
+});
+
+// Forward incoming data to appropriate clients
+socket.on("new data", (data) => {
+  // TODO: Read key and only emit to "rooms" that are associated with the incoming data
+  io.emit(data);
+});
 
 // Begin Server
-app.listen(process.env.GATEWAY_PORT, () => console.log(`Listening on port ${process.env.GATEWAY_PORT}`));
+app.listen(process.env.GATEWAY_PORT, () =>
+  console.log(`Listening on port ${process.env.GATEWAY_PORT}`)
+);
