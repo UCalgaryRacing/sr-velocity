@@ -63,8 +63,8 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   return (
     <div id="sidebar">
       <ProSidebar
-        toggled={props.toggled}
         collapsed={collapsed && !props.toggled}
+        toggled={props.toggled}
         breakPoint={"md"}
       >
         <SidebarHeader>
