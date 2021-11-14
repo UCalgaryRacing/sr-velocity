@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "components/navigation/side-navigation/sidebar";
+import Streaming from "./streaming/streaming";
+import Historical from "./historical/historical";
+import Manage from "./manage/manage";
 import { useSwipeable } from "react-swipeable";
 import {
   useAppSelector,
@@ -17,12 +20,8 @@ const Dashboard: React.FC = () => {
 
   // Hooks
   const gestures = useSwipeable({
-    onSwipedRight: (_) => {
-      if (size.width <= 768.9) setSideBarToggled(true);
-    },
-    onSwipedLeft: (_) => {
-      if (size.width <= 768.9) setSideBarToggled(false);
-    },
+    onSwipedRight: (_) => size.width <= 768.9 && setSideBarToggled(true),
+    onSwipedLeft: (_) => size.width <= 768.9 && setSideBarToggled(false),
     trackMouse: true,
   });
   const size = useWindowSize();
@@ -46,24 +45,14 @@ const Dashboard: React.FC = () => {
           if (!dashboard) return <></>;
           switch (dashboard.page) {
             // Streaming
-            case "Real-time Charts":
-              return <></>;
-            case "Raw Data":
-              return <></>;
+            case "Real-time Charts" || "Raw Data":
+              return <Streaming />;
             // Historical
-            case "Data":
-              return <></>;
-            case "Plots":
-              return <></>;
+            case "Data" || "Plots":
+              return <Historical />;
             // Manage
-            case "Sensors":
-              return <></>;
-            case "Drivers":
-              return <></>;
-            case "Vehicles":
-              return <></>;
-            case "Users":
-              return <></>;
+            case "Sensors" || "Drivers" || "Vehicles" || "Users":
+              return <Manage />;
             default:
               return <></>;
           }
