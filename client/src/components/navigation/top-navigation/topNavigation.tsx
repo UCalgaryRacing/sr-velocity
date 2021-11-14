@@ -17,7 +17,7 @@ const TopNavigation: React.FC = () => {
       fixed="top"
     >
       <Navbar.Brand className="link-0" href="/">
-        <b>SR Velocity</b>
+        <img src={"assets/logo.png"} />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">

@@ -6,7 +6,7 @@ import { store } from "./state/store";
 import { Provider } from "react-redux";
 
 // Component Imports
-import TopNavigation from "navigation/top-navigation/topNavigation";
+import TopNavigation from "components/navigation/top-navigation/topNavigation";
 import Dashboard from "pages/dashboard/dashboard";
 import Licenses from "pages/licenses/licenses";
 

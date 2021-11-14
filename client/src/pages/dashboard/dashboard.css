@@ -1,0 +1,16 @@
+#dashboard {
+  display: flex;
+  position: relative;
+  height: 100%;
+  margin-top: 66px;
+}
+
+#dashboard #content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  width: 100%;
+  font-size: 50px;
+  min-height: calc(100vh - 66px);
+}

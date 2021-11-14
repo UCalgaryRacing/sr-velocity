@@ -14,15 +14,15 @@ code {
 #root {
   /* Core Colors */
   --black: #171717;
-  --white: #ededed;
-  --red: #da0037;
+  --white: #fff;
+  --red: #ba1833;
   --gray: #444444;
-  --lightgray: #f5f5f5;
+  --lightgray: #ededed;
 
   /* Accent Colors */
 
   /* Fonts & Sizes */
 
   /* Styling */
-  background-color: var(--white);
+  background-color: var(--lightgray);
 }
