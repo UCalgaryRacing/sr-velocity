@@ -42,7 +42,8 @@
   .pro-menu
   .pro-menu-item.pro-sub-menu
   .pro-inner-list-item
-  .pro-inner-item:focus {
+  .pro-inner-item:focus,
+.pro-sidebar .pro-menu .pro-menu-item.active {
   color: var(--black);
 }
 
@@ -75,5 +76,9 @@
 @media only screen and (max-width: 768.9px) {
   #sidebar .pro-sidebar {
     position: fixed;
+  }
+
+  #sidebar .pro-sidebar-header {
+    display: none;
   }
 }

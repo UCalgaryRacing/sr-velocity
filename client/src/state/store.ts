@@ -1,11 +1,34 @@
-import { configureStore } from '@reduxjs/toolkit'
+// Copyright Schulich Racing FSAE
+// Written by Jeremy Bilic, Justin Tijunelis
+
+import { configureStore } from "@reduxjs/toolkit";
+import { rootReducer, reducers } from "./reducers";
+
+const loadSessionState = () => {
+  try {
+    const serialized = sessionStorage.getItem("state");
+    if (serialized === null) return {};
+    return JSON.parse(serialized);
+  } catch {
+    return {};
+  }
+};
+
+const cacheState = (state: RootState) => {
+  try {
+    const serialized = JSON.stringify(state);
+    sessionStorage.setItem("state", serialized);
+  } catch {}
+};
 
 export const store = configureStore({
-    reducer: {},
-})
+  reducer: rootReducer,
+  preloadedState: loadSessionState(),
+});
 
+store.subscribe(() => {
+  cacheState(store.getState());
+});
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof reducers>;
+export type AppDispatch = typeof store.dispatch;

@@ -1,8 +1,14 @@
+// Copyright Schulich Racing FSAE
+// Created by
+// Justin Tijunelis, Jeremy Bilic, Justin Flores, Jon Mulyk,
+// Camilla Abdrazakov, Abod Abbas, Jon Breidfjord, Arham Humayun
+// Ryan Ward, James Nguy, Hilmi Saleh
+
 // Library Imports
 import React from "react";
 import ReactDOM from "react-dom";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
-import { store } from "./state/store";
+import { store } from "./state";
 import { Provider } from "react-redux";
 
 // Component Imports
