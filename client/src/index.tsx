@@ -12,7 +12,7 @@ import { store } from "./state";
 import { Provider } from "react-redux";
 
 // Component Imports
-import TopNavigation from "components/navigation/top-navigation/topNavigation";
+import TopNavigation from "components/navigation/topNavigation";
 import Home from "pages/home/home";
 import Dashboard from "pages/dashboard/dashboard";
 import SignIn from "pages/auth/signIn";

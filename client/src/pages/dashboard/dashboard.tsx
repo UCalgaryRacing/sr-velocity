@@ -2,11 +2,11 @@
 // Written by Ryan Painchaud, Justin Tijunelis
 
 import React, { useState, useEffect } from "react";
-import Sidebar from "components/navigation/side-navigation/sidebar";
+import Sidebar from "components/navigation/sidebar";
 import Streaming from "./streaming/streaming";
 import Historical from "./historical/historical";
 import Manage from "./manage/manage";
-import useWindowSize from "hooks/useWindowSize";
+import { useWindowSize } from "hooks/index";
 import { useSwipeable } from "react-swipeable";
 import { bindActionCreators } from "redux";
 import {

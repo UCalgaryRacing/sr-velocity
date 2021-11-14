@@ -2,14 +2,19 @@
 // Written by Ryan Painchaud, Justin Tijunelis
 
 import React, { useState } from "react";
+import Hamburger from "hamburger-react";
+import { bindActionCreators } from "redux";
 import {
   useAppSelector,
   useAppDispatch,
   RootState,
   dashboardPageSelected,
 } from "state";
-import { bindActionCreators } from "redux";
-import Hamburger from "hamburger-react";
+import {
+  RiLineChartLine,
+  RiFileHistoryLine,
+  RiAddBoxLine,
+} from "react-icons/ri";
 import {
   ProSidebar,
   Menu,
@@ -18,13 +23,8 @@ import {
   SidebarHeader,
   SidebarContent,
 } from "react-pro-sidebar";
-import {
-  RiLineChartLine,
-  RiFileHistoryLine,
-  RiAddBoxLine,
-} from "react-icons/ri";
 import "react-pro-sidebar/dist/css/styles.css";
-import "./sidebar.css";
+import "./_styling/sidebar.css";
 
 const structure = [
   {

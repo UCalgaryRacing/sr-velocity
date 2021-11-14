@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Nav, Navbar } from "react-bootstrap";
 
 // Styling Imports
-import "./topNavigation.css";
+import "./_styling/topNavigation.css";
 
 const TopNavigation: React.FC = () => {
   const [signedIn, setSignedIn] = useState(false);
