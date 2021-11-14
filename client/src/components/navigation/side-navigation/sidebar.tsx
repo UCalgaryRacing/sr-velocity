@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { isMobile } from "react-device-detect";
+import Hamburger from "hamburger-react";
 import {
   ProSidebar,
   Menu,
@@ -7,30 +9,39 @@ import {
   SidebarHeader,
   SidebarContent,
 } from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
-import "./sidebar.css";
-import Hamburger from "hamburger-react";
 import {
   RiLineChartLine,
   RiFileHistoryLine,
   RiAddBoxLine,
 } from "react-icons/ri";
+import "react-pro-sidebar/dist/css/styles.css";
+import "./sidebar.css";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  toggled: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isOpen, setOpen] = useState(true);
 
   return (
     <div id="sidebar">
-      <ProSidebar collapsed={collapsed} breakPoint={"md"}>
-        <SidebarHeader>
-          <Hamburger
-            onToggle={() => setCollapsed(!collapsed)}
-            toggled={isOpen}
-            toggle={setOpen}
-            size={24}
-          />
-        </SidebarHeader>
+      <ProSidebar
+        toggled={isMobile && props.toggled}
+        collapsed={collapsed}
+        breakPoint={"md"}
+      >
+        {!isMobile && (
+          <SidebarHeader>
+            <Hamburger
+              onToggle={() => setCollapsed(!collapsed)}
+              toggled={isOpen}
+              toggle={setOpen}
+              size={24}
+            />
+          </SidebarHeader>
+        )}
         <SidebarContent>
           <Menu popperArrow={true}>
             <SubMenu title="Streaming" icon={<RiLineChartLine size={24} />}>
