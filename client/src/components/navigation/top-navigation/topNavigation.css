@@ -18,6 +18,7 @@
 
 #top-navigation .ml-auto {
   margin-left: auto;
+  padding-right: 7.5px;
 }
 
 #top-navigation .nav-link {

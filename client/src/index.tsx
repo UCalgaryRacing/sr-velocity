@@ -12,6 +12,7 @@ import Licenses from "pages/licenses/licenses";
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./override.css";
 import "./index.css";
 
 const App: React.FC = () => {

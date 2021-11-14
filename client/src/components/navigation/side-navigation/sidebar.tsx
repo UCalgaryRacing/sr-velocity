@@ -17,6 +17,24 @@ import {
 import "react-pro-sidebar/dist/css/styles.css";
 import "./sidebar.css";
 
+const structure = [
+  {
+    name: "Streaming",
+    image: <RiLineChartLine size={24} />,
+    children: ["Real-time Charts", "Raw Data"],
+  },
+  {
+    name: "Historical",
+    image: <RiFileHistoryLine size={24} />,
+    children: ["Data", "Plots"],
+  },
+  {
+    name: "Manage",
+    image: <RiAddBoxLine size={24} />,
+    children: ["Sensors", "Drivers", "Vehicles", "Subteams", "Users"],
+  },
+];
+
 interface SidebarProps {
   toggled: boolean;
 }
@@ -44,21 +62,15 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
         )}
         <SidebarContent>
           <Menu popperArrow={true}>
-            <SubMenu title="Streaming" icon={<RiLineChartLine size={24} />}>
-              <MenuItem>Visualization</MenuItem>
-              <MenuItem>Raw Data</MenuItem>
-            </SubMenu>
-            <SubMenu title="Historical" icon={<RiFileHistoryLine size={24} />}>
-              <MenuItem>Data</MenuItem>
-              <MenuItem>Plots</MenuItem>
-            </SubMenu>
-            <SubMenu title="Manage" icon={<RiAddBoxLine size={24} />}>
-              <MenuItem>Sensors</MenuItem>
-              <MenuItem>Drivers</MenuItem>
-              <MenuItem>Vehicles</MenuItem>
-              <MenuItem>Subteams</MenuItem>
-              <MenuItem>Users</MenuItem>
-            </SubMenu>
+            {structure.map((submenu) => {
+              return (
+                <SubMenu title={submenu.name} icon={submenu.image}>
+                  {submenu.children.map((name) => {
+                    return <MenuItem>{name}</MenuItem>;
+                  })}
+                </SubMenu>
+              );
+            })}
           </Menu>
         </SidebarContent>
       </ProSidebar>
@@ -67,9 +79,3 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
 };
 
 export default Sidebar;
-
-{
-  /* <div id="mobile-btn">
-        <RiSkullLine />
-      </div> */
-}

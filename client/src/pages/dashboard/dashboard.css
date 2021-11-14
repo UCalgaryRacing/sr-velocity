@@ -11,3 +11,9 @@
   font-size: 50px;
   min-height: calc(100vh - 66px);
 }
+
+@media only screen and (max-width: 768.9px) {
+  #dashboard {
+    touch-action: pan-y;
+  }
+}

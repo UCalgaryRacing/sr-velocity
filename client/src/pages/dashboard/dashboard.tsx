@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {});
 
   return (
-    <div id="dashboard" {...gestures} style={{ touchAction: "pan-y" }}>
+    <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} />
       <div id="content">Hello</div>
     </div>
