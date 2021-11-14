@@ -3,8 +3,12 @@
 
 import React from "react";
 
-const Historical: React.FC = () => {
-  return <div id="historical"></div>;
+interface HistoricalProps {
+  section: string;
+}
+
+const Historical: React.FC<HistoricalProps> = (props: HistoricalProps) => {
+  return <div id="historical">{props.section}</div>;
 };
 
 export default Historical;

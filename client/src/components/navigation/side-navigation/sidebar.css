@@ -29,14 +29,6 @@
   .pro-menu
   .pro-menu-item.pro-sub-menu
   .pro-inner-list-item
-  .pro-inner-item {
-  transition-duration: 0.2s;
-}
-
-.pro-sidebar
-  .pro-menu
-  .pro-menu-item.pro-sub-menu
-  .pro-inner-list-item
   .pro-inner-item:hover,
 .pro-sidebar
   .pro-menu

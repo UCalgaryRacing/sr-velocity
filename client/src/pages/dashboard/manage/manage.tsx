@@ -3,8 +3,12 @@
 
 import React from "react";
 
-const Manage: React.FC = () => {
-  return <div id="manage"></div>;
+interface ManageProps {
+  section: string;
+}
+
+const Manage: React.FC<ManageProps> = (props: ManageProps) => {
+  return <div id="manage">{props.section}</div>;
 };
 
 export default Manage;

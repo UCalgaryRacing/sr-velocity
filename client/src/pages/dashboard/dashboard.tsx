@@ -1,17 +1,20 @@
+// Copyright Schulich Racing FSAE
+// Written by Ryan Painchaud, Justin Tijunelis
+
 import React, { useState, useEffect } from "react";
 import Sidebar from "components/navigation/side-navigation/sidebar";
 import Streaming from "./streaming/streaming";
 import Historical from "./historical/historical";
 import Manage from "./manage/manage";
+import useWindowSize from "hooks/useWindowSize";
 import { useSwipeable } from "react-swipeable";
+import { bindActionCreators } from "redux";
 import {
   useAppSelector,
   useAppDispatch,
   RootState,
   dashboardPageSelected,
 } from "state";
-import { bindActionCreators } from "redux";
-import useWindowSize from "hooks/useWindowSize";
 import "./dashboard.css";
 
 const Dashboard: React.FC = () => {
@@ -41,22 +44,24 @@ const Dashboard: React.FC = () => {
     <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} />
       <div id="content">
-        {() => {
+        {(() => {
           if (!dashboard) return <></>;
           switch (dashboard.page) {
-            // Streaming
-            case "Real-time Charts" || "Raw Data":
-              return <Streaming />;
-            // Historical
-            case "Data" || "Plots":
-              return <Historical />;
-            // Manage
-            case "Sensors" || "Drivers" || "Vehicles" || "Users":
-              return <Manage />;
+            case "Real-time Charts":
+            case "Raw Data":
+              return <Streaming section={dashboard.page} />;
+            case "Data":
+            case "Plots":
+              return <Historical section={dashboard.page} />;
+            case "Sensors":
+            case "Drivers":
+            case "Vehicles":
+            case "Users":
+              return <Manage section={dashboard.page} />;
             default:
               return <></>;
           }
-        }}
+        })()}
       </div>
     </div>
   );

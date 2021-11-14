@@ -3,8 +3,12 @@
 
 import React from "react";
 
-const Streaming: React.FC = () => {
-  return <div id="streaming"></div>;
+interface StreamingProps {
+  section: string;
+}
+
+const Streaming: React.FC<StreamingProps> = (props: StreamingProps) => {
+  return <div id="streaming">{props.section}</div>;
 };
 
 export default Streaming;
