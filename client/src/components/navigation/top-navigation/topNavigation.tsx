@@ -29,12 +29,19 @@ const TopNavigation: React.FC = () => {
           </Nav>
         )}
         <Nav className="ml-auto">
-          <Nav.Link href="/about">
-            <b>About</b>
-          </Nav.Link>
-          {!signedIn && (
+          {window.location.pathname !== "/about" && (
+            <Nav.Link href="/about">
+              <b>About</b>
+            </Nav.Link>
+          )}
+          {!signedIn && window.location.pathname !== "/signin" && (
             <Nav.Link href="/signin">
-              <b>Login</b>
+              <b>Sign In</b>
+            </Nav.Link>
+          )}
+          {signedIn && (
+            <Nav.Link href="/profile">
+              <b>First Last</b>
             </Nav.Link>
           )}
         </Nav>

@@ -13,8 +13,12 @@ import { Provider } from "react-redux";
 
 // Component Imports
 import TopNavigation from "components/navigation/top-navigation/topNavigation";
+import Home from "pages/home/home";
 import Dashboard from "pages/dashboard/dashboard";
+import SignIn from "pages/auth/signIn";
+import SignUp from "pages/auth/signUp";
 import Licenses from "pages/licenses/licenses";
+import NotFound from "pages/404/notFound";
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -27,9 +31,13 @@ const App: React.FC = () => {
       <TopNavigation />
       <Router>
         <Switch>
-          <Route exact path="/" />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/home" component={Home} />
           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/signin" component={SignIn} />
+          <Route exact path="/signup" component={SignUp} />
           <Route exact path="/licenses" component={Licenses} />
+          <Route component={NotFound} />
         </Switch>
       </Router>
     </React.Fragment>

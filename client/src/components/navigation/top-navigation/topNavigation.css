@@ -38,4 +38,5 @@
 #top-navigation .navbar-collapse {
   margin-left: -10px;
   margin-right: -10px;
+  background-color: var(--black);
 }

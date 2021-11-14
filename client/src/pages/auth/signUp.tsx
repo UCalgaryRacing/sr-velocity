@@ -3,8 +3,8 @@
 
 import React from "react";
 
-const SignIn: React.FC = () => {
-  return <div id="login"></div>;
+const SignUp: React.FC = () => {
+  return <div id="signup"></div>;
 };
 
-export default SignIn;
+export default SignUp;
