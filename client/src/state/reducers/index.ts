@@ -4,9 +4,13 @@
 import { Reducer } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import dashboardReducer from "./dashboardReducer";
+import userReducer from "./userReducer";
+import organizationReducer from "./organizationReducer";
 
 const reducers = combineReducers({
   dashboard: dashboardReducer,
+  user: userReducer,
+  organization: organizationReducer,
 });
 
 type RootState = ReturnType<typeof reducers>;

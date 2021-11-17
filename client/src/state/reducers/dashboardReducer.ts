@@ -1,10 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import {
-  DashboardAction,
-  DashboardActionType,
-} from "../actions/dashboardActions";
+import { DashboardAction, DashboardActionType } from "../actions";
 import { Dashboard } from "../types";
 
 const dashboardReducer = (
@@ -12,10 +9,12 @@ const dashboardReducer = (
   action: DashboardAction
 ): Dashboard | null => {
   switch (action.type) {
-    case DashboardActionType.PAGE_SELECTED:
+    case DashboardActionType.PAGE_SELECTED: {
       return { ...state, page: action.payload };
-    default:
+    }
+    default: {
       return state;
+    }
   }
 };
 

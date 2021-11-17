@@ -3,14 +3,8 @@
 
 import { useState } from "react";
 
-interface UseFormProps {
-  initValues: any;
-  submitOnEnter?: false;
-}
-
-export const useForm = (props: UseFormProps) => {
-  const [values, setValues] = useState(props.initValues);
-  const [refs, setRefs] = useState<any>([]);
+export const useForm = (props: any) => {
+  const [values, setValues] = useState(props);
 
   const handleChange = (event: any) => {
     setValues({

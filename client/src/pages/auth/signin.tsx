@@ -1,29 +1,33 @@
 // Copyright Schulich Racing FSAE
 // Written by Jeremy Bilic, Justin Tijunelis
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router";
 import { useForm, useSignIn } from "hooks";
 import { InputField } from "components/interface/";
 
 // https://www.html5rocks.com/en/tutorials/forms/constraintvalidation/ - Custom input failure styling
 
 const SignIn: React.FC = () => {
+  // Hooks
   const [{ error, fetching, user }, signIn] = useSignIn();
   const [values, handleChange] = useForm({
-    initValues: {
-      email: "",
-      password: "",
-    },
-    submitOnEnter: false,
+    email: "",
+    password: "",
   });
+  const history = useHistory();
+
+  useEffect(() => {
+    if (user) history.push("/dashboard");
+  }, [user]);
 
   const onSubmit = async (event: any) => {
     event?.preventDefault();
-    console.log("here");
+    signIn(values.email, values.password);
   };
 
   return (
-    <div id="signin" style={{ marginTop: "66px" }}>
+    <div className="page-content" id="signin" style={{ marginTop: "66px" }}>
       <form onSubmit={onSubmit}>
         <InputField
           name="email"
@@ -32,7 +36,6 @@ const SignIn: React.FC = () => {
           value={values.email}
           onChange={handleChange}
           required
-          //referrer={bindInput}
         />
         <br />
         <InputField
@@ -42,8 +45,9 @@ const SignIn: React.FC = () => {
           value={values.password}
           onChange={handleChange}
           required
-          //referrer={bindInput}
         />
+        {fetching && ""}
+        {error && ""}
         <button></button>
       </form>
     </div>
