@@ -8,31 +8,33 @@ import {
   UserCredential,
 } from "firebase/auth";
 
-interface SignInState {
+interface SignInStatus {
   error: any;
   fetching: boolean;
   user: any;
 }
 
-export const useSignIn = () => {
-  const [state, setState] = useState<SignInState>({
+type SignInMethod = (email: string, password: string) => void;
+
+export const useSignIn = (): [SignInStatus, SignInMethod] => {
+  const [status, setStatus] = useState<SignInStatus>({
     error: null,
     fetching: false,
     user: null,
   });
 
   const signIn = (email: string, password: string): void => {
-    setState({ ...state, fetching: true });
+    setStatus({ ...status, fetching: true });
     signInWithEmailAndPassword(getAuth(), email, password)
       .then((userCredential: UserCredential) => {
         // Now fetch user information
         // Add to redux
-        setState({ ...state, fetching: false, user: userCredential.user });
+        setStatus({ ...status, fetching: false, user: userCredential.user });
       })
       .catch((error) => {
-        setState({ ...state, fetching: false, error: error });
+        setStatus({ ...status, fetching: false, error: error });
       });
   };
 
-  return [state.error, state.fetching, state.user, signIn];
+  return [status, signIn];
 };

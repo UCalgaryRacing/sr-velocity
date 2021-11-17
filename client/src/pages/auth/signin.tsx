@@ -10,7 +10,7 @@ import { InputField } from "components/interface/";
 
 const SignIn: React.FC = () => {
   // Hooks
-  const [{ error, fetching, user }, signIn] = useSignIn();
+  const [status, signIn] = useSignIn();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
@@ -18,10 +18,10 @@ const SignIn: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (user) history.push("/dashboard");
-  }, [user]);
+    if (status.user) history.push("/dashboard");
+  }, [status]);
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = (event: any) => {
     event?.preventDefault();
     signIn(values.email, values.password);
   };
@@ -46,8 +46,8 @@ const SignIn: React.FC = () => {
           onChange={handleChange}
           required
         />
-        {fetching && ""}
-        {error && ""}
+        {status.fetching && ""}
+        {status.error && ""}
         <button></button>
       </form>
     </div>

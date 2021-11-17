@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import { Vehicle } from "./";
+import { Vehicle, Driver } from "./";
 
 export type Dashboard = {
   page: string;
