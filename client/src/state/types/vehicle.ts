@@ -1,10 +1,8 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import { Vehicle } from "./";
-
-export type Dashboard = {
-  page: string;
-  vehicle?: Vehicle;
+export type Vehicle = {
+  name: string;
+  serial_number: string;
   // Others in the future
 };

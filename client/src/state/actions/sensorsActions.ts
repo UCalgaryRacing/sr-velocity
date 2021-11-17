@@ -2,9 +2,9 @@
 // Written by Justin Tijunelis
 
 import { Dispatch } from "redux";
-import { Sensor, Sensors } from "../types";
+import { Sensor } from "../types";
 
-export enum SensorsActionType {
+export enum SensorActionType {
   FETCHED = "sensorsFetched",
   SENSOR_CREATED = "sensorCreated",
   SENSOR_UPDATED = "sensorUpdated",
@@ -12,35 +12,35 @@ export enum SensorsActionType {
 }
 
 interface SensorsFetchedAction {
-  type: SensorsActionType.FETCHED;
-  payload: Sensors;
+  type: SensorActionType.FETCHED;
+  payload: Sensor[];
 }
 
 interface SensorCreatedAction {
-  type: SensorsActionType.SENSOR_CREATED;
+  type: SensorActionType.SENSOR_CREATED;
   payload: Sensor;
 }
 
 interface SensorUpdatedAction {
-  type: SensorsActionType.SENSOR_UPDATED;
+  type: SensorActionType.SENSOR_UPDATED;
   payload: Sensor;
 }
 
 interface SensorDeletedAction {
-  type: SensorsActionType.SENSOR_DELETED;
+  type: SensorActionType.SENSOR_DELETED;
   payload: Sensor;
 }
 
-export type SensorsAction =
+export type SensorAction =
   | SensorsFetchedAction
   | SensorCreatedAction
   | SensorUpdatedAction
   | SensorDeletedAction;
 
-export const sensorsFetched = (sensors: Sensors) => {
+export const sensorsFetched = (sensors: Sensor[]) => {
   return (dispatch: Dispatch<SensorsFetchedAction>) => {
     dispatch({
-      type: SensorsActionType.FETCHED,
+      type: SensorActionType.FETCHED,
       payload: sensors,
     });
   };
@@ -49,7 +49,7 @@ export const sensorsFetched = (sensors: Sensors) => {
 export const sensorCreated = (sensor: Sensor) => {
   return (dispatch: Dispatch<SensorCreatedAction>) => {
     dispatch({
-      type: SensorsActionType.SENSOR_CREATED,
+      type: SensorActionType.SENSOR_CREATED,
       payload: sensor,
     });
   };
@@ -58,7 +58,7 @@ export const sensorCreated = (sensor: Sensor) => {
 export const sensorUpdated = (sensor: Sensor) => {
   return (dispatch: Dispatch<SensorUpdatedAction>) => {
     dispatch({
-      type: SensorsActionType.SENSOR_UPDATED,
+      type: SensorActionType.SENSOR_UPDATED,
       payload: sensor,
     });
   };
@@ -67,7 +67,7 @@ export const sensorUpdated = (sensor: Sensor) => {
 export const sensorDeleted = (sensor: Sensor) => {
   return (dispatch: Dispatch<SensorDeletedAction>) => {
     dispatch({
-      type: SensorsActionType.SENSOR_DELETED,
+      type: SensorActionType.SENSOR_DELETED,
       payload: sensor,
     });
   };

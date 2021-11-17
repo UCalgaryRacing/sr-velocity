@@ -6,13 +6,13 @@ import { combineReducers } from "redux";
 import dashboardReducer from "./dashboardReducer";
 import userReducer from "./userReducer";
 import organizationReducer from "./organizationReducer";
-import sensorsReducer from "./sensorsReducer";
+import sensorReducer from "./sensorReducer";
 
 const reducers = combineReducers({
   dashboard: dashboardReducer,
   user: userReducer,
   organization: organizationReducer,
-  sensors: sensorsReducer,
+  sensors: sensorReducer,
 });
 
 type RootState = ReturnType<typeof reducers>;

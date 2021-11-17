@@ -1,31 +1,31 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import { SensorsAction, SensorsActionType } from "../actions";
-import { Sensor, Sensors } from "../types";
+import { SensorAction, SensorActionType } from "../actions";
+import { Sensor } from "../types";
 
 const sensorsReducer = (
-  state: Sensors | null = null,
-  action: SensorsAction
-): Sensors | null => {
-  if (action.type !== SensorsActionType.FETCHED && !state) return state;
-  let sensors: Sensors = [...(state as Sensors)];
+  state: Sensor[] | null = null,
+  action: SensorAction
+): Sensor[] | null => {
+  if (action.type !== SensorActionType.FETCHED && !state) return state;
+  let sensors: Sensor[] = [...(state as Sensor[])];
   switch (action.type) {
-    case SensorsActionType.FETCHED: {
+    case SensorActionType.FETCHED: {
       return action.payload;
     }
-    case SensorsActionType.SENSOR_CREATED: {
+    case SensorActionType.SENSOR_CREATED: {
       sensors.push(action.payload);
       return sensors;
     }
-    case SensorsActionType.SENSOR_UPDATED: {
+    case SensorActionType.SENSOR_UPDATED: {
       let updated: Sensor = action.payload;
       return sensors.map((sensor) => {
         if (sensor.sid === updated.sid) return updated;
         else return sensor;
       });
     }
-    case SensorsActionType.SENSOR_DELETED: {
+    case SensorActionType.SENSOR_DELETED: {
       let remove: Sensor = action.payload;
       return sensors.filter((sensor) => sensor.sid !== remove.sid);
     }
