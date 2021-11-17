@@ -8,33 +8,29 @@ const sensorsReducer = (
   state: Sensors | null = null,
   action: SensorsAction
 ): Sensors | null => {
+  if (action.type !== SensorsActionType.FETCHED && !state) return state;
+  let sensors: Sensors = [...(state as Sensors)];
   switch (action.type) {
     case SensorsActionType.FETCHED: {
-      let sensors: Sensors = action.payload;
-      return sensors;
+      return action.payload;
     }
     case SensorsActionType.SENSOR_CREATED: {
-      let sensors: Sensors = state;
       sensors.push(action.payload);
       return sensors;
     }
     case SensorsActionType.SENSOR_UPDATED: {
       let updated: Sensor = action.payload;
-      let sensors: Sensors = [...state].map((sensor) => {
+      return sensors.map((sensor) => {
         if (sensor.sid === updated.sid) return updated;
         else return sensor;
       });
-      return sensors;
     }
     case SensorsActionType.SENSOR_DELETED: {
       let remove: Sensor = action.payload;
-      let sensors: Sensors = [...state].filter(
-        (sensor) => sensor.sid !== remove.sid
-      );
-      return sensors;
+      return sensors.filter((sensor) => sensor.sid !== remove.sid);
     }
     default: {
-      return state;
+      return sensors;
     }
   }
 };
