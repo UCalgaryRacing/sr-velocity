@@ -2,6 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { ButtonHTMLAttributes } from "react";
+import "./_styling/iconButton.css";
 
 // How do we make sure only one of these props is passed?
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

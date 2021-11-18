@@ -3,7 +3,8 @@
 
 import React from "react";
 import { useForm, useSignUp } from "hooks";
-import { InputField } from "components/interface/";
+import { InputField, TextButton, DropDown } from "components/interface/";
+import "./_styling/signUp.css";
 
 const SignUp: React.FC = () => {
   const [status, signUp] = useSignUp();
@@ -20,14 +21,22 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="page-content" id="signup">
-      <form onSubmit={onSubmit}>
+      <form id="signup-form" onSubmit={onSubmit}>
+        <img src="assets/team-logo.svg" />
+        <br />
+        <br />
         <InputField
           name="displayName"
           type="name"
           placeholder="Display Name"
-          value={values.email}
+          value={values.displayName}
           onChange={handleChange}
           required
+        />
+        <br />
+        <DropDown
+          options={[{ value: "xxx", label: "Schulich Racing, FSAE" }]}
+          placeholder="Select Organization..."
         />
         <br />
         <InputField
@@ -56,6 +65,15 @@ const SignUp: React.FC = () => {
           onChange={handleChange}
           required
         />
+        <br />
+        <TextButton title="Sign Up" />
+        <br />
+        <br />
+        <div id="redirect">
+          <b>
+            Already have an account?&nbsp;<a href="/signin">Sign In</a>
+          </b>
+        </div>
       </form>
     </div>
   );

@@ -18,7 +18,7 @@ code {
   --white: #fff;
   --red: #ba1833;
   --gray: #444444;
-  --lightgray: #ededed;
+  --lightgray: #f8f8f8;
 
   /* Accent Colors */
 
@@ -43,5 +43,5 @@ code {
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
 
   /* Styling */
-  background-color: var(--lightgray);
+  background-color: var(--white);
 }

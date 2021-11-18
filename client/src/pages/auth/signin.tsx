@@ -4,18 +4,18 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
 import { useForm, useSignIn } from "hooks";
-import { InputField } from "components/interface/";
+import { InputField, TextButton } from "components/interface/";
 
 // https://www.html5rocks.com/en/tutorials/forms/constraintvalidation/ - Custom input failure styling
 
 const SignIn: React.FC = () => {
   // Hooks
+  const history = useHistory();
   const [status, signIn] = useSignIn();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
   });
-  const history = useHistory();
 
   useEffect(() => {
     if (status.user) history.push("/dashboard");
@@ -48,7 +48,7 @@ const SignIn: React.FC = () => {
         />
         {status.fetching && ""}
         {status.error && ""}
-        <button></button>
+        <TextButton title="Sign In" />
       </form>
     </div>
   );

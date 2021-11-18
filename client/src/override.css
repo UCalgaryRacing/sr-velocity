@@ -2,3 +2,11 @@
   width: 0px;
   background: transparent;
 }
+
+a {
+  color: var(--red);
+}
+
+:focus-visible {
+  outline: var(--red) auto 2px;
+}
