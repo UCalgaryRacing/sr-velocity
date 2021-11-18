@@ -1,13 +1,14 @@
 // Copyright Schulich Racing FSAE
 // Written by Jeremy Bilic, Justin Tijunelis
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, useSignUp } from "hooks";
 import { InputField, TextButton, DropDown } from "components/interface/";
 import "./_styling/signUp.css";
 
 const SignUp: React.FC = () => {
   const [status, signUp] = useSignUp();
+  const [organization, setOrganization] = useState("");
   const [values, handleChange] = useForm({
     displayName: "",
     email: "",
@@ -17,7 +18,24 @@ const SignUp: React.FC = () => {
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
+    if (organization === "") {
+      // Show error, need an organization
+    } else {
+      signUp(values.displayName, values.email, values.password);
+    }
   };
+
+  useEffect(() => {
+    if (status.error) {
+      // Show error
+      // Stop loading
+    } else if (status.success) {
+      // Tell the user their organization will approve them shortly
+      // Stop loading
+    } else if (status.fetching) {
+      // Show loading message
+    }
+  }, [status]);
 
   return (
     <div className="page-content" id="sign-up">
@@ -37,6 +55,7 @@ const SignUp: React.FC = () => {
         <DropDown
           options={[{ value: "xxx", label: "Schulich Racing, FSAE" }]}
           placeholder="Select Organization..."
+          // Need event to store
         />
         <br />
         <InputField

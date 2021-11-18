@@ -28,6 +28,7 @@ export const useSignIn = (): [SignInStatus, SignInMethod] => {
     signInWithEmailAndPassword(getAuth(), email, password)
       .then((userCredential: UserCredential) => {
         // Now fetch user information
+        // Then fetch organization information
         // Add to redux
         setStatus({ ...status, fetching: false, user: userCredential.user });
       })

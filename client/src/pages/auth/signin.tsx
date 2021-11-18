@@ -18,6 +18,12 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     if (status.user) history.push("/dashboard");
+    else if (status.error) {
+      // Show error
+      // Stop loading
+    } else if (status.fetching) {
+      // Start loading
+    }
   }, [status]);
 
   const onSubmit = (event: any) => {

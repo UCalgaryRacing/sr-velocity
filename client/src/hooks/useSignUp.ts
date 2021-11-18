@@ -40,6 +40,8 @@ export const useSignUp = (): [SignUpStatus, SignUpMethod] => {
           displayName: displayName,
         })
           .then(() => {
+            // Now create the user for the organization
+
             setStatus({ ...status, fetching: false, success: true });
           })
           .catch((reason: any) => {

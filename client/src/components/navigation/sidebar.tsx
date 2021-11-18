@@ -38,6 +38,7 @@ const structure = [
     children: ["Data", "Plots"],
   },
   {
+    // TODO: Only show this if the user is a lead or admin
     name: "Manage",
     image: <RiAddBoxLine size={24} />,
     children: ["Sensors", "Drivers", "Vehicles", "Users"],
