@@ -20,8 +20,8 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="page-content" id="signup">
-      <form id="signup-form" onSubmit={onSubmit}>
+    <div className="page-content" id="sign-up">
+      <form id="sign-up-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
         <br />
         <br />
@@ -71,7 +71,7 @@ const SignUp: React.FC = () => {
         <br />
         <div id="redirect">
           <b>
-            Already have an account?&nbsp;<a href="/signin">Sign In</a>
+            Already have an account?&nbsp;<a href="/sign-in">Sign In</a>
           </b>
         </div>
       </form>

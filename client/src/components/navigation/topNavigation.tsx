@@ -35,7 +35,7 @@ const TopNavigation: React.FC = () => {
             </Nav.Link>
           )}
           {!signedIn && window.location.pathname !== "/signin" && (
-            <Nav.Link href="/signin">
+            <Nav.Link href="/sign-in">
               <b>Sign In</b>
             </Nav.Link>
           )}

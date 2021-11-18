@@ -10,8 +10,8 @@ const firebaseConfig = {
   projectId: "schulich-velocity",
   storageBucket: "schulich-velocity.appspot.com",
   messagingSenderId: "627030248616",
-  appId: "1:627030248616:web:bb53a4b31423b9523b069d",
-  measurementId: "G-Z1BMTWXKCK",
+  appId: "1:627030248616:web:fd34df45c87f3a2a3b069d",
+  measurementId: "G-ZSGK8C63GM",
 };
 
 initializeApp(firebaseConfig);

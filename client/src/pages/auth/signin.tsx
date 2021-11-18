@@ -1,13 +1,11 @@
 // Copyright Schulich Racing FSAE
-// Written by Jeremy Bilic, Justin Tijunelis
+// Written by Justin Tijunelis
 
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
 import { useForm, useSignIn } from "hooks";
 import { InputField, TextButton } from "components/interface/";
 import "./_styling/signIn.css";
-
-// https://www.html5rocks.com/en/tutorials/forms/constraintvalidation/ - Custom input failure styling
 
 const SignIn: React.FC = () => {
   // Hooks
@@ -28,8 +26,8 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="page-content" id="signin" style={{ marginTop: "66px" }}>
-      <form id="signin-form" onSubmit={onSubmit}>
+    <div className="page-content" id="sign-in" style={{ marginTop: "66px" }}>
+      <form id="sign-in-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
         {status.fetching && ""}
         {status.error && ""}
@@ -58,7 +56,11 @@ const SignIn: React.FC = () => {
         <br />
         <div id="redirect">
           <b>
-            Don't have an account?&nbsp;<a href="/signup">Sign Up</a>
+            Don't have an account?&nbsp;<a href="/sign-up">Sign Up</a>
+          </b>
+          <br />
+          <b>
+            <a href="/forgot-password">Forgot Password?</a>
           </b>
         </div>
       </form>

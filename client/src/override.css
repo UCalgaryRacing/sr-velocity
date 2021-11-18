@@ -3,7 +3,8 @@
   background: transparent;
 }
 
-a {
+a,
+a:hover {
   color: var(--red);
 }
 
