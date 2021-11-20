@@ -2,6 +2,8 @@
 // Written by Justin Tijunelis
 
 import React from "react";
+import "./rawData";
+// <RawData/>
 
 interface StreamingProps {
   section: string;
