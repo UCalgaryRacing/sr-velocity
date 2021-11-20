@@ -34,25 +34,26 @@ export const useSignUp = (): [SignUpStatus, SignUpMethod] => {
     password: string
   ): void => {
     setStatus({ ...status, fetching: true });
-    createUserWithEmailAndPassword(getAuth(), email, password)
-      .then((userCredential: UserCredential) => {
-        updateProfile(userCredential.user, {
-          displayName: displayName,
-        })
-          .then(() => {
-            // Now create the user for the organization
+    // TODO: useFetch to POST user endpoint
+    // createUserWithEmailAndPassword(getAuth(), email, password)
+    //   .then((userCredential: UserCredential) => {
+    //     updateProfile(userCredential.user, {
+    //       displayName: displayName,
+    //     })
+    //       .then(() => {
+    //         // Now create the user for the organization
 
-            setStatus({ ...status, fetching: false, success: true });
-          })
-          .catch((reason: any) => {
-            // Return error message as string to display
-            setStatus({ ...status, fetching: false, error: reason });
-          });
-      })
-      .catch((error) => {
-        // Return error message as string to display
-        setStatus({ ...status, fetching: false, error: error });
-      });
+    //         setStatus({ ...status, fetching: false, success: true });
+    //       })
+    //       .catch((reason: any) => {
+    //         // Return error message as string to display
+    //         setStatus({ ...status, fetching: false, error: reason });
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     // Return error message as string to display
+    //     setStatus({ ...status, fetching: false, error: error });
+    //   });
   };
 
   return [status, signUp];

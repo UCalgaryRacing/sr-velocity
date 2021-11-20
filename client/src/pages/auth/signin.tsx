@@ -32,7 +32,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="page-content" id="sign-in" style={{ marginTop: "66px" }}>
+    <div className="page-content" id="sign-in">
       <form id="sign-in-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
         {status.fetching && ""}
