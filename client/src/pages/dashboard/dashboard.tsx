@@ -9,7 +9,7 @@ import Manage from "./manage/manage";
 import { useWindowSize } from "hooks/index";
 import { useSwipeable } from "react-swipeable";
 import { useAppSelector, RootState } from "state";
-import "./dashboard.css";
+import "./_styling/dashboard.css";
 
 const Dashboard: React.FC = () => {
   // State
