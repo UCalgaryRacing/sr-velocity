@@ -11,6 +11,8 @@ import { useSwipeable } from "react-swipeable";
 import { useAppSelector, RootState } from "state";
 import "./_styling/dashboard.css";
 
+export const DashboardContext = React.createContext("");
+
 const Dashboard: React.FC = () => {
   // State
   const [sideBarToggled, setSideBarToggled] = useState(false);
@@ -30,24 +32,11 @@ const Dashboard: React.FC = () => {
     <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} />
       <div id="content">
-        {(() => {
-          if (!dashboard) return <></>;
-          switch (dashboard.page) {
-            case "Real-time Charts":
-            case "Raw Data":
-              return <Streaming section={dashboard.page} />;
-            case "Data":
-            case "Plots":
-              return <Historical section={dashboard.page} />;
-            case "Sensors":
-            case "Drivers":
-            case "Vehicles":
-            case "Users":
-              return <Manage section={dashboard.page} />;
-            default:
-              return <></>;
-          }
-        })()}
+        <DashboardContext.Provider value={dashboard.page}>
+          <Streaming />
+          <Historical />
+          <Manage />
+        </DashboardContext.Provider>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import {
   SubMenu,
   SidebarHeader,
   SidebarContent,
+  SidebarFooter,
 } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./_styling/sidebar.css";
@@ -41,7 +42,7 @@ const structure = [
     // TODO: Only show this if the user is a lead or admin
     name: "Manage",
     image: <RiAddBoxLine size={24} />,
-    children: ["Sensors", "Drivers", "Vehicles", "Users"],
+    children: ["Sensors", "Operators", "Vehicles", "Things"],
   },
 ];
 
@@ -50,64 +51,51 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
-  // State
   const [collapsed, setCollapsed] = useState(false);
-  const [isOpen, setOpen] = useState(true);
-
-  // Redux
   const dashboard = useAppSelector((state: RootState) => state.dashboard);
-  const pageSelected = bindActionCreators(
-    dashboardPageSelected,
-    useAppDispatch()
-  );
+  const selected = bindActionCreators(dashboardPageSelected, useAppDispatch());
 
   return (
-    <div id="sidebar">
-      <ProSidebar
-        collapsed={collapsed && !props.toggled}
-        toggled={props.toggled}
-        breakPoint={"md"}
-      >
-        <SidebarHeader>
-          <Hamburger
-            onToggle={() => setCollapsed(!collapsed)}
-            toggled={isOpen}
-            toggle={setOpen}
-            size={24}
-          />
-        </SidebarHeader>
-        <SidebarContent>
-          <Menu popperArrow={true}>
-            {structure.map((submenu) => {
-              return (
-                <SubMenu
-                  key={submenu.name}
-                  title={submenu.name}
-                  icon={submenu.image}
-                  defaultOpen={
-                    dashboard
-                      ? submenu.children.includes(dashboard.page)
-                      : false
-                  }
-                >
-                  {submenu.children.map((name) => {
-                    return (
+    <ProSidebar
+      collapsed={collapsed && !props.toggled}
+      toggled={props.toggled}
+      breakPoint="md"
+    >
+      <SidebarHeader>
+        <div>
+          <Hamburger onToggle={() => setCollapsed(!collapsed)} size={24} />
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
+        <Menu popperArrow={true}>
+          {structure.map((sub) => {
+            return (
+              <SubMenu
+                key={sub.name}
+                title={sub.name}
+                icon={sub.image}
+                defaultOpen={sub.children.includes(dashboard.page)}
+              >
+                {sub.children.map((name) => {
+                  return (
+                    <>
                       <MenuItem
                         key={name}
-                        onClick={() => pageSelected(name)}
-                        active={dashboard ? name === dashboard.page : false}
+                        onClick={() => selected(name)}
+                        active={name === dashboard.page}
                       >
                         {name}
                       </MenuItem>
-                    );
-                  })}
-                </SubMenu>
-              );
-            })}
-          </Menu>
-        </SidebarContent>
-      </ProSidebar>
-    </div>
+                    </>
+                  );
+                })}
+              </SubMenu>
+            );
+          })}
+        </Menu>
+      </SidebarContent>
+      <SidebarFooter></SidebarFooter>
+    </ProSidebar>
   );
 };
 
