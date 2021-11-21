@@ -1,0 +1,24 @@
+#sign-up {
+  display: flex;
+}
+
+#sign-up img {
+  width: 100%;
+}
+
+#sign-up #sign-up-form {
+  width: 50%;
+  max-width: 600px;
+  margin: auto;
+  padding: 10px;
+}
+
+#sign-up #redirect {
+  text-align: center;
+}
+
+@media (max-width: 768.9px) {
+  #sign-up #sign-up-form {
+    width: 100%;
+  }
+}

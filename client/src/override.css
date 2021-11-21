@@ -1,0 +1,13 @@
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+a,
+a:hover {
+  color: var(--red);
+}
+
+:focus-visible {
+  outline: var(--red) auto 2px;
+}

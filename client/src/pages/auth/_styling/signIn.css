@@ -1,0 +1,24 @@
+#sign-in {
+  display: flex;
+}
+
+#sign-in img {
+  width: 100%;
+}
+
+#sign-in #sign-in-form {
+  width: 50%;
+  max-width: 600px;
+  margin: auto;
+  padding: 10px;
+}
+
+#sign-in #redirect {
+  text-align: center;
+}
+
+@media (max-width: 768.9px) {
+  #sign-in #sign-in-form {
+    width: 100%;
+  }
+}

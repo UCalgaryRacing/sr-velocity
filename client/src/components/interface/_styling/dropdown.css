@@ -1,0 +1,44 @@
+.dropdown > div {
+  border: 1px solid var(--red);
+  box-shadow: var(--red) auto 2px;
+}
+
+.dropdown > div:hover {
+  border: 1px solid var(--red);
+}
+
+.css-1okebmr-indicatorSeparator {
+  background-color: var(--red) !important;
+}
+
+.css-tlfecz-indicatorContainer,
+.css-1gtu0rj-indicatorContainer {
+  color: var(--red) !important;
+}
+
+.css-12fg80a-indicatorContainer:hover,
+.css-7rqokr-indicatorContainer:hover {
+  color: var(--red) !important;
+}
+
+.css-1s2u09g-control,
+.css-1pahdxg-control {
+  height: 44px;
+}
+
+#react-select-3-listbox {
+  background-color: white !important;
+  border: 1px solid var(--red);
+  font-weight: bold;
+  width: calc(100% + 10px);
+  margin-left: -5px;
+}
+
+#react-select-3-listbox > div > div {
+  cursor: pointer;
+}
+
+#react-select-3-listbox > div > div:active {
+  background-color: var(--red);
+  opacity: 0.5;
+}

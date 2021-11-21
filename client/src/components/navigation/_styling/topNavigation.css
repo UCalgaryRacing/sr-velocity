@@ -1,0 +1,42 @@
+#top-navigation {
+  background-color: var(--black) !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  height: 66px !important;
+}
+
+#top-navigation .navbar-brand img {
+  height: 40px;
+  padding-left: 7.5px;
+}
+
+#top-navigation .mr-auto {
+  margin-right: auto;
+  margin-left: 10px;
+}
+
+#top-navigation .ml-auto {
+  margin-left: auto;
+  padding-right: 7.5px;
+}
+
+#top-navigation .nav-link {
+  color: var(--white);
+}
+
+#top-navigation .nav-link:hover {
+  color: var(--red);
+}
+
+#top-navigation .navbar-toggler {
+  border-radius: 0px;
+  border: 0px;
+  box-shadow: none;
+}
+
+#top-navigation .navbar-collapse {
+  margin-left: -10px;
+  margin-right: -10px;
+  background-color: var(--black);
+}
