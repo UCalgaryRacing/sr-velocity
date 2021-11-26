@@ -2,15 +2,18 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import "./rawData";
-// <RawData/>
+import RawData from "./rawData";
 
 interface StreamingProps {
   section: string;
 }
 
 const Streaming: React.FC<StreamingProps> = (props: StreamingProps) => {
-  return <div id="streaming">{props.section}</div>;
+  return (
+    <div id="streaming">
+      <RawData />
+    </div>
+  );
 };
 
 export default Streaming;
