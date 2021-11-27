@@ -1,4 +1,5 @@
 import React from "react";
+import "./rawBox.css";
 
 interface RawBoxProps {
   sensor: any;
@@ -9,6 +10,8 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   return (
     <div className="raw-box">
       {props.sensor.name}
+      <br />
+      <br />
       {props.sensor.value}
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import RawBox from "./rawBox";
+import "./rawData.css";
 
 // const testSensors = [
 //   {
@@ -27,6 +28,11 @@ const RawData: React.FC = () => {
     { name: "Sensor Dos", value: 2 },
     { name: "Sensor Tres", value: 3 },
     { name: "Sensor Cuatro", value: 4 },
+    { name: "Sensor Cinco", value: 5 },
+    { name: "Sensor Seis", value: 6 },
+    { name: "Sensor Siete", value: 7 },
+    { name: "Sensor Ocho", value: 8 },
+    { name: "Sensor Nueve", value: 9 },
   ];
 
   // const renderCard = (sensor: any) => {
