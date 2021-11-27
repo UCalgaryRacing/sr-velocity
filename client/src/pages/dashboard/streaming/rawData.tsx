@@ -22,6 +22,14 @@ import "./rawData.css";
 //   },
 // ];
 
+var rn = require("random-number");
+var options = {
+  min: -1000,
+  max: 1000,
+  integer: true,
+};
+rn(options);
+
 const RawData: React.FC = () => {
   const testSensors = [
     { name: "Sensor Uno", value: 1 },

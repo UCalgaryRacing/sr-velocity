@@ -7,8 +7,6 @@ interface RawBoxProps {
   sensor: any;
 }
 
-const a = "red";
-
 const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   const [value, setValue] = useState(0);
 
@@ -35,13 +33,20 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
 
   // setValue(rn(optionsValue));
   const rvalue = rn(optionsValue);
+  const pvalue = (rvalue - lowerBound) / (upperBound - lowerBound);
 
   return (
-    <div className="raw-box" style={{ backgroundColor: a }}>
+    <div
+      className="raw-box"
+      style={{ backgroundColor: pvalue < 0.66 ? "green" : "red" }}
+    >
       {props.sensor.name}
       <br />
       <br />
       {rvalue}
+      <br />
+      <br />
+      {/* {pvalue} */}
       {/* {props.sensor.value} */}
     </div>
   );
