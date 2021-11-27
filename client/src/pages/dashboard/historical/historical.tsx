@@ -1,14 +1,25 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React from "react";
+import React, { useContext } from "react";
+import { DashboardContext } from "../dashboard";
 
-interface HistoricalProps {
-  section: string;
+enum HistoricalSection {
+  DATA = "Data",
+  PLOTS = "Plots",
 }
 
-const Historical: React.FC<HistoricalProps> = (props: HistoricalProps) => {
-  return <div id="historical">{props.section}</div>;
+const Historical: React.FC = () => {
+  const section = useContext(DashboardContext);
+
+  switch (section) {
+    case HistoricalSection.DATA:
+      return <div id="historical">{section}</div>;
+    case HistoricalSection.PLOTS:
+      return <div id="historical">{section}</div>;
+    default:
+      return <></>;
+  }
 };
 
 export default Historical;
