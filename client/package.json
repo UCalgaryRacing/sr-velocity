@@ -17,6 +17,7 @@
     "hamburger-react": "^2.4.1",
     "i": "^0.3.7",
     "license-checker": "^25.0.1",
+    "random-number": "0.0.9",
     "react": "^16.14.0",
     "react-bootstrap": "^1.6.1",
     "react-device-detect": "^2.1.2",
