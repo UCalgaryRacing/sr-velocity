@@ -1,34 +1,6 @@
 import React from "react";
-import { Card } from "react-bootstrap";
 import RawBox from "./rawBox";
 import "./rawData.css";
-
-// const testSensors = [
-//   {
-//     name: "Sensor Uno",
-//     value: 1,
-//   },
-//   {
-//     name: "Sensor Dos",
-//     value: 2,
-//   },
-//   {
-//     name: "Sensor Tres",
-//     value: 3,
-//   },
-//   {
-//     name: "Sensor Cuatro",
-//     value: 4,
-//   },
-// ];
-
-var rn = require("random-number");
-var options = {
-  min: -1000,
-  max: 1000,
-  integer: true,
-};
-rn(options);
 
 const RawData: React.FC = () => {
   const testSensors = [
@@ -43,17 +15,6 @@ const RawData: React.FC = () => {
     { name: "Sensor Nueve", value: 9 },
   ];
 
-  // const renderCard = (sensor: any) => {
-  //   return (
-  //     // <Card style={{ width: "18rem" }} key={testSensor.value}>
-  //     //   <Card.Body>
-  //     //     <Card.Title>{testSensor.name}</Card.Title>
-  //     //     <Card.Text>{testSensor.value}</Card.Text>
-  //     //   </Card.Body>
-  //     // </Card>
-  //   );
-  // };
-
   return (
     <div className="raw-data">
       {testSensors.map((sensor) => {
@@ -64,13 +25,6 @@ const RawData: React.FC = () => {
 };
 
 export default RawData;
-
-// const obj = [
-//   {
-//     name: "x",
-//     value: 1,
-//   },
-// ]
 
 // create a component
 // create a list of test sensors, (array of objects)

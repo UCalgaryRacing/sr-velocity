@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./rawBox.css";
 
 var rn = require("random-number");
@@ -8,17 +8,15 @@ interface RawBoxProps {
 }
 
 const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
-  const [value, setValue] = useState(0);
-
   var optionsLow = {
     min: 0,
-    max: 5,
+    max: 25,
     integer: true,
   };
 
   var optionsHigh = {
-    min: 10,
-    max: 15,
+    min: 70,
+    max: 100,
     integer: true,
   };
 
@@ -31,9 +29,18 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
     integer: true,
   };
 
-  // setValue(rn(optionsValue));
-  const rvalue = rn(optionsValue);
+  const [rvalue, setValue] = useState(0);
   const pvalue = (rvalue - lowerBound) / (upperBound - lowerBound);
+
+  useEffect(() => {
+    var intervalId = window.setInterval(function () {
+      setValue(rn(optionsValue));
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <div
@@ -44,10 +51,6 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
       <br />
       <br />
       {rvalue}
-      <br />
-      <br />
-      {/* {pvalue} */}
-      {/* {props.sensor.value} */}
     </div>
   );
 };
