@@ -1,8 +1,10 @@
+# Copyright Schulich Racing, FSAE
+# Written by Jonathan Breidfjord
+
 import json
 import os
 import re
 import subprocess
-
 
 def format_repo(repo: str):
     repo = repo.removeprefix("git+")
