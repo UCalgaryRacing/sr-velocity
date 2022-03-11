@@ -3,40 +3,29 @@
 
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
-import { useForm, useSignIn } from "hooks";
+import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
 import "./_styling/signIn.css";
 
 const SignIn: React.FC = () => {
   // Hooks
   const history = useHistory();
-  const [status, signIn] = useSignIn();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
   });
 
-  useEffect(() => {
-    if (status.user) history.push("/dashboard");
-    else if (status.error) {
-      // Show error
-      // Stop loading
-    } else if (status.fetching) {
-      // Start loading
-    }
-  }, [status]);
-
   const onSubmit = (event: any) => {
     event?.preventDefault();
-    signIn(values.email, values.password);
+    // signIn(values.email, values.password);
   };
 
   return (
     <div className="page-content" id="sign-in">
       <form id="sign-in-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
-        {status.fetching && ""}
-        {status.error && ""}
+        {/* {status.fetching && ""}
+        {status.error && ""} */}
         <br />
         <br />
         <InputField

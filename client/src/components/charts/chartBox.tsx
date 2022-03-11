@@ -1,4 +1,12 @@
-export {};
+// Copyright Schulich Racing FSAE
+// Written by Justin Tijunelis
+
+const ChartBox: React.FC = () => {
+  return <div className="chart-box"></div>;
+};
+
+export default ChartBox;
+
 // import React, { useState, useEffect } from "react";
 // import LineChart from "../../lineChart";
 // import HeatMap from "./heatMap";

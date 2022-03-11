@@ -16,6 +16,7 @@ export const DashboardContext = React.createContext("");
 const Dashboard: React.FC = () => {
   // State
   const [sideBarToggled, setSideBarToggled] = useState(false);
+  const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
 
   // Hooks
   const gestures = useSwipeable({
@@ -30,8 +31,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <div id="dashboard" {...gestures}>
-      <Sidebar toggled={sideBarToggled} />
-      <div id="content">
+      <Sidebar toggled={sideBarToggled} onCollapse={setSideBarCollapsed} />
+      <div
+        id="content"
+        style={{ marginLeft: sideBarCollapsed ? "80px" : "270px" }}
+      >
         <DashboardContext.Provider value={dashboard.page}>
           <Streaming />
           <Historical />

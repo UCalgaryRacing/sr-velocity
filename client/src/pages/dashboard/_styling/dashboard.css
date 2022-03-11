@@ -11,6 +11,8 @@
   width: 100%;
   font-size: 50px;
   min-height: calc(100vh - 66px);
+  transition: cubic-bezier();
+  transition-duration: 0.3s;
 }
 
 @media only screen and (max-width: 768.9px) {

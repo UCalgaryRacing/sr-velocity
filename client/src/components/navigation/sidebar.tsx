@@ -48,6 +48,7 @@ const structure = [
 
 interface SidebarProps {
   toggled: boolean;
+  onCollapse?: (v: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
@@ -63,7 +64,13 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
     >
       <SidebarHeader>
         <div>
-          <Hamburger onToggle={() => setCollapsed(!collapsed)} size={24} />
+          <Hamburger
+            onToggle={() => {
+              if (props.onCollapse) props.onCollapse(!collapsed);
+              setCollapsed(!collapsed);
+            }}
+            size={24}
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>

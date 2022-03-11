@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Created by
 // Justin Tijunelis, Jeremy Bilic, Justin Flores, Jon Mulyk,
-// Camilla Abdrazakov, Abod Abbas, Jon Breidfjord, Arham Humayun
+// Camilla Abdrazakov, Abod Abbas, Jon Breidfjord, Arham Humayun,
 // Ryan Ward, James Nguy, Hilmi Saleh
 
 // Library Imports

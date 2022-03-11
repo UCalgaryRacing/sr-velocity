@@ -1,6 +1,7 @@
 .pro-sidebar {
   height: calc(100vh - 56px);
   color: var(--white) !important;
+  position: fixed;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
