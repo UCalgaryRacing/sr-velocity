@@ -1,0 +1,17 @@
+.raw-box {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+  transition: 0.3s;
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+  display: inline-flex;
+  margin-left: 20px;
+  margin-top: 15px;
+  justify-content: center;
+  text-align: center;
+  color: var(--black);
+}
+
+.raw-box:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+}
