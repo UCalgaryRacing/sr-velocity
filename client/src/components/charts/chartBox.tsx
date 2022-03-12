@@ -1,8 +1,32 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-const ChartBox: React.FC = () => {
-  return <div className="chart-box"></div>;
+import React, { useState } from "react";
+import { IconButton, TextButton } from "components/interface";
+import { CloseOutlined, Edit, Add } from "@material-ui/icons";
+import "./_styling/chartBox.css";
+
+interface ChartBoxProps {
+  title: string;
+}
+
+const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
+  const [editing, setEditing] = useState<boolean>(false);
+
+  const addSensor = () => {
+    // TODO
+  };
+
+  return (
+    <div className="chart-box">
+      <div className="chart-title">{props.title}</div>
+      <div className="chart-controls">
+        <IconButton img={<Add />} />
+        <IconButton img={<Edit />} />
+        <IconButton img={<CloseOutlined />} />
+      </div>
+    </div>
+  );
 };
 
 export default ChartBox;

@@ -1,4 +1,32 @@
-#graphBox {
+.chart-box {
+  border-radius: var(--border-radius);
+  border: 1px solid var(--red);
+  height: 305px;
+  position: relative;
+  padding: 5px;
+}
+
+.chart-box .chart-title {
+  margin: 0;
+  font-size: var(--fz-xxl);
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.chart-box .chart-controls {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  padding: 5px;
+  line-height: 0px;
+}
+
+.chart-box .chart-controls > .icon-button {
+  margin-left: 5px !important;
+}
+
+/* #graphBox {
   border-style: solid;
   border-width: 1px;
   border-radius: 0.5rem;
@@ -194,4 +222,4 @@ span[class^="jss"] span[class^="jss"] span[class^="jss"] {
     height: 300px !important;
     width: 300px !important;
   }
-}
+} */

@@ -34,9 +34,12 @@ const Dashboard: React.FC = () => {
       <Sidebar toggled={sideBarToggled} onCollapse={setSideBarCollapsed} />
       <div
         id="content"
-        style={{ marginLeft: sideBarCollapsed ? "80px" : "270px" }}
+        style={{
+          marginLeft:
+            size.width >= 768.9 ? (sideBarCollapsed ? "80px" : "270px") : "0px",
+        }}
       >
-        <DashboardContext.Provider value={dashboard.page}>
+        <DashboardContext.Provider value={dashboard!.page}>
           <Streaming />
           <Historical />
           <Manage />

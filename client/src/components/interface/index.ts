@@ -6,3 +6,6 @@ export * from "./iconButton";
 export * from "./textButton";
 export * from "./segmentedControl";
 export * from "./dropdown";
+export * from "./textArea";
+export * from "./tooltip";
+export * from "./slider";
