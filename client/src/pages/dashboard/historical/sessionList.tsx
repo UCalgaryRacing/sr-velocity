@@ -1,15 +1,9 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord
-export interface Session {
-  id: number;
-  collectionId: number;
-  thingId: number;
-  startDate: Date;
-  endDate: Date;
-}
+import Session, { SessionType } from "./session";
 
 type Props = {
-  sessions: Session[];
+  sessions: SessionType[];
 };
 
 export default function SessionList({ sessions }: Props) {
@@ -18,7 +12,7 @@ export default function SessionList({ sessions }: Props) {
       {sessions.length === 0 ? (
         <p>No Sessions Found</p>
       ) : (
-        sessions.map((session) => <div key={session.id}>{session.id}</div>)
+        sessions.map((session) => <Session key={session.id} session={session} />)
       )}
     </div>
   );
