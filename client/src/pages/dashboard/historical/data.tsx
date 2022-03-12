@@ -1,12 +1,13 @@
+// Copyright Schulich Racing FSAE
+// Written by Jonathan Breidfjord
 import React, { useState } from "react";
-
+import RunList, { Run } from "./runList";
 import SessionList, { Session } from "./sessionList";
-import CollectionList, { Collection } from "./collectionList";
 import { useFetch } from "../../../hooks/useFetch";
 
 enum ListType {
   Session = "SESSION",
-  Collection = "COLLECTION",
+  Run = "RUN",
 }
 
 const Data: React.FC = () => {
@@ -15,24 +16,24 @@ const Data: React.FC = () => {
   const { data: sessions, error: sessionError } = useFetch<Session[]>(
     "http://localhost:3001/sessions"
   );
-  const { data: collections, error: collectionError } = useFetch<Collection[]>(
-    "http://localhost:3001/collections"
+  const { data: runs, error: runError } = useFetch<Run[]>(
+    "http://localhost:3001/runs"
   );
 
   return (
     <div id="data">
       <div className="config-bar">
         <button onClick={() => setListType(ListType.Session)}>Sessions</button>
-        <button onClick={() => setListType(ListType.Collection)}>Collections</button>
+        <button onClick={() => setListType(ListType.Run)}>Runs</button>
       </div>
-      {sessionError || collectionError ? (
+      {sessionError || runError ? (
         <p>Error fetching data</p>
-      ) : !sessions || !collections ? (
+      ) : !sessions || !runs ? (
         <p>Loading...</p>
       ) : listType === ListType.Session ? (
         <SessionList sessions={sessions} />
       ) : (
-        <CollectionList collections={collections} />
+        <RunList runs={runs} />
       )}
     </div>
   );
