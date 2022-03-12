@@ -1,3 +1,5 @@
+// Copyright Schulich Racing FSAE
+// Written by Jonathan Breidfjord
 export interface Session {
   id: number;
   collectionId: number;

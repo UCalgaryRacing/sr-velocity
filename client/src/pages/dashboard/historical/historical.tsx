@@ -1,6 +1,5 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
-
+// Written by Jonathan Breidfjord & Justin Tijunelis
 import React, { useContext } from "react";
 import { DashboardContext } from "../dashboard";
 
@@ -17,20 +16,20 @@ const Historical: React.FC = () => {
   const section = useContext(DashboardContext);
 
   switch (section) {
-    case HistoricalSection.DATA:
-      return (
-        <div id="historical">
-          <Data />
-        </div>
-      );
-    case HistoricalSection.PLOTS:
-      return (
-        <div id="historical">
-          <Plots />
-        </div>
-      );
-    default:
-      return <></>;
+  case HistoricalSection.DATA:
+    return (
+      <div id="historical">
+        <Data />
+      </div>
+    );
+  case HistoricalSection.PLOTS:
+    return (
+      <div id="historical">
+        <Plots />
+      </div>
+    );
+  default:
+    return <></>;
   }
 };
 
