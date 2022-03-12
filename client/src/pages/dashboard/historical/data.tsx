@@ -1,5 +1,6 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord
+import "./_styling/data.css";
 import React, { useState } from "react";
 import DashNav from "../dashnav";
 import RunList from "./runList";
@@ -23,6 +24,11 @@ const Data: React.FC = () => {
     "http://localhost:3001/runs"
   );
 
+  const handleDownload = (item: RunType | SessionType) => {
+    // Download item as csv
+    console.log(item);
+  };
+
   return (
     <div id="data">
       <DashNav>
@@ -34,9 +40,9 @@ const Data: React.FC = () => {
       ) : !sessions || !runs ? (
         <p>Loading...</p>
       ) : listType === ListType.Session ? (
-        <SessionList sessions={sessions} />
+        <SessionList sessions={sessions} handleDownload={handleDownload} />
       ) : (
-        <RunList runs={runs} />
+        <RunList runs={runs} handleDownload={handleDownload} />
       )}
     </div>
   );
