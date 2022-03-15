@@ -5,5 +5,5 @@ export * from "./dashboard";
 export * from "./user";
 export * from "./organization";
 export * from "./sensors";
-export * from "./vehicle";
-export * from "./driver";
+export * from "./thing";
+export * from "./operator";

@@ -26,6 +26,10 @@
   margin-left: 5px !important;
 }
 
+.chart-box .chart-area {
+  width: 100%;
+}
+
 /* #graphBox {
   border-style: solid;
   border-width: 1px;

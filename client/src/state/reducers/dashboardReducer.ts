@@ -2,11 +2,11 @@
 // Written by Justin Tijunelis
 
 import { DashboardAction, DashboardActionType } from "../actions";
-import { Dashboard, Vehicle } from "../types";
+import { Dashboard, Thing } from "../types";
 
 const initialDashboard: Dashboard = {
   page: "Real-time Charts",
-  vehicle: undefined,
+  thing: undefined,
 };
 
 const dashboardReducer = (
@@ -18,7 +18,7 @@ const dashboardReducer = (
       return { ...state, page: action.payload };
     }
     case DashboardActionType.VEHICLE_SELECTED: {
-      return { ...state, vehicle: action.payload };
+      return { ...state, thing: action.payload };
     }
     default: {
       return state;

@@ -4,73 +4,73 @@
 // Can this, sensors, and vehicles be concatenated somehow?
 
 import { Dispatch } from "redux";
-import { Driver } from "../types";
+import { Operator } from "../types";
 
-export enum DriverActionType {
-  FETCHED = "driversFetched",
-  DRIVER_CREATED = "driverCreated",
-  DRIVER_UPDATED = "driverUpdated",
-  DRIVER_DELETED = "driverDeleted",
+export enum OperatorActionType {
+  FETCHED = "operatorsFetched",
+  OPERATOR_CREATED = "operatorCreated",
+  OPERATOR_UPDATED = "operatorUpdated",
+  OPERATOR_DELETED = "operatorDeleted",
 }
 
-interface DriversFetchedAction {
-  type: DriverActionType.FETCHED;
-  payload: Driver[];
+interface OperatorsFetchedAction {
+  type: OperatorActionType.FETCHED;
+  payload: Operator[];
 }
 
-interface DriverCreatedAction {
-  type: DriverActionType.DRIVER_CREATED;
-  payload: Driver;
+interface OperatorCreatedAction {
+  type: OperatorActionType.OPERATOR_CREATED;
+  payload: Operator;
 }
 
-interface DriverUpdatedAction {
-  type: DriverActionType.DRIVER_UPDATED;
-  payload: Driver;
+interface OperatorUpdatedAction {
+  type: OperatorActionType.OPERATOR_UPDATED;
+  payload: Operator;
 }
 
-interface DriverDeletedAction {
-  type: DriverActionType.DRIVER_DELETED;
-  payload: Driver;
+interface OperatorDeletedAction {
+  type: OperatorActionType.OPERATOR_DELETED;
+  payload: Operator;
 }
 
-export type DriverAction =
-  | DriversFetchedAction
-  | DriverCreatedAction
-  | DriverUpdatedAction
-  | DriverDeletedAction;
+export type OperatorAction =
+  | OperatorsFetchedAction
+  | OperatorCreatedAction
+  | OperatorUpdatedAction
+  | OperatorDeletedAction;
 
-export const driversFetched = (drivers: Driver[]) => {
-  return (dispatch: Dispatch<DriversFetchedAction>) => {
+export const operatorssFetched = (operators: Operator[]) => {
+  return (dispatch: Dispatch<OperatorsFetchedAction>) => {
     dispatch({
-      type: DriverActionType.FETCHED,
-      payload: drivers,
+      type: OperatorActionType.FETCHED,
+      payload: operators,
     });
   };
 };
 
-export const driverCreated = (driver: Driver) => {
-  return (dispatch: Dispatch<DriverCreatedAction>) => {
+export const operatorCreated = (operator: Operator) => {
+  return (dispatch: Dispatch<OperatorCreatedAction>) => {
     dispatch({
-      type: DriverActionType.DRIVER_CREATED,
-      payload: driver,
+      type: OperatorActionType.OPERATOR_CREATED,
+      payload: operator,
     });
   };
 };
 
-export const driverUpdated = (driver: Driver) => {
-  return (dispatch: Dispatch<DriverUpdatedAction>) => {
+export const operatorUpdated = (operator: Operator) => {
+  return (dispatch: Dispatch<OperatorUpdatedAction>) => {
     dispatch({
-      type: DriverActionType.DRIVER_UPDATED,
-      payload: driver,
+      type: OperatorActionType.OPERATOR_UPDATED,
+      payload: operator,
     });
   };
 };
 
-export const driverDeleted = (driver: Driver) => {
-  return (dispatch: Dispatch<DriverDeletedAction>) => {
+export const operatorDeleted = (operator: Operator) => {
+  return (dispatch: Dispatch<OperatorDeletedAction>) => {
     dispatch({
-      type: DriverActionType.DRIVER_DELETED,
-      payload: driver,
+      type: OperatorActionType.OPERATOR_DELETED,
+      payload: operator,
     });
   };
 };

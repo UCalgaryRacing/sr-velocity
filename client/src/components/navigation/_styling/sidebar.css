@@ -66,6 +66,18 @@
   border-color: var(--white);
 }
 
+.pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout .pro-sidebar-footer {
+  border: 0px solid;
+}
+
+.pro-sidebar-footer {
+  height: 85px;
+}
+
+.pro-sidebar-footer .pro-arrow-wrapper {
+  display: none;
+}
+
 @media only screen and (max-width: 768.9px) {
   #sidebar .pro-sidebar {
     position: fixed;

@@ -2,11 +2,22 @@
 // Written by Justin Tijunelis
 
 export type Sensor = {
-  name: string;
-  sid: number;
-  frequency: number;
+  _id: string;
+  smallId: number;
   type: string;
-  disabled: boolean;
+  lastUpdate: number;
+  category: string;
+  name: string;
+  frequency: number;
   unit: string;
-  // Future: Add calibration
+  canId: number;
+  disabled: boolean;
+  thingId: string;
+  upperCalibration: number;
+  lowerCalibration: number;
+  conversionMultiplier: number;
+  upperWarning: number;
+  lowerWarning: number;
+  upperDanger: number;
+  lowerDanger: number;
 };

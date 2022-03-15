@@ -21,13 +21,13 @@ const sensorsReducer = (
     case SensorActionType.SENSOR_UPDATED: {
       let updated: Sensor = action.payload;
       return sensors.map((sensor) => {
-        if (sensor.sid === updated.sid) return updated;
+        if (sensor._id === updated._id) return updated;
         else return sensor;
       });
     }
     case SensorActionType.SENSOR_DELETED: {
       let remove: Sensor = action.payload;
-      return sensors.filter((sensor) => sensor.sid !== remove.sid);
+      return sensors.filter((sensor) => sensor._id !== remove._id);
     }
     default: {
       return sensors;

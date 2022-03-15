@@ -11,10 +11,11 @@ import {
   dashboardPageSelected,
 } from "state";
 import {
-  RiLineChartLine,
-  RiFileHistoryLine,
-  RiAddBoxLine,
-} from "react-icons/ri";
+  History,
+  DataObject,
+  StackedLineChart,
+  Settings,
+} from "@mui/icons-material";
 import {
   ProSidebar,
   Menu,
@@ -30,19 +31,19 @@ import "./_styling/sidebar.css";
 const structure = [
   {
     name: "Streaming",
-    image: <RiLineChartLine size={24} />,
+    image: <StackedLineChart />,
     children: ["Real-time Charts", "Raw Data"],
   },
   {
     name: "Historical",
-    image: <RiFileHistoryLine size={24} />,
+    image: <History />,
     children: ["Data", "Plots"],
   },
   {
     // TODO: Only show this if the user is a lead or admin
     name: "Manage",
-    image: <RiAddBoxLine size={24} />,
-    children: ["Sensors", "Operators", "Vehicles", "Things"],
+    image: <DataObject />,
+    children: ["Sensors", "Operators", "Things"],
   },
 ];
 
@@ -101,7 +102,11 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
           })}
         </Menu>
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter>
+        <Menu>
+          <SubMenu icon={<Settings />} title={"Settings"} />
+        </Menu>
+      </SidebarFooter>
     </ProSidebar>
   );
 };

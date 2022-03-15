@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-export type Driver = {
+export type Operator = {
   first_name: string;
   last_name: string;
   height: number;
