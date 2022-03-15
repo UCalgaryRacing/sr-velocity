@@ -12,7 +12,7 @@ interface TextAreaProps {
   onUpdate: any;
 }
 
-const TextArea: React.FC<TextAreaProps> = (props: TextAreaProps) => {
+export const TextArea: React.FC<TextAreaProps> = (props: TextAreaProps) => {
   return (
     <div className="text-area">
       <ReactQuill

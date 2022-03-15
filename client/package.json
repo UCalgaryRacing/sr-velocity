@@ -23,6 +23,7 @@
     "license-checker": "^25.0.1",
     "material-ui": "^0.20.2",
     "ml-savitzky-golay": "^5.0.0",
+    "rc-slider": "^10.0.0-alpha.5",
     "react": "^16.14.0",
     "react-bootstrap": "^1.6.1",
     "react-device-detect": "^2.1.2",
