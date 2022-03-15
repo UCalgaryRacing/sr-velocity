@@ -2,12 +2,12 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import ChartBox from "components/charts/chartBox";
+import { ChartBox, ChartType } from "components/charts/";
 
 const ChartView: React.FC = () => {
   return (
     <div id="chart-view">
-      <ChartBox title={"Title"} />
+      <ChartBox title={"Title"} type={ChartType.LINE} realtime />
     </div>
   );
 };

@@ -2,21 +2,25 @@
 // Written by Justin Tijunelis
 
 import React, { useState } from "react";
-import { IconButton, TextButton } from "components/interface";
+import { IconButton, TextButton, RangeSlider } from "components/interface";
+import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
 import { CloseOutlined, Edit, Add } from "@material-ui/icons";
 import "./_styling/chartBox.css";
 
-interface ChartBoxProps {
-  title: string;
+export enum ChartType {
+  HEATMAP = "heatmap",
+  LINE = "line",
+  RADIAL = "radial",
+  SCATTER = "scatter",
 }
 
-const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
-  const [editing, setEditing] = useState<boolean>(false);
+interface ChartBoxProps {
+  title: string;
+  type: ChartType;
+  realtime: boolean;
+}
 
-  const addSensor = () => {
-    // TODO
-  };
-
+export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
   return (
     <div className="chart-box">
       <div className="chart-title">{props.title}</div>
@@ -25,11 +29,25 @@ const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
         <IconButton img={<Edit />} />
         <IconButton img={<CloseOutlined />} />
       </div>
+      <div className="chart-area">
+        {(() => {
+          switch (props.type) {
+            case ChartType.HEATMAP:
+              return <Heatmap />;
+            case ChartType.LINE:
+              return <LineChart />;
+            case ChartType.RADIAL:
+              return <RadialChart />;
+            case ChartType.SCATTER:
+              return <ScatterChart />;
+            default:
+              return <LineChart />;
+          }
+        })()}
+      </div>
     </div>
   );
 };
-
-export default ChartBox;
 
 // import React, { useState, useEffect } from "react";
 // import LineChart from "../../lineChart";

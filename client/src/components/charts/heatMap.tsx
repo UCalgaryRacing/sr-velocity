@@ -1,3 +1,12 @@
+// Copyright Schulich Racing, FSAE
+// Written by Justin Tijunelis
+
+interface HeatMapProps {}
+
+export const Heatmap: React.FC<HeatMapProps> = (props: HeatMapProps) => {
+  return <div></div>;
+};
+
 // import React, {useState, useEffect} from 'react';
 // import colormap from '@colormap';
 // import Data from './data';
@@ -124,4 +133,3 @@
 // }
 
 // export default HeatMap;
-export {};

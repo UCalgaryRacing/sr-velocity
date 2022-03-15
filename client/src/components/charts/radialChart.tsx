@@ -1,8 +1,10 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-const RadialChart: React.FC = () => {
+interface RadialChartProps {}
+
+export const RadialChart: React.FC<RadialChartProps> = (
+  props: RadialChartProps
+) => {
   return <div></div>;
 };
-
-export default RadialChart;
