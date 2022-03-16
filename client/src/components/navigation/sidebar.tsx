@@ -44,7 +44,7 @@ const structure = [
     // TODO: Only show this if the user is a lead or admin
     name: "Manage",
     image: <DataObject />,
-    children: ["Sensors", "Operators", "Things"],
+    children: ["Organization", "Things", "Sensors", "Operators", "Users"],
   },
 ];
 

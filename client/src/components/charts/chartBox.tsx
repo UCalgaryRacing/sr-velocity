@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { IconButton, ToolTip, RangeSlider } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
-import { CloseOutlined, Edit, Add } from "@mui/icons-material";
+import { CloseOutlined, Edit } from "@mui/icons-material";
 import "./_styling/chartBox.css";
 
 export enum ChartType {
