@@ -36,9 +36,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     <div id="chart-view">
       <DashNav margin={context.margin}>
         <div className="left">
-          <ToolTip value="Sensors">
-            <IconButton img={<Sensors />} />
-          </ToolTip>
           <ToolTip value="New Chart">
             <IconButton img={<Add />} />
           </ToolTip>

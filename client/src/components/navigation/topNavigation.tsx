@@ -1,12 +1,14 @@
-// Library Imports
+// Copyright Schulich Racing FSAE
+// Written by Justin Tijunelis
+
 import React, { useState } from "react";
 import { Nav, Navbar } from "react-bootstrap";
-
-// Styling Imports
+import { useAppSelector, RootState } from "state";
 import "./_styling/topNavigation.css";
 
 const TopNavigation: React.FC = () => {
   const [signedIn, setSignedIn] = useState(false);
+  const dashboard = useAppSelector((state: RootState) => state.dashboard);
 
   return (
     <Navbar
@@ -25,6 +27,13 @@ const TopNavigation: React.FC = () => {
           <Nav className="mr-auto">
             <Nav.Link href="/dashboard">
               <b>Dashboard</b>
+            </Nav.Link>
+          </Nav>
+        )}
+        {window.location.pathname === "/dashboard" && (
+          <Nav className="mr-auto">
+            <Nav.Link>
+              <b>{dashboard.page}</b>
             </Nav.Link>
           </Nav>
         )}
