@@ -1,8 +1,12 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
+import { Operator, Sensor } from "./";
+
 export type Thing = {
+  _id: string;
   name: string;
-  serial_number: string;
-  // Others in the future
+  serialNumber: string;
+  sensors: Sensor[];
+  operators: Operator[];
 };

@@ -1,10 +1,9 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-export type User = {
+export type Chart = {
   _id: string;
   name: string;
-  email: string;
-  approved: boolean;
-  role: string;
+  type: string;
+  sensorIds: string[];
 };

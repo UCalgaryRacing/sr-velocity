@@ -6,5 +6,4 @@ import { Thing } from "./";
 export type Dashboard = {
   page: string;
   thing?: Thing;
-  // Others in the future
 };

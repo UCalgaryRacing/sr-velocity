@@ -2,9 +2,8 @@
 // Written by Justin Tijunelis
 
 export type Operator = {
-  first_name: string;
-  last_name: string;
+  _id: string;
+  name: string;
   height: number;
   weight: number;
-  // Other in the future as needed
 };

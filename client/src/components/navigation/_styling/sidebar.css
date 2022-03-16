@@ -83,8 +83,8 @@
 }
 
 .pro-sidebar.collapsed {
-  width: 78px;
-  min-width: 78px;
+  width: 76px;
+  min-width: 76px;
 }
 
 @media only screen and (max-width: 768.9px) {

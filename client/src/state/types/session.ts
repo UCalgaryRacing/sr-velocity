@@ -1,10 +1,10 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-export type User = {
+import { Comment } from "./";
+
+export type Session = {
   _id: string;
   name: string;
-  email: string;
-  approved: boolean;
-  role: string;
+  comments?: Comment[];
 };

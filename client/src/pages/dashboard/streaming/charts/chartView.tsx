@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { IconButton, ToolTip } from "components/interface";
 import { ChartBox, ChartType } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
@@ -9,8 +9,28 @@ import { Sensors, SaveOutlined, Add, Air, Category } from "@mui/icons-material";
 import DashNav from "components/navigation/dashNav";
 import "./_styling/chartView.css";
 
-const ChartView: React.FC = () => {
+interface ChartViewProps {}
+
+const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
+  const [charts, setCharts] = useState<any[]>([]);
   const context = useContext(DashboardContext);
+
+  useEffect(() => {
+    generateCharts();
+  }, []);
+
+  const generateCharts = () => {
+    let chartUI = [];
+    chartUI.push(
+      <ChartBox
+        title={"This is a custom chart title"}
+        type={ChartType.LINE}
+        realtime
+      />
+    );
+    chartUI.push(<ChartBox title={"Title"} type={ChartType.LINE} realtime />);
+    setCharts(chartUI);
+  };
 
   return (
     <div id="chart-view">
@@ -35,12 +55,7 @@ const ChartView: React.FC = () => {
           </ToolTip>
         </div>
       </DashNav>
-      <ChartBox
-        title={"This is a custom chart title"}
-        type={ChartType.LINE}
-        realtime
-      />
-      <ChartBox title={"Title"} type={ChartType.LINE} realtime />
+      {charts}
     </div>
   );
 };
