@@ -12,17 +12,17 @@ enum ManageSection {
 }
 
 const Manage: React.FC = () => {
-  const section = useContext(DashboardContext);
+  const context = useContext(DashboardContext);
 
-  switch (section) {
+  switch (context.page) {
     case ManageSection.SENSORS:
-      return <div id="manage">{section}</div>;
+      return <div id="manage">{context.page}</div>;
     case ManageSection.OPERATORS:
-      return <div id="manage">{section}</div>;
+      return <div id="manage">{context.page}</div>;
     case ManageSection.THINGS:
-      return <div id="manage">{section}</div>;
+      return <div id="manage">{context.page}</div>;
     case ManageSection.USERS:
-      return <div id="manage">{section}</div>;
+      return <div id="manage">{context.page}</div>;
     default:
       return <></>;
   }

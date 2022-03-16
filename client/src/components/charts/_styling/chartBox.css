@@ -1,16 +1,21 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
 .chart-box {
   border-radius: var(--border-radius);
   border: 1px solid var(--red);
-  height: 305px;
+  height: calc(100vh * 0.5 - 48px);
   position: relative;
   padding: 5px;
+  margin-bottom: 10px;
 }
 
 .chart-box .chart-title {
   margin: 0;
   font-size: var(--fz-xxl);
   font-weight: bold;
-  margin-top: 2px;
 }
 
 .chart-box .chart-controls {

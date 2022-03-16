@@ -78,6 +78,10 @@
   display: none;
 }
 
+.pro-sidebar-footer .popper-element {
+  display: none;
+}
+
 @media only screen and (max-width: 768.9px) {
   #sidebar .pro-sidebar {
     position: fixed;
