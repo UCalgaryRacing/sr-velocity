@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { useContext } from "react";
-import { IconButton } from "components/interface";
+import { IconButton, ToolTip } from "components/interface";
 import { ChartBox, ChartType } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
 import { Sensors, SaveOutlined, Add, Air, Category } from "@mui/icons-material";
@@ -16,13 +16,23 @@ const ChartView: React.FC = () => {
     <div id="chart-view">
       <DashNav margin={context.margin}>
         <div className="left">
-          <IconButton img={<Sensors />} />
-          <IconButton img={<Add />} />
-          <IconButton img={<Category />} />
-          <IconButton img={<SaveOutlined />} />
+          <ToolTip value="Sensors">
+            <IconButton img={<Sensors />} />
+          </ToolTip>
+          <ToolTip value="New Chart">
+            <IconButton img={<Add />} />
+          </ToolTip>
+          <ToolTip value="Presets">
+            <IconButton img={<Category />} />
+          </ToolTip>
+          <ToolTip value="Save Configuration">
+            <IconButton img={<SaveOutlined />} />
+          </ToolTip>
         </div>
         <div className="right">
-          <IconButton img={<Air />} />
+          <ToolTip value="Run a Test">
+            <IconButton img={<Air />} />
+          </ToolTip>
         </div>
       </DashNav>
       <ChartBox

@@ -82,7 +82,16 @@
   display: none;
 }
 
+.pro-sidebar.collapsed {
+  width: 78px;
+  min-width: 78px;
+}
+
 @media only screen and (max-width: 768.9px) {
+  .pro-sidebar {
+    margin-top: 66px;
+  }
+
   #sidebar .pro-sidebar {
     position: fixed;
   }

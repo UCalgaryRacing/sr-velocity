@@ -42,13 +42,13 @@ const Dashboard: React.FC = () => {
       <div
         id="content"
         style={{
-          marginLeft: size.width >= 768.9 ? (!sideBarCollapsed ? 80 : 220) : 0,
+          marginLeft: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
         }}
       >
         <DashboardContext.Provider
           value={{
             page: dashboard!.page,
-            margin: size.width >= 768.9 ? (!sideBarCollapsed ? 80 : 220) : 0,
+            margin: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
           }}
         >
           <Streaming />

@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { useState } from "react";
-import { IconButton, TextButton, RangeSlider } from "components/interface";
+import { IconButton, ToolTip, RangeSlider } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
 import { CloseOutlined, Edit, Add } from "@mui/icons-material";
 import "./_styling/chartBox.css";
@@ -25,8 +25,12 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
     <div className="chart-box">
       <div className="chart-title">{props.title}</div>
       <div className="chart-controls">
-        <IconButton img={<Edit />} />
-        <IconButton img={<CloseOutlined />} />
+        <ToolTip value="Edit Chart">
+          <IconButton img={<Edit />} />
+        </ToolTip>
+        <ToolTip value="Close">
+          <IconButton img={<CloseOutlined />} />
+        </ToolTip>
       </div>
       <div className="chart-area">
         {(() => {

@@ -1,0 +1,13 @@
+.tooltip > div.tooltip-inner {
+  margin: 5px;
+  font-weight: bold;
+}
+
+.tooltip.show {
+  opacity: 1 !important;
+}
+
+.tooltip > div.arrow::before {
+  border-bottom-color: var(--white) !important;
+  color: var(--white) !important;
+}
