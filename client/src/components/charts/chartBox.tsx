@@ -25,7 +25,6 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
     <div className="chart-box">
       <div className="chart-title">{props.title}</div>
       <div className="chart-controls">
-        <IconButton img={<Add />} />
         <IconButton img={<Edit />} />
         <IconButton img={<CloseOutlined />} />
       </div>

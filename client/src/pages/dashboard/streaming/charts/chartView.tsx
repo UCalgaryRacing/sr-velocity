@@ -2,10 +2,10 @@
 // Written by Justin Tijunelis
 
 import React, { useContext } from "react";
-import { IconButton, InputField } from "components/interface";
+import { IconButton } from "components/interface";
 import { ChartBox, ChartType } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
-import { Sensors, SaveOutlined, Add, Air } from "@mui/icons-material";
+import { Sensors, SaveOutlined, Add, Air, Category } from "@mui/icons-material";
 import DashNav from "components/navigation/dashNav";
 import "./_styling/chartView.css";
 
@@ -18,11 +18,11 @@ const ChartView: React.FC = () => {
         <div className="left">
           <IconButton img={<Sensors />} />
           <IconButton img={<Add />} />
+          <IconButton img={<Category />} />
           <IconButton img={<SaveOutlined />} />
-          <IconButton img={<Air />} />
         </div>
         <div className="right">
-          <InputField placeholder="Search" />
+          <IconButton img={<Air />} />
         </div>
       </DashNav>
       <ChartBox

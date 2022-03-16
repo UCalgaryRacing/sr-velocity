@@ -24,7 +24,7 @@ Written by Justin Tijunelis
 }
 
 #dash-nav .left {
-  width: 50%;
+  width: 80%;
   margin-left: 5px;
 }
 
@@ -33,18 +33,17 @@ Written by Justin Tijunelis
 }
 
 #dash-nav .right {
-  width: 50%;
+  width: 20%;
   margin-right: 15px;
 }
 
 #dash-nav .right * {
   max-width: 200px;
-  margin-left: auto;
+  float: right;
 }
 
 @media only screen and (max-width: 768.9px) {
   #dash-nav {
-    display: block;
     position: initial;
     height: auto;
     border-bottom: 0px solid;
@@ -53,20 +52,12 @@ Written by Justin Tijunelis
   }
 
   #dash-nav .left {
-    display: grid;
-    grid-auto-flow: column;
-    width: 100%;
-    margin-bottom: 9px;
     margin-left: 0px;
-    justify-content: space-between;
-  }
-
-  #dash-nav .left * {
-    margin-right: 0px;
   }
 
   #dash-nav .right {
     width: 100%;
+    margin-right: 0px;
   }
 
   #dash-nav .right * {
