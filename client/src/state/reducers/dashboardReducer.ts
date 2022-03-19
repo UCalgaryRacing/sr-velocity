@@ -5,8 +5,9 @@ import { DashboardAction, DashboardActionType } from "../actions";
 import { Dashboard, Thing } from "../types";
 
 const initialDashboard: Dashboard = {
-  page: "Real-time Charts",
-  thing: undefined,
+  section: "Streaming",
+  page: "Real-Time Charts",
+  thing: undefined, // Default thing
 };
 
 const dashboardReducer = (
@@ -15,7 +16,7 @@ const dashboardReducer = (
 ): Dashboard => {
   switch (action.type) {
     case DashboardActionType.PAGE_SELECTED: {
-      return { ...state, page: action.payload };
+      return { ...state, ...action.payload };
     }
     case DashboardActionType.VEHICLE_SELECTED: {
       return { ...state, thing: action.payload };

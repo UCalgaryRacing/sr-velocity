@@ -7,7 +7,7 @@ import ChartView from "./charts/chartView";
 import RawDataView from "./raw_data/rawDataView";
 
 enum StreamingSection {
-  CHARTS = "Real-time Charts",
+  CHARTS = "Real-Time Charts",
   RAW_DATA = "Raw Data",
 }
 

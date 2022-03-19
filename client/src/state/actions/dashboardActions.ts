@@ -11,7 +11,7 @@ export enum DashboardActionType {
 
 interface DashboardPageSelectedAction {
   type: DashboardActionType.PAGE_SELECTED;
-  payload: string;
+  payload: any;
 }
 
 interface DashboardVehicleSelectedAction {
@@ -23,11 +23,11 @@ export type DashboardAction =
   | DashboardPageSelectedAction
   | DashboardVehicleSelectedAction;
 
-export const dashboardPageSelected = (page: string) => {
+export const dashboardPageSelected = (selection: any) => {
   return (dispatch: Dispatch<DashboardPageSelectedAction>) => {
     dispatch({
       type: DashboardActionType.PAGE_SELECTED,
-      payload: page,
+      payload: selection,
     });
   };
 };

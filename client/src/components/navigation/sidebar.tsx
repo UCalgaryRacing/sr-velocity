@@ -33,7 +33,7 @@ const structure = [
   {
     name: "Streaming",
     image: <StackedLineChart />,
-    children: ["Real-time Charts", "Raw Data"],
+    children: ["Real-Time Charts", "Raw Data"],
   },
   {
     name: "Historical",
@@ -94,7 +94,9 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                     <>
                       <MenuItem
                         key={name}
-                        onClick={() => selected(name)}
+                        onClick={() =>
+                          selected({ page: name, section: sub.name })
+                        }
                         active={name === dashboard.page}
                       >
                         {name}
