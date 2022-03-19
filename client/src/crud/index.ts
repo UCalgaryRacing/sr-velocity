@@ -8,4 +8,4 @@ export * from "./user";
 export * from "./organization";
 export * from "./runs";
 export * from "./things";
-export * from "./streamingPresets";
+export * from "./chartPresets";
