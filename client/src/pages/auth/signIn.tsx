@@ -1,11 +1,12 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
 import "./_styling/signIn.css";
+import { signIn } from "crud";
 
 const SignIn: React.FC = () => {
   // Hooks
@@ -15,19 +16,34 @@ const SignIn: React.FC = () => {
     password: "",
   });
 
+  const [failedLogin, setFailedLoginToggle] = useState(false);
+
   const onSubmit = (event: any) => {
     event?.preventDefault();
-    // signIn(values.email, values.password);
+    signIn(
+      {
+        email: values.email,
+        password: values.password
+      }
+    ).then((res: any) => {
+      history.push('/dashboard')
+    }).catch((err: any) => {
+      setFailedLoginToggle(true)
+    })
   };
 
   return (
     <div className="page-content" id="sign-in">
       <form id="sign-in-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
+        <br />
+        <br />
+        {failedLogin ?
+          <p style={{ color: "red" }}>Username or password not recognized...</p>
+          : null}
         {/* {status.fetching && ""}
         {status.error && ""} */}
-        <br />
-        <br />
+
         <InputField
           name="email"
           type="email"

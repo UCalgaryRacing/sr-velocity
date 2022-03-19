@@ -7,7 +7,7 @@ const call = require("../utilities/call");
 // TODO: Add authentication for specfic calls
 database.all("*", async (req, res) => {
   const response = await call(
-    process.env.DATABASE_MS_ROUTE + req.path,
+    process.env.DATABASE_MS_ROUTE + "/database" + req.path,
     req.method,
     {
       headers: req.headers,
