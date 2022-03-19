@@ -20,9 +20,7 @@ const Data: React.FC = () => {
   const { data: sessions, error: sessionError } = useFetch<SessionType[]>(
     "http://localhost:3001/sessions"
   );
-  const { data: runs, error: runError } = useFetch<RunType[]>(
-    "http://localhost:3001/runs"
-  );
+  const { data: runs, error: runError } = useFetch<RunType[]>("http://localhost:3001/runs");
 
   const handleDownload = (item: RunType | SessionType) => {
     // Download item as csv

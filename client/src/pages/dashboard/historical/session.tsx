@@ -8,13 +8,15 @@ export interface SessionType {
 type Props = {
   session: SessionType;
   handleDownload: (item: SessionType) => void;
-}
+};
 
 export default function Session({ session, handleDownload }: Props) {
   return (
     <div className="session data-list-item">
       {session.name}
-      <button className="btn download" onClick={() => handleDownload(session)}><GetAppIcon /></button>
+      <button className="btn download" onClick={() => handleDownload(session)}>
+        <GetAppIcon />
+      </button>
     </div>
   );
 }
