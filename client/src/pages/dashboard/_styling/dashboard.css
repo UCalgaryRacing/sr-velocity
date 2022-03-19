@@ -7,7 +7,6 @@
 }
 
 #dashboard #content {
-  padding: 10px;
   width: 100%;
   font-size: 50px;
   min-height: calc(100vh - 66px);

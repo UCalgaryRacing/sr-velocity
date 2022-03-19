@@ -1,0 +1,14 @@
+/* 
+Copyright Schulich Racing FSAE
+Written by Joey Van Lierop
+*/
+
+.manage-card {
+  border: 2px solid black;
+  margin: 10px;
+  padding: 10px;
+  font-size: 1rem;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+}
