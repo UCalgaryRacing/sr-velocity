@@ -1,8 +1,8 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
+// Written by Justin Tijunelis and Joey Van Lierop
 
-import { CircularProgress, Modal } from "@mui/material";
-import { InputField, TextButton } from "components/interface";
+import { Modal } from "@mui/material";
+import { InputField } from "components/interface";
 import { TextSpinnerButton } from "components/interface/textSpinnerButton";
 import DashNav from "components/navigation/dashNav";
 import { postSensor } from "crud";
@@ -10,21 +10,25 @@ import { useForm } from "hooks";
 import React, { useContext, useState } from "react";
 import { RootState, Sensor, useAppSelector } from "state";
 import { DashboardContext } from "../dashboard";
+import ManageCard from "./manageCard";
 import ManageNav from "./manageNav";
 import "./_styling/manage.css";
 
-enum ManageSection {
-  ORGANIZATION = "Organization",
-  THINGS = "Things",
-  SENSORS = "Sensors",
-  OPERATORS = "Operators",
-  USERS = "Users",
-}
-
-interface ManageCardData {
-  dateCreated: number;
-  name: string;
-}
+const initialForm = {
+  type: "",
+  category: "",
+  name: "",
+  frequency: "",
+  unit: "",
+  canId: "",
+  lowerCalibration: "",
+  conversionMultiplier: "",
+  upperWarning: "",
+  lowerWarning: "",
+  upperDanger: "",
+  lowerDanger: "",
+  disabled: false,
+};
 
 const Manage: React.FC = () => {
   const context = useContext(DashboardContext);
@@ -32,56 +36,50 @@ const Manage: React.FC = () => {
   const [cards, setCards] = useState<{ [key: string]: Sensor[] }>({});
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [values, handleChange] = useForm({
-    type: "",
-    category: "",
-    name: "",
-    frequency: "",
-    unit: "",
-    canId: "",
-    lowerCalibration: "",
-    conversionMultiplier: "",
-    upperWarning: "",
-    lowerWarning: "",
-    upperDanger: "",
-    lowerDanger: "",
-    disabled: false,
-  });
+  const [values, handleChange, setValues] = useForm(initialForm);
 
-  const addCard = () => {
-    setOpen(true);
+  const addCard = (newCard: Sensor) => {
+    let newCards = { ...cards };
+    if (newCards[context.page]) {
+      newCards[context.page].push(newCard);
+    } else {
+      newCards = {
+        ...newCards,
+        [context.page]: [newCard],
+      };
+    }
+    setCards(newCards);
   };
 
   const onSubmit = async (event: any) => {
     if (loading) {
       return;
     }
-
     event?.preventDefault();
     setLoading(true);
-    const newSensor = await postSensor(values);
-    await new Promise((r) => setTimeout(r, 2000));
-    setLoading(false);
-    console.log(newSensor);
+    await new Promise((r) => setTimeout(r, 500)); // TEMP FOR TESTING
+    try {
+      const newSensor = await postSensor(values);
+      addCard(newSensor);
+      setOpen(false);
+      setValues(initialForm);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (dashboard.section === "Manage") {
     return (
       <>
         <DashNav margin={context.margin}>
-          <ManageNav onAddCard={addCard} />
+          <ManageNav onAddCard={() => setOpen(true)} />
         </DashNav>
-        {/* <div>
-          {cards[context.page]
-            ?.sort((a, b) => b.dateCreated - a.dateCreated)
-            .map((card) => (
-              <ManageCard
-                key={card.dateCreated}
-                name={card.name}
-                dateCreated={card.dateCreated}
-              />
-            ))}
-        </div> */}
+        <div>
+          {cards[context.page]?.map((data) => (
+            <ManageCard key={data._id} data={data} />
+          ))}
+        </div>
         <Modal
           open={open}
           onClose={() => setOpen(false)}
@@ -90,6 +88,13 @@ const Manage: React.FC = () => {
         >
           <div id="add-popup">
             <h2>New sensor</h2>
+            <InputField
+              name="name"
+              placeholder="Name"
+              value={values.name}
+              onChange={handleChange}
+              required
+            />
             <InputField
               name="type"
               placeholder="Type"
@@ -102,13 +107,6 @@ const Manage: React.FC = () => {
               placeholder="Category"
               value={values.category}
               onChange={handleChange}
-            />
-            <InputField
-              name="name"
-              placeholder="Name"
-              value={values.name}
-              onChange={handleChange}
-              required
             />
             <InputField
               name="canId"
