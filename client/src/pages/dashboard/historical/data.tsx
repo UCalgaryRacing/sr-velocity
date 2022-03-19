@@ -1,8 +1,12 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord
+import "./_styling/data.css";
 import React, { useState } from "react";
-import RunList, { Run } from "./runList";
-import SessionList, { Session } from "./sessionList";
+import DashNav from "../dashnav";
+import RunList from "./runList";
+import { RunType } from "./run";
+import SessionList from "./sessionList";
+import { SessionType } from "./session";
 import { useFetch } from "../../../hooks/useFetch";
 
 enum ListType {
@@ -13,27 +17,30 @@ enum ListType {
 const Data: React.FC = () => {
   const [listType, setListType] = useState(ListType.Session);
   // Temporary URLs, using json-server for dummy data
-  const { data: sessions, error: sessionError } = useFetch<Session[]>(
+  const { data: sessions, error: sessionError } = useFetch<SessionType[]>(
     "http://localhost:3001/sessions"
   );
-  const { data: runs, error: runError } = useFetch<Run[]>(
-    "http://localhost:3001/runs"
-  );
+  const { data: runs, error: runError } = useFetch<RunType[]>("http://localhost:3001/runs");
+
+  const handleDownload = (item: RunType | SessionType) => {
+    // Download item as csv
+    console.log(item);
+  };
 
   return (
     <div id="data">
-      <div className="config-bar">
+      <DashNav>
         <button onClick={() => setListType(ListType.Session)}>Sessions</button>
         <button onClick={() => setListType(ListType.Run)}>Runs</button>
-      </div>
+      </DashNav>
       {sessionError || runError ? (
         <p>Error fetching data</p>
       ) : !sessions || !runs ? (
         <p>Loading...</p>
       ) : listType === ListType.Session ? (
-        <SessionList sessions={sessions} />
+        <SessionList sessions={sessions} handleDownload={handleDownload} />
       ) : (
-        <RunList runs={runs} />
+        <RunList runs={runs} handleDownload={handleDownload} />
       )}
     </div>
   );
