@@ -6,7 +6,7 @@ import "./_styling/textButton.css";
 
 // How do we make sure only one of these props is passed?
 interface TextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  title: string;
+  title: any;
 }
 
 export const TextButton: React.FC<TextButtonProps> = ({ title, ...props }) => {

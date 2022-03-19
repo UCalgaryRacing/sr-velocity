@@ -1,10 +1,14 @@
 // Copyright Schulich Racing FSAE
 // Written by Joey Van Lierop
 
-import { DropDown, IconButton, InputField } from "components/interface";
+import {
+  DropDown,
+  IconButton,
+  InputField,
+  ToolTip,
+} from "components/interface";
 import React, { useState } from "react";
-import "./_styling/manageNav.css";
-import { RiAddBoxLine } from "react-icons/ri";
+import { Add } from "@mui/icons-material";
 
 interface ManageNavProps {
   onAddCard: () => void;
@@ -14,9 +18,13 @@ const ManageNav: React.FC<ManageNavProps> = (props) => {
   const [search, setSearch] = useState("");
 
   return (
-    <div id="manage-nav">
-      <RiAddBoxLine className="manage-button" onClick={props.onAddCard} />
-      <div id="manage-nav-right">
+    <>
+      <div className="left">
+        <ToolTip value="Add">
+          <IconButton onClick={props.onAddCard} img={<Add />} />
+        </ToolTip>
+      </div>
+      <div className="right">
         <DropDown
           options={[
             { value: "alphabetical", label: "Alphabetical" },
@@ -37,7 +45,7 @@ const ManageNav: React.FC<ManageNavProps> = (props) => {
           required
         />
       </div>
-    </div>
+    </>
   );
 };
 

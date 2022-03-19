@@ -8,7 +8,9 @@ export const getSensors = (thingId: string) => {
 };
 
 export const postSensor = (sensor: Sensor) => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<Sensor>((resolve, reject) => {
+    resolve(sensor);
+  });
 };
 
 export const putSensor = (sensor: Sensor) => {

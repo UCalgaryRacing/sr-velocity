@@ -9,17 +9,18 @@ Written by Justin Tijunelis
   left: -10px;
   right: -10px;
   top: 66px;
-  height: 46px;
+  height: 56px;
   background-color: var(--white);
   z-index: 1;
   border-bottom: 1px solid var(--red);
   font-size: var(--fz-md);
   display: flex;
+  align-items: center;
   transition: cubic-bezier();
   transition-duration: 0.3s;
 }
 
-#dash-nav * {
+#dash-nav > * {
   height: 35px !important;
 }
 
@@ -28,16 +29,20 @@ Written by Justin Tijunelis
   margin-left: 5px;
 }
 
-#dash-nav .left * {
+#dash-nav .left > * {
   margin-right: 5px;
 }
 
 #dash-nav .right {
   width: 40%;
   margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
-#dash-nav .right * {
+#dash-nav .right > * {
   max-width: 200px;
   float: right;
 }
@@ -59,7 +64,7 @@ Written by Justin Tijunelis
     margin-right: 0px;
   }
 
-  #dash-nav .right * {
+  #dash-nav .right > * {
     max-width: 100%;
   }
 }
