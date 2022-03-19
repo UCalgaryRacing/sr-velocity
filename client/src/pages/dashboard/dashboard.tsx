@@ -17,20 +17,15 @@ export const DashboardContext = React.createContext({
 });
 
 const Dashboard: React.FC = () => {
-  // State
   const [sideBarToggled, setSideBarToggled] = useState(false);
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
-
-  // Hooks
+  const dashboard = useAppSelector((state: RootState) => state.dashboard);
   const gestures = useSwipeable({
     onSwipedRight: (_) => size.width <= 768.9 && setSideBarToggled(true),
     onSwipedLeft: (_) => size.width <= 768.9 && setSideBarToggled(false),
     trackMouse: true,
   });
   const size = useWindowSize();
-
-  // Redux
-  const dashboard = useAppSelector((state: RootState) => state.dashboard);
 
   useEffect(() => {
     if (size.width >= 768.9 && sideBarToggled) setSideBarToggled(false);
