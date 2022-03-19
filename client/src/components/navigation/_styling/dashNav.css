@@ -9,37 +9,48 @@ Written by Justin Tijunelis
   left: -10px;
   right: -10px;
   top: 66px;
-  height: 46px;
+  height: 55px;
   background-color: var(--white);
   z-index: 1;
+  display: flex;
   border-bottom: 1px solid var(--red);
   font-size: var(--fz-md);
-  display: flex;
   transition: cubic-bezier();
   transition-duration: 0.3s;
 }
 
-#dash-nav * {
-  height: 35px !important;
+#dash-nav .icon-button {
+  height: 44px !important;
+  width: 44px !important;
 }
 
 #dash-nav .left {
+  display: flex;
+  align-items: center;
+  height: 44px;
   width: 60%;
   margin-left: 5px;
 }
 
-#dash-nav .left * {
+#dash-nav .left > * {
   margin-right: 5px;
 }
 
 #dash-nav .right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 44px;
   width: 40%;
   margin-right: 15px;
 }
 
-#dash-nav .right * {
+#dash-nav .right > * {
   max-width: 200px;
-  float: right;
+}
+
+#dash-nav .segmented-control {
+  width: 200px;
 }
 
 @media only screen and (max-width: 768.9px) {
@@ -49,10 +60,16 @@ Written by Justin Tijunelis
     border-bottom: 0px solid;
     margin-bottom: 10px;
     padding: 0px;
+    display: block;
   }
 
   #dash-nav .left {
     margin-left: 0px;
+    width: 100%;
+  }
+
+  #dash-nav .segmented-control {
+    width: calc(100% - 44px) !important;
   }
 
   #dash-nav .right {
