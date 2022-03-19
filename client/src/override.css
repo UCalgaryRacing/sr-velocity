@@ -3,11 +3,15 @@
   background: transparent;
 }
 
-a,
-a:hover {
+a {
   color: var(--red);
+  transition-duration: 0.3s;
+}
+
+a:hover {
+  color: var(--black);
 }
 
 :focus-visible {
-  outline: var(--red) auto 2px;
+  outline: var(--black) auto 2px;
 }

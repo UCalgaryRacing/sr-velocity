@@ -1,0 +1,5 @@
+.segmented-control {
+  margin: 0.2em auto;
+  border-radius: var(--border-radius);
+  font-size: var(--fz-xs);
+}

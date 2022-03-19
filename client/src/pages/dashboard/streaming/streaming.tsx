@@ -3,6 +3,7 @@
 
 import React, { useContext } from "react";
 import { DashboardContext } from "../dashboard";
+import ChartView from "./charts/chartView";
 
 enum StreamingSection {
   CHARTS = "Real-time Charts",
@@ -10,13 +11,13 @@ enum StreamingSection {
 }
 
 const Streaming: React.FC = () => {
-  const section = useContext(DashboardContext);
+  const context = useContext(DashboardContext);
 
-  switch (section) {
+  switch (context.page) {
     case StreamingSection.CHARTS:
-      return <div id="streaming">{section}</div>;
+      return <ChartView />;
     case StreamingSection.RAW_DATA:
-      return <div id="streaming">{section}</div>;
+      return <div id="streaming">{context.page}</div>;
     default:
       return <></>;
   }

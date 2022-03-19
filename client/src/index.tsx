@@ -22,7 +22,6 @@ import NotFound from "pages/404/notFound";
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
-import "pages/_styling/content.css";
 import "./override.css";
 import "./index.css";
 

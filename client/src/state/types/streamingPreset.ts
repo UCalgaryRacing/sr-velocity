@@ -1,10 +1,11 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-export type User = {
+import { Chart } from "./";
+
+export type StreamingPreset = {
   _id: string;
+  thing_id: string;
   name: string;
-  email: string;
-  approved: boolean;
-  role: string;
+  charts: Chart[];
 };

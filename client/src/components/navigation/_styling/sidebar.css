@@ -66,7 +66,32 @@
   border-color: var(--white);
 }
 
+.pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout .pro-sidebar-footer {
+  border: 0px solid;
+}
+
+.pro-sidebar-footer {
+  height: 85px;
+}
+
+.pro-sidebar-footer .pro-arrow-wrapper {
+  display: none;
+}
+
+.pro-sidebar-footer .popper-element {
+  display: none;
+}
+
+.pro-sidebar.collapsed {
+  width: 76px;
+  min-width: 76px;
+}
+
 @media only screen and (max-width: 768.9px) {
+  .pro-sidebar {
+    margin-top: 66px;
+  }
+
   #sidebar .pro-sidebar {
     position: fixed;
   }

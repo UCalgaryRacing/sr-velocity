@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis
 
 import { Dispatch } from "redux";
-import { Vehicle } from "state";
+import { Thing } from "state";
 
 export enum DashboardActionType {
   PAGE_SELECTED = "pageSelected",
@@ -16,7 +16,7 @@ interface DashboardPageSelectedAction {
 
 interface DashboardVehicleSelectedAction {
   type: DashboardActionType.VEHICLE_SELECTED;
-  payload: Vehicle;
+  payload: Thing;
 }
 
 export type DashboardAction =
@@ -32,7 +32,7 @@ export const dashboardPageSelected = (page: string) => {
   };
 };
 
-export const dashboardVehicleSelected = (vehicle: Vehicle) => {
+export const dashboardVehicleSelected = (vehicle: Thing) => {
   return (dispatch: Dispatch<DashboardVehicleSelectedAction>) => {
     dispatch({
       type: DashboardActionType.VEHICLE_SELECTED,

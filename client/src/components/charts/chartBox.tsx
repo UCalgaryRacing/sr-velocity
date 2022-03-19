@@ -1,11 +1,56 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-const ChartBox: React.FC = () => {
-  return <div className="chart-box"></div>;
-};
+import React, { useState } from "react";
+import { IconButton, ToolTip, RangeSlider } from "components/interface";
+import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
+import { CloseOutlined, Edit } from "@mui/icons-material";
+import "./_styling/chartBox.css";
 
-export default ChartBox;
+export enum ChartType {
+  HEATMAP = "heatmap",
+  LINE = "line",
+  RADIAL = "radial",
+  SCATTER = "scatter",
+}
+
+interface ChartBoxProps {
+  title: string;
+  type: ChartType;
+  realtime: boolean;
+}
+
+export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
+  return (
+    <div className="chart-box">
+      <div className="chart-title">{props.title}</div>
+      <div className="chart-controls">
+        <ToolTip value="Edit Chart">
+          <IconButton img={<Edit />} />
+        </ToolTip>
+        <ToolTip value="Close">
+          <IconButton img={<CloseOutlined />} />
+        </ToolTip>
+      </div>
+      <div className="chart-area">
+        {(() => {
+          switch (props.type) {
+            case ChartType.HEATMAP:
+              return <Heatmap />;
+            case ChartType.LINE:
+              return <LineChart />;
+            case ChartType.RADIAL:
+              return <RadialChart />;
+            case ChartType.SCATTER:
+              return <ScatterChart />;
+            default:
+              return <LineChart />;
+          }
+        })()}
+      </div>
+    </div>
+  );
+};
 
 // import React, { useState, useEffect } from "react";
 // import LineChart from "../../lineChart";

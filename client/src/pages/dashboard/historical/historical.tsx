@@ -13,23 +13,23 @@ enum HistoricalSection {
 }
 
 const Historical: React.FC = () => {
-  const section = useContext(DashboardContext);
+  const context = useContext(DashboardContext);
 
-  switch (section) {
-  case HistoricalSection.DATA:
-    return (
-      <div id="historical">
-        <Data />
-      </div>
-    );
-  case HistoricalSection.PLOTS:
-    return (
-      <div id="historical">
-        <Plots />
-      </div>
-    );
-  default:
-    return <></>;
+  switch (context.page) {
+    case HistoricalSection.DATA:
+      return (
+        <div id="historical">
+          <Data />
+        </div>
+      );
+    case HistoricalSection.PLOTS:
+      return (
+        <div id="historical">
+          <Plots />
+        </div>
+      );
+    default:
+      return <></>;
   }
 };
 

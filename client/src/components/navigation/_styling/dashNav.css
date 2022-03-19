@@ -1,0 +1,65 @@
+/* 
+Copyright Schulich Racing FSAE
+Written by Justin Tijunelis
+*/
+
+#dash-nav {
+  position: fixed;
+  padding: 5px;
+  left: -10px;
+  right: -10px;
+  top: 66px;
+  height: 46px;
+  background-color: var(--white);
+  z-index: 1;
+  border-bottom: 1px solid var(--red);
+  font-size: var(--fz-md);
+  display: flex;
+  transition: cubic-bezier();
+  transition-duration: 0.3s;
+}
+
+#dash-nav * {
+  height: 35px !important;
+}
+
+#dash-nav .left {
+  width: 60%;
+  margin-left: 5px;
+}
+
+#dash-nav .left * {
+  margin-right: 5px;
+}
+
+#dash-nav .right {
+  width: 40%;
+  margin-right: 15px;
+}
+
+#dash-nav .right * {
+  max-width: 200px;
+  float: right;
+}
+
+@media only screen and (max-width: 768.9px) {
+  #dash-nav {
+    position: initial;
+    height: auto;
+    border-bottom: 0px solid;
+    margin-bottom: 10px;
+    padding: 0px;
+  }
+
+  #dash-nav .left {
+    margin-left: 0px;
+  }
+
+  #dash-nav .right {
+    margin-right: 0px;
+  }
+
+  #dash-nav .right * {
+    max-width: 100%;
+  }
+}
