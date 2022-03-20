@@ -20,6 +20,7 @@
     "@types/react": "^17.0.11",
     "@types/react-bootstrap": "^0.32.25",
     "@types/react-dom": "^17.0.8",
+    "@types/redux": "^3.6.0",
     "bootstrap": "^5.0.2",
     "colormap": "^2.3.2",
     "firebase": "^9.4.1",
@@ -42,6 +43,7 @@
     "react-scripts": "4.0.3",
     "react-select": "^5.2.1",
     "react-swipeable": "^6.2.0",
+    "redux": "^4.1.2",
     "segmented-control": "^0.1.17",
     "typescript": "^4.3.4",
     "web-vitals": "^1.1.2"

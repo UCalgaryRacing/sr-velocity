@@ -14,6 +14,11 @@ database.all("*", async (req, res) => {
       json: req.body,
     }
   );
+
+  for (const header in response.headers){
+    res.setHeader(header, response.headers[header])
+  }
+
   res.status(response.status).json(response.body).end();
 });
 

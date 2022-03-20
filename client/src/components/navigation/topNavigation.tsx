@@ -1,12 +1,15 @@
 // Library Imports
 import React, { useState } from "react";
 import { Nav, Navbar } from "react-bootstrap";
+import { useAppSelector } from "state";
 
 // Styling Imports
 import "./_styling/topNavigation.css";
 
+const selectUser = (state: any) => state.user
+
 const TopNavigation: React.FC = () => {
-  const [signedIn, setSignedIn] = useState(false);
+  const user = useAppSelector(selectUser);
 
   return (
     <Navbar
@@ -34,14 +37,14 @@ const TopNavigation: React.FC = () => {
               <b>About</b>
             </Nav.Link>
           )}
-          {!signedIn && window.location.pathname !== "/signin" && (
+          {user == null && window.location.pathname !== "/signin" && (
             <Nav.Link href="/sign-in">
               <b>Sign In</b>
             </Nav.Link>
           )}
-          {signedIn && (
+          {user != null && (
             <Nav.Link href="/profile">
-              <b>First Last</b>
+              <b>{user.name}</b>
             </Nav.Link>
           )}
         </Nav>

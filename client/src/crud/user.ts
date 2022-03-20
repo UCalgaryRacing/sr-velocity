@@ -1,33 +1,29 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import { useAppDispatch, User, UserActionType, userSignedIn } from "state";
+import { User } from "state";
 import { request } from "./request";
-import { bindActionCreators } from "redux";
-import Cookies from "js-cookie";
 
-export const signIn = (credentials: any) => {
+export const signIn = (credentials: any, set_user_callback: any) => {
+
   const promise = new Promise<void>((resolve, reject) => {
     request(
       "POST",
       "/database/login",
       credentials
     ).then((res: any) => {
-      Cookies.set("SR Velocity", res)
       const user: User = {
-        _id: Cookies.get('userId') ?? "",
-        name: Cookies.get('name') ?? "",
-        email: Cookies.get('email') ?? "",
-        role: Cookies.get('role') ?? ""
+        _id: res.userId,
+        name: res.name,
+        email: res.email,
+        role: res.role
       }
-      console.log(Cookies.get())
-
-      const set_user = bindActionCreators(userSignedIn, useAppDispatch());
-      set_user(user);
-
+      set_user_callback(user);
+      
       resolve();
 
-    }).catch((_: any) => {
+    }).catch((err: any) => {
+      console.log(err)
       reject();
     })
 

@@ -7,6 +7,8 @@ import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
 import "./_styling/signIn.css";
 import { signIn } from "crud";
+import { bindActionCreators } from "redux";
+import { useAppDispatch, userSignedIn } from "state";
 
 const SignIn: React.FC = () => {
   // Hooks
@@ -15,6 +17,7 @@ const SignIn: React.FC = () => {
     email: "",
     password: "",
   });
+  const set_user = bindActionCreators(userSignedIn, useAppDispatch());
 
   const [failedLogin, setFailedLoginToggle] = useState(false);
 
@@ -24,7 +27,8 @@ const SignIn: React.FC = () => {
       {
         email: values.email,
         password: values.password
-      }
+      },
+      set_user
     ).then((res: any) => {
       history.push('/dashboard')
     }).catch((err: any) => {
