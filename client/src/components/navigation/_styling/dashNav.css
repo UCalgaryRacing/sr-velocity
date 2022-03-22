@@ -50,7 +50,7 @@ Written by Justin Tijunelis
 }
 
 #dash-nav .segmented-control {
-  width: 200px;
+  width: 250px !important;
 }
 
 @media only screen and (max-width: 768.9px) {

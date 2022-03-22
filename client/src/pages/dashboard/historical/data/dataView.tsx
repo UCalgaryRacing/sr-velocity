@@ -9,7 +9,7 @@ import { RunType } from "./run";
 import SessionList from "./sessionList";
 import { SessionType } from "./session";
 import { DashboardContext } from "../../dashboard";
-import { SaveOutlined, Add, Air, Category } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import { useFetch } from "hooks/useFetch";
 import "./_styling/dataView.css";
 
@@ -34,10 +34,6 @@ const DataView: React.FC = () => {
     console.log(item);
   };
 
-  const onContextChange = (selection: any) => {
-    console.log(selection);
-  };
-
   return (
     <div id="data-view">
       <DashNav margin={context.margin}>
@@ -45,10 +41,10 @@ const DataView: React.FC = () => {
           <SegmentedControl
             name="view"
             options={[
-              { label: "Runs", value: "runs", default: true },
-              { label: "Sessions", value: "sessions" },
+              { label: "Runs", value: ListType.Run, default: true },
+              { label: "Sessions", value: ListType.Session },
             ]}
-            onChange={onContextChange}
+            onChange={setListType}
           />
           <ToolTip value="New Chart">
             <IconButton img={<Add />} />
