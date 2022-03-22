@@ -25,7 +25,7 @@ async function call(path, method = "GET", options = {}) {
   }
 
   // Return the response
-  res = { status: res.statusCode, body: res.body };
+  res = { status: res.statusCode, headers: res.headers, body: res.body };
   return res;
 }
 
