@@ -25,29 +25,29 @@ type Props = {
 
 export default function Comments({ item, itemType }: Props) {
   // Temporary URL, using json-server for dummy data
-  const url = `http://localhost:3001/${itemType}Comments?${itemType}Id=${item.id}`;
-  const { data, error } =
-    itemType === "run" ? useFetch<RunComment[]>(url) : useFetch<SessionComment[]>(url);
+  // const url = `http://localhost:3001/${itemType}Comments?${itemType}Id=${item.id}`;
+  // const { data, error } =
+  //   itemType === "run" ? useFetch<RunComment[]>(url) : useFetch<SessionComment[]>(url);
 
   // Data should be sorted by date
-  return (
-    <div className="data-comments">
-      {error ? (
-        <p>Error fetching data {error.message}</p>
-      ) : !data ? (
-        <p>Loading...</p>
-      ) : (
-        <ul>
-          {data.map((comment) => (
-            <li key={comment.id}>
-              <p>{comment.userId}</p>
-              <p>{comment.content}</p>
-              <p className="data-comments-date">{comment.date}</p>
-              {/* <p>{formatDistanceToNow(comment.date, { addSuffix: true })}</p> */}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  return <div className="data-comments"></div>;
 }
+
+// {
+//   error ? (
+//     <p>Error fetching data {error.message}</p>
+//   ) : !data ? (
+//     <p>Loading...</p>
+//   ) : (
+//     <ul>
+//       {data.map((comment) => (
+//         <li key={comment.id}>
+//           <p>{comment.userId}</p>
+//           <p>{comment.content}</p>
+//           <p className="data-comments-date">{comment.date}</p>
+//           {/* <p>{formatDistanceToNow(comment.date, { addSuffix: true })}</p> */}
+//         </li>
+//       ))}
+//     </ul>
+//   );
+// }
