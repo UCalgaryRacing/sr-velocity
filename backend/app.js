@@ -10,8 +10,16 @@ const cors = require("cors");
 const path = require("path");
 const socketIOClient = require("socket.io-client");
 
+const corsOpts = {
+  origin: 'http://localhost:3000', // what 
+  credentials: true,
+  methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
+  exposedHeaders: ['Content-Type']
+};
+
 // Express configuration
-app.use(cors());
+app.use(cors(corsOpts));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
