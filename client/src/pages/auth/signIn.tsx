@@ -1,5 +1,5 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
+// Written by Justin Tijunelis, Jeremy Bilic
 
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -11,29 +11,29 @@ import { bindActionCreators } from "redux";
 import { useAppDispatch, userSignedIn } from "state";
 
 const SignIn: React.FC = () => {
-  // Hooks
+  const [failedLogin, setFailedLoginToggle] = useState(false);
   const history = useHistory();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
   });
-  const set_user = bindActionCreators(userSignedIn, useAppDispatch());
-
-  const [failedLogin, setFailedLoginToggle] = useState(false);
+  const setUser = bindActionCreators(userSignedIn, useAppDispatch());
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
     signIn(
       {
         email: values.email,
-        password: values.password
+        password: values.password,
       },
-      set_user
-    ).then((res: any) => {
-      history.push('/dashboard')
-    }).catch((err: any) => {
-      setFailedLoginToggle(true)
-    })
+      setUser
+    )
+      .then((res: any) => {
+        history.push("/dashboard");
+      })
+      .catch((err: any) => {
+        setFailedLoginToggle(true);
+      });
   };
 
   return (
@@ -42,12 +42,9 @@ const SignIn: React.FC = () => {
         <img src="assets/team-logo.svg" />
         <br />
         <br />
-        {failedLogin ?
+        {failedLogin && (
           <p style={{ color: "red" }}>Username or password not recognized...</p>
-          : null}
-        {/* {status.fetching && ""}
-        {status.error && ""} */}
-
+        )}
         <InputField
           name="email"
           type="email"

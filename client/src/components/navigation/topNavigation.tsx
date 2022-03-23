@@ -44,12 +44,12 @@ const TopNavigation: React.FC = () => {
                 <b>About</b>
               </Nav.Link>
             )}
-            {user == null && window.location.pathname !== "/signin" && (
+            {!user && window.location.pathname !== "/signin" && (
               <Nav.Link href="/sign-in">
                 <b>Sign In</b>
               </Nav.Link>
             )}
-            {user != null && (
+            {user && (
               <Nav.Link href="/profile">
                 <b>{user.name}</b>
               </Nav.Link>
