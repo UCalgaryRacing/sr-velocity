@@ -8,13 +8,7 @@ export const signIn = (credentials: any) => {
   return new Promise<User>((resolve, reject) => {
     request("POST", "/auth/login", credentials)
       .then((res: any) => {
-        const user: User = {
-          _id: res.userId,
-          name: res.name,
-          email: res.email,
-          role: res.role,
-        };
-        resolve(user);
+        resolve(res.data);
       })
       .catch((_: any) => reject());
   });

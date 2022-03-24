@@ -20,7 +20,6 @@ auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
           for (let cookie of cookies) {
             let split = cookie.trim().split("=");
             if (!["Max-Age", "Path", "HttpOnly"].includes(split[0])) {
-              console.log(split[0]);
               res.cookie(split[0], split[1], { httpOnly: true });
             }
           }
