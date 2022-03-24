@@ -1,14 +1,14 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis, Jeremy Bilic
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
-import "./_styling/signIn.css";
 import { signIn } from "crud";
 import { bindActionCreators } from "redux";
-import { useAppDispatch, userSignedIn } from "state";
+import { useAppDispatch, userSignedIn, User } from "state";
+import "./_styling/signIn.css";
 
 const SignIn: React.FC = () => {
   const [failedLogin, setFailedLoginToggle] = useState(false);
@@ -21,19 +21,15 @@ const SignIn: React.FC = () => {
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
-    signIn(
-      {
-        email: values.email,
-        password: values.password,
-      },
-      setUser
-    )
-      .then((res: any) => {
+    signIn({
+      email: values.email,
+      password: values.password,
+    })
+      .then((user: User) => {
+        setUser(user);
         history.push("/dashboard");
       })
-      .catch((err: any) => {
-        setFailedLoginToggle(true);
-      });
+      .catch((_: any) => setFailedLoginToggle(true));
   };
 
   return (

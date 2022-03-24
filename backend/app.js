@@ -1,3 +1,5 @@
+// Copyright Schulich Racing, FSAE
+
 "use strict";
 
 // Set up env
@@ -10,16 +12,13 @@ const cors = require("cors");
 const path = require("path");
 const socketIOClient = require("socket.io-client");
 
-const corsOpts = {
-  origin: 'http://localhost:3000', // what 
-  credentials: true,
-  methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  exposedHeaders: ['Content-Type']
-};
-
 // Express configuration
-app.use(cors(corsOpts));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -31,11 +30,12 @@ app.get(new RegExp("(?!/api/).+"), (_, res) => {
 
 // Setup routes
 const database = require("./routes/database");
-app.use("/api/database", database);
 const data = require("./routes/data");
-app.use("/api/data", data);
 const iot = require("./routes/iot");
+app.use("/api/database", database);
+app.use("/api/data", data);
 app.use("/api/iot", iot);
+app.use("/api/auth", require("./routes/auth"));
 
 // Server and client sockets for socket-io data proxy
 const io = require("socket.io")(process.env.CLIENT_SOCKET_PORT);
