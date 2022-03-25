@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { RootState, useAppSelector } from "state";
 import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
+import { signUserOut } from "crud";
 import "./_styling/profile.css";
 
 // TODO: Add change password functionality
@@ -18,6 +19,17 @@ const Profile: React.FC = () => {
   const onSubmit = (event: any) => {
     event?.preventDefault();
     // Call function to update the user.
+  };
+
+  const signOut = () => {
+    signUserOut()
+      .then((_: any) => {
+        // Success
+        // Send to the home page
+      })
+      .catch((_: any) => {
+        // Failure
+      });
   };
 
   return (
@@ -43,7 +55,7 @@ const Profile: React.FC = () => {
           />
           <TextButton title="Update" />
           <TextButton type="button" title="Change Password" />
-          <TextButton type="button" title="Sign Out" />
+          <TextButton type="button" title="Sign Out" onClick={signOut} />
         </form>
       </div>
     </div>

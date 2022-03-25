@@ -17,7 +17,11 @@ export const registerUser = (credentials: any) => {
 };
 
 export const signUserOut = () => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<void>((resolve, reject) => {
+    request("POST", "/auth/signout")
+      .then((_: any) => resolve())
+      .catch((_: any) => reject());
+  });
 };
 
 export const putUser = (user: User) => {
