@@ -7,9 +7,7 @@ import { request } from "./request";
 export const signIn = (credentials: any) => {
   return new Promise<User>((resolve, reject) => {
     request("POST", "/auth/login", credentials)
-      .then((res: any) => {
-        resolve(res.data);
-      })
+      .then((res: any) => resolve(res.data))
       .catch((_: any) => reject());
   });
 };
@@ -19,10 +17,6 @@ export const registerUser = (credentials: any) => {
 };
 
 export const signUserOut = () => {
-  return new Promise<void>((resolve, reject) => {});
-};
-
-export const validate = () => {
   return new Promise<void>((resolve, reject) => {});
 };
 
@@ -38,6 +32,6 @@ export const approveUser = (userId: string) => {
   return new Promise<void>((resolve, reject) => {});
 };
 
-export const classiftUser = (user: User) => {
+export const classifyUser = (user: User) => {
   return new Promise<void>((resolve, reject) => {});
 };

@@ -1,7 +1,49 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.input-field {
+  height: 44px;
+}
+
 .input-field input {
   border-radius: var(--border-radius);
   border: 1px solid var(--red);
   width: 100%;
-  height: 44px;
+  height: 44px !important;
   padding-left: 15px;
+}
+
+.input-field label {
+  bottom: 34px;
+  left: 11px;
+  position: relative;
+  background-color: var(--white);
+  padding: 0px 5px 0px 5px;
+  transition: 0.2s;
+  pointer-events: none;
+  color: var(--gray);
+}
+
+.input-field input::placeholder {
+  color: var(--gray);
+}
+
+.input-field input:focus ~ label {
+  bottom: 58px !important;
+  color: var(--black) !important;
+}
+
+.input-field input:not(:placeholder-shown) ~ label {
+  bottom: 58px !important;
+  color: var(--black) !important;
+}
+
+.input-field input:placeholder-shown ~ label {
+  bottom: 34px;
+}
+
+.input-field input:not(:focus) ~ .clear-input {
+  display: none;
 }

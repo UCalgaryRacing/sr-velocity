@@ -13,6 +13,10 @@
   padding: 10px;
 }
 
+#sign-up #sign-up-form > * {
+  margin-bottom: 20px;
+}
+
 #sign-up #redirect {
   text-align: center;
 }

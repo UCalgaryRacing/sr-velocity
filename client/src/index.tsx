@@ -17,8 +17,10 @@ import Home from "pages/home/home";
 import Dashboard from "pages/dashboard/dashboard";
 import SignIn from "pages/auth/signIn";
 import SignUp from "pages/auth/signUp";
+import Profile from "pages/profile/profile";
 import Licenses from "pages/licenses/licenses";
 import NotFound from "pages/404/notFound";
+import AuthWrapper from "wrappers/authWrapper";
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -31,13 +33,16 @@ const App: React.FC = () => {
       <TopNavigation />
       <Router>
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/sign-in" component={SignIn} />
-          <Route exact path="/sign-up" component={SignUp} />
-          <Route exact path="/licenses" component={Licenses} />
-          <Route component={NotFound} />
+          <AuthWrapper>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/sign-in" component={SignIn} />
+            <Route exact path="/sign-up" component={SignUp} />
+            <Route exact path="/licenses" component={Licenses} />
+            <Route component={NotFound} />
+          </AuthWrapper>
         </Switch>
       </Router>
     </React.Fragment>

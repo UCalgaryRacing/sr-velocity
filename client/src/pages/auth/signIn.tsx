@@ -11,13 +11,18 @@ import { useAppDispatch, userSignedIn, User } from "state";
 import "./_styling/signIn.css";
 
 const SignIn: React.FC = () => {
-  const [failedLogin, setFailedLoginToggle] = useState(false);
+  const [showError, setShowError] = useState(false);
   const history = useHistory();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
   });
   const setUser = bindActionCreators(userSignedIn, useAppDispatch());
+
+  const timeoutError = () => {
+    setShowError(true);
+    setTimeout(() => setShowError(false), 5000);
+  };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
@@ -29,39 +34,35 @@ const SignIn: React.FC = () => {
         setUser(user);
         history.push("/dashboard");
       })
-      .catch((_: any) => setFailedLoginToggle(true));
+      .catch((_: any) => timeoutError());
   };
 
   return (
     <div className="page-content" id="sign-in">
       <form id="sign-in-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
-        <br />
-        <br />
-        {failedLogin && (
-          <p style={{ color: "red" }}>Username or password not recognized...</p>
-        )}
         <InputField
           name="email"
           type="email"
-          placeholder="Email"
+          title="Email"
           value={values.email}
           onChange={handleChange}
           required
         />
-        <br />
         <InputField
           name="password"
           type="password"
-          placeholder="Password"
+          title="Password"
           value={values.password}
           onChange={handleChange}
           required
         />
-        <br />
         <TextButton title="Sign In" />
-        <br />
-        <br />
+        {showError && (
+          <p id="sign-in-error">
+            Username or password not recognized, please try again.
+          </p>
+        )}
         <div id="redirect">
           <b>
             Don't have an account?&nbsp;<a href="/sign-up">Sign Up</a>
