@@ -12,10 +12,6 @@
   background-color: var(--white);
 }
 
-.data-list-item p {
-  font-size: var(--fz-md);
-}
-
 .data-comments ul {
   list-style: none;
   display: flex;

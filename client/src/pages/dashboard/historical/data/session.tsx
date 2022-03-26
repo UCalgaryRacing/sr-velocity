@@ -1,4 +1,8 @@
-import GetAppIcon from "@material-ui/icons/GetApp";
+// Copyright Schulich Racing FSAE
+// Written by Jonathan Breidfjord
+
+import { GetApp } from "@mui/icons-material";
+import { IconButton } from "../../../../components/interface/iconButton";
 
 export interface SessionType {
   id: number;
@@ -14,9 +18,7 @@ export default function Session({ session, handleDownload }: Props) {
   return (
     <div className="session data-list-item">
       {session.name}
-      <button className="btn download" onClick={() => handleDownload(session)}>
-        <GetAppIcon />
-      </button>
+      <IconButton onClick={() => handleDownload(session)} img={<GetApp />} />
     </div>
   );
 }

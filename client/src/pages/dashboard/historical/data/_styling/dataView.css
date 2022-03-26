@@ -4,4 +4,53 @@ Written by Justin Tijunelis
 */
 
 #data-view {
+  font-size: var(--fz-md);
+}
+
+#data-view .data-comments ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+#data-view button {
+  margin: 0.2em;
+}
+
+#data-view .data-list {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#data-view .data-list-item {
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.05);
+  background-color: var(--white);
+}
+
+#data-view .data-comments ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+#data-view .data-comments li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+  justify-content: flex-start;
+}
+
+#data-view .data-comments p {
+  margin: 8px 8px;
+  margin-right: 0;
+  font-size: var(--fz-md);
+}
+
+#data-view .data-comments-date {
+  margin: 0 auto;
 }
