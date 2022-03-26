@@ -1,11 +1,11 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis, Arham Humayun
-
 "use strict";
 /*
 * Calls the next function if the auth is the required one or higher
 */
 
+const call = require("../utilities/call");
 const permissionValues = {
   Pending: 1,
   Guest: 2,
@@ -15,35 +15,54 @@ const permissionValues = {
 }
 
 async function hasAuth(req, res, next, required_perms) {
-  // from req extract jwt token
-  // call go server to get role, 
-  // compare role to required perm
-  // if the role is sufficient call next(), 
-  // else return error with res.status().message().end()
 
-  console.log(req)
+  // Parse header for cookies
+  const rawCookies = req.headers.cookie.split('; ');
+  const parsedCookies = {};
+  rawCookies.forEach(rawCookie=>{
+  const parsedCookie = rawCookie.split('=');
+    parsedCookies[parsedCookie[0]] = parsedCookie[1];
+  });
 
-  return permissionValues[perms] >= permissionValues[required_perms]
+  // Verify if Authorization cookie exists
+  if (!parsedCookies.Authorization) {
+    res.status(401).send({ error: "Authorization cookie not found." }).end()
+  }
+
+  // Call DB MS route to verify cookie
+  const path = process.env.DATABASE_MS_ROUTE + "/user/role/" + parsedCookies.Authorization;
+  const authRes = await call(path, "GET");
+
+  // Handle response
+  if (authRes.body && authRes.body.success) {
+    if (permissionValues[authRes.body.role] >= permissionValues[required_perms]) {
+      next();
+    } else {
+    res.status(401).send({ error: "Permission denied." }).end()
+    }
+  } else {
+    res.status(401).send({ error: "Authorizing cookie failed." }).end()
+  }
 }
 
 async function withPendingAuth(req, res, next) {
-  hasAuth(req, res, next, "Pending")
+  await hasAuth(req, res, next, "Pending")
 }
 
 async function withGuestAuth(req, res, next) {
-  hasAuth(req, res, next, "Guest")
+  await hasAuth(req, res, next, "Guest")
 }
 
 async function withMemberAuth(req, res, next) {
-  hasAuth(req, res, next, "Member")
+  await hasAuth(req, res, next, "Member")
 }
 
 async function withLeadAuth(req, res, next) {
-  hasAuth(req, res, next, "Lead")
+  await hasAuth(req, res, next, "Lead")
 }
 
 async function withAdminAuth(req, res, next) {
-  hasAuth(req, res, next, "Admin")
+  await hasAuth(req, res, next, "Admin")
 }
 
 

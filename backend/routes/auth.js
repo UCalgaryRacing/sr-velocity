@@ -6,7 +6,7 @@
 const express = require("express");
 const auth = express.Router();
 const call = require("../utilities/call");
-const { withAnyAuth } = require("../middleware/auth");
+const { withPendingAuth } = require("../middleware/auth");
 
 auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
   call(process.env.DATABASE_MS_ROUTE + "/auth" + req.path, req.method, {
@@ -36,6 +36,7 @@ auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
 
 auth.get("/renew", withPendingAuth, (req, res) => {
   // TODO: Request a refresh token from the database service
+  res.end()
 });
 
 auth.put("/changePassword", withPendingAuth, (req, res) => {
@@ -46,7 +47,7 @@ auth.get("/validate", withPendingAuth, (req, res) => {
   res.sendStatus(200).end();
 });
 
-auth.post("/signout", withAnyAuth, (req, res) => {
+auth.post("/signout", withPendingAuth, (req, res) => {
   // TODO: Need to figure out with cookie keys to delete
   res.clearCookie().sendStatus(200).end();
 });
