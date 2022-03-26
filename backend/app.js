@@ -24,8 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 
 // All routes except those starting with /api/ should serve web pages
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
-app.get(new RegExp("(?!/api/).+"), (_, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+app.all("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    next();
+  } else {
+    res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+  }
 });
 
 // Setup routes
