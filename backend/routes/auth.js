@@ -34,15 +34,15 @@ auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
   });
 });
 
-auth.get("/renew", withAnyAuth, (req, res) => {
+auth.get("/renew", withPendingAuth, (req, res) => {
   // TODO: Request a refresh token from the database service
 });
 
-auth.put("/changePassword", withAnyAuth, (req, res) => {
+auth.put("/changePassword", withPendingAuth, (req, res) => {
   // TODO: Hit the change password endpoint on the backend
 });
 
-auth.get("/validate", withAnyAuth, (req, res) => {
+auth.get("/validate", withPendingAuth, (req, res) => {
   res.sendStatus(200).end();
 });
 
