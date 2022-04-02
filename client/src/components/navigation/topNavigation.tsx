@@ -1,22 +1,19 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useState } from "react";
+import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { useAppSelector, RootState } from "state";
 import "./_styling/topNavigation.css";
 
-const selectUser = (state: any) => state.user;
-
 const TopNavigation: React.FC = () => {
-  const user = useAppSelector(selectUser);
-  const dashboard = useAppSelector((state: RootState) => state.dashboard);
+  const state = useAppSelector((state: RootState) => state);
 
   return (
     <>
       {window.location.pathname === "/dashboard" && (
         <div className="dash-title">
-          <b>{dashboard.section}</b>
+          <b>{state.dashboard.section}</b>
         </div>
       )}
       <Navbar
@@ -44,14 +41,14 @@ const TopNavigation: React.FC = () => {
                 <b>About</b>
               </Nav.Link>
             )}
-            {!user && window.location.pathname !== "/signin" && (
+            {!state.user && window.location.pathname !== "/signin" && (
               <Nav.Link href="/sign-in">
                 <b>Sign In</b>
               </Nav.Link>
             )}
-            {user && (
+            {state.user && window.location.pathname !== "/profile" && (
               <Nav.Link href="/profile">
-                <b>{user.name}</b>
+                <b>{state.user.name}</b>
               </Nav.Link>
             )}
           </Nav>

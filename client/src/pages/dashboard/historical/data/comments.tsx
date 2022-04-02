@@ -1,7 +1,10 @@
+// Copyright Schulich Racing FSAE
+// Written by Jordan Breidfjord
+
 import { formatDistanceToNow } from "date-fns";
 import { RunType } from "./run";
 import { SessionType } from "./session";
-import { useFetch } from "../../../hooks/useFetch";
+import { useFetch } from "../../../../hooks/useFetch";
 
 interface Comment {
   id: number;
@@ -27,7 +30,9 @@ export default function Comments({ item, itemType }: Props) {
   // Temporary URL, using json-server for dummy data
   // const url = `http://localhost:3001/${itemType}Comments?${itemType}Id=${item.id}`;
   // const { data, error } =
-  //   itemType === "run" ? useFetch<RunComment[]>(url) : useFetch<SessionComment[]>(url);
+  //   itemType === "run"
+  //     ? useFetch<RunComment[]>(url)
+  //     : useFetch<SessionComment[]>(url);
 
   // Data should be sorted by date
   return <div className="data-comments"></div>;

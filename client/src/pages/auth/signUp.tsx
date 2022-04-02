@@ -28,53 +28,44 @@ const SignUp: React.FC = () => {
     <div className="page-content" id="sign-up">
       <form id="sign-up-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
-        <br />
-        <br />
         <InputField
           name="displayName"
           type="name"
-          placeholder="Display Name"
+          title="Display Name"
           value={values.displayName}
           onChange={handleChange}
           required
         />
-        <br />
         <DropDown
           options={[{ value: "xxx", label: "Schulich Racing, FSAE" }]}
           placeholder="Select Organization..."
           // Need event to store
         />
-        <br />
         <InputField
           name="email"
           type="email"
-          placeholder="Email"
+          title="Email"
           value={values.email}
           onChange={handleChange}
           required
         />
-        <br />
         <InputField
           name="password"
           type="password"
-          placeholder="Password"
+          title="Password"
           value={values.password}
           onChange={handleChange}
           required
         />
-        <br />
         <InputField
           name="passwordConfirm"
           type="password"
-          placeholder="Confirm Password"
+          title="Password Confirmation"
           value={values.passwordConfirm}
           onChange={handleChange}
           required
         />
-        <br />
         <TextButton title="Sign Up" />
-        <br />
-        <br />
         <div id="redirect">
           <b>
             Already have an account?&nbsp;<a href="/sign-in">Sign In</a>

@@ -1,3 +1,8 @@
+/* 
+Copyright Schulich Racing FSAE
+Written by Justin Tijunelis
+*/
+
 #sign-in {
   display: flex;
 }
@@ -7,18 +12,27 @@
 }
 
 #sign-in #sign-in-form {
-  width: 50%;
   max-width: 600px;
   margin: auto;
   padding: 10px;
+}
+
+#sign-in-form > * {
+  margin-bottom: 20px;
 }
 
 #sign-in #redirect {
   text-align: center;
 }
 
-@media (max-width: 768.9px) {
+#sign-in #sign-in-error {
+  color: var(--red);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
   #sign-in #sign-in-form {
+    min-width: 1px;
     width: 100%;
   }
 }

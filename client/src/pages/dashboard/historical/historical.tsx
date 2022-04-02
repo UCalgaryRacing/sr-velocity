@@ -1,11 +1,10 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord & Justin Tijunelis
+
 import React, { useContext } from "react";
 import { DashboardContext } from "../dashboard";
-
-// Section Component Imports
-import Data from "./data";
-import Plots from "./plots";
+import DataView from "./data/dataView";
+import PlotView from "./plots/plotView";
 
 enum HistoricalSection {
   DATA = "Data",
@@ -17,17 +16,9 @@ const Historical: React.FC = () => {
 
   switch (context.page) {
     case HistoricalSection.DATA:
-      return (
-        <div id="historical">
-          <Data />
-        </div>
-      );
+      return <DataView />;
     case HistoricalSection.PLOTS:
-      return (
-        <div id="historical">
-          <Plots />
-        </div>
-      );
+      return <PlotView />;
     default:
       return <></>;
   }

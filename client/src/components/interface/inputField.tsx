@@ -16,8 +16,13 @@ export const InputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <div className="input-field">
-      {/* Need to add title if prop exists */}
-      <input className="input-field" {...props} ref={referrer} />
+      <input
+        className="input-field"
+        {...props}
+        placeholder={props.placeholder ? props.placeholder : " "}
+        ref={referrer}
+      />
+      {title && !props.placeholder && <label htmlFor={title}>{title}</label>}
     </div>
   );
 };

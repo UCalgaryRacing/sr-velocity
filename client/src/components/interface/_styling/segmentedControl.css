@@ -1,5 +1,11 @@
 .segmented-control {
-  margin: 0.2em auto;
+  margin: 0;
   border-radius: var(--border-radius);
   font-size: var(--fz-xs);
+  height: 44px !important;
+  font-weight: bold;
+}
+
+.segmented-control label {
+  height: 44px;
 }
