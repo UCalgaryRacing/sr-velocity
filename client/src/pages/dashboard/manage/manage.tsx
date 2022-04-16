@@ -2,8 +2,7 @@
 // Written by Justin Tijunelis and Joey Van Lierop
 
 import { Modal } from "@mui/material";
-import { InputField } from "components/interface";
-import { TextSpinnerButton } from "components/interface/textSpinnerButton";
+import { InputField, TextButton } from "components/interface";
 import DashNav from "components/navigation/dashNav";
 import { postSensor } from "crud";
 import { useForm } from "hooks";
@@ -86,6 +85,7 @@ const Manage: React.FC = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
+          {/*TODO: Add form wrapper*/}
           <div id="add-popup">
             <h2>New sensor</h2>
             <InputField
@@ -171,11 +171,7 @@ const Manage: React.FC = () => {
               onChange={handleChange}
               required
             />
-            <TextSpinnerButton
-              title="Add"
-              loading={loading}
-              onClick={onSubmit}
-            />
+            <TextButton title="Add" loading={loading} onClick={onSubmit} />
           </div>
         </Modal>
       </>
