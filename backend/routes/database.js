@@ -4,21 +4,19 @@ const express = require("express");
 const database = express.Router();
 const call = require("../utilities/call");
 
-// No middleware applied because auth is already handled on the backend
 database.all("*", async (req, res) => {
+  let headers = { ...req.headers };
+  if (req.cookies) headers.authorization = "Bearer " + req.cookies.idToken;
   call(process.env.DATABASE_MS_ROUTE + req.path, req.method, {
-    headers: {
-      ...req.headers,
-      authorization: "Bearer " + req.cookies.idToken,
-    },
+    headers: headers,
     json: req.body,
   }).then(async (response) => {
-    if (response.status === 200) {
-      let body = await response.json();
-      if (body) res.status(response.status).json(body).end();
-      else res.status(response.status).end();
+    if (response.statusCode === 200) {
+      if (response.body)
+        res.status(response.statusCode).json(response.body).end();
+      else res.status(response.statusCode).end();
     } else {
-      res.status(response.status).end();
+      res.status(response.statusCode).end();
     }
   });
 });

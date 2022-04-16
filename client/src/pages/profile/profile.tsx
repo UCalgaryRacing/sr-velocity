@@ -6,6 +6,7 @@ import { RootState, useAppSelector } from "state";
 import { useForm } from "hooks";
 import { InputField, TextButton } from "components/interface/";
 import { signUserOut } from "crud";
+import { useDispatch } from "react-redux";
 import "./_styling/profile.css";
 
 // TODO: Add change password functionality
@@ -15,6 +16,7 @@ const Profile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user);
   const [values, handleChange] = useForm({ ...user });
   const [showError, setShowError] = useState(false);
+  const dispatch = useDispatch();
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
@@ -24,11 +26,12 @@ const Profile: React.FC = () => {
   const signOut = () => {
     signUserOut()
       .then((_: any) => {
-        // Success
-        // Send to the home page
+        dispatch({ type: "RESET" });
+        window.location.href = "/";
       })
-      .catch((_: any) => {
-        // Failure
+      .catch((err: any) => {
+        console.log(err);
+        setShowError(true);
       });
   };
 

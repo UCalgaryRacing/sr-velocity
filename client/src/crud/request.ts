@@ -8,7 +8,7 @@ export const request = (method: string, route: string, body: any = {}) => {
     if (!route.startsWith("/")) {
       route = "/" + route;
     }
-    route = GATEWAYSERVERIP + '/api' + route;
+    route = GATEWAYSERVERIP + "/api" + route;
 
     let fetch_data: RequestInit = {
       method: method,
@@ -26,14 +26,16 @@ export const request = (method: string, route: string, body: any = {}) => {
     fetch(route, fetch_data)
       .then(async (res) => {
         if (res.status === 200) {
-          res = await res.json();
-          resolve(res);
+          try {
+            res = await res.json();
+            resolve(res);
+          } catch (err) {
+            resolve({});
+          }
         } else {
-          reject();
+          reject(res);
         }
       })
-      .catch((_: any) => {
-        reject();
-      });
+      .catch((err: any) => reject(err));
   });
 };

@@ -8,19 +8,23 @@ export const signIn = (credentials: any) => {
   return new Promise<User>((resolve, reject) => {
     request("POST", "/auth/login", credentials)
       .then((res: any) => resolve(res.data))
-      .catch((_: any) => reject());
+      .catch((err: any) => reject(err));
   });
 };
 
 export const registerUser = (credentials: any) => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<void>((resolve, reject) => {
+    request("POST", "/auth/signup", credentials)
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
+  });
 };
 
 export const signUserOut = () => {
   return new Promise<void>((resolve, reject) => {
     request("POST", "/auth/signout")
       .then((_: any) => resolve())
-      .catch((_: any) => reject());
+      .catch((err: any) => reject(err));
   });
 };
 

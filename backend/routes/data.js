@@ -14,7 +14,7 @@ data.all("*", async (req, res) => {
       json: req.body,
     }
   );
-  res.status(response.status).json(response.body).end();
+  res.status(response.statusCode).json(response.body).end();
 });
 
 module.exports = data;

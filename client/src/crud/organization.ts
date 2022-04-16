@@ -5,7 +5,7 @@ import { Organization } from "state";
 import { request } from ".";
 
 export const getOrganizationNames = () => {
-  return new Promise<string[]>((resolve, reject) => {
+  return new Promise<any[]>((resolve, reject) => {
     request("GET", "/database/organizations")
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
@@ -14,7 +14,7 @@ export const getOrganizationNames = () => {
 
 export const getOrganization = (organizationId: string) => {
   return new Promise<Organization>((resolve, reject) => {
-    request("GET", "database/organizations/" + organizationId)
+    request("GET", "/database/organizations/" + organizationId)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });

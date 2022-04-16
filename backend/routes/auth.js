@@ -13,7 +13,7 @@ auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
     headers: req.headers,
     json: req.body,
   }).then(async (response) => {
-    if (response.status === 200) {
+    if (response.statusCode === 200) {
       for (const header in response.headers) {
         if (header === "set-cookie") {
           let cookies = response.headers[header][0].split(";");
@@ -26,10 +26,10 @@ auth.all(["/login", "/signup", "/forgotPassword"], async (req, res) => {
         }
       }
       if (response.body) {
-        res.status(response.status).json(response.body).end();
-      } else res.status(response.status).end();
+        res.status(response.statusCode).json(response.body).end();
+      } else res.status(response.statusCode).end();
     } else {
-      res.status(response.status).end();
+      res.status(response.statusCode).end();
     }
   });
 });
@@ -48,7 +48,8 @@ auth.get("/validate", withAnyAuth, (req, res) => {
 
 auth.post("/signout", withAnyAuth, (req, res) => {
   // TODO: Need to figure out with cookie keys to delete
-  res.clearCookie().sendStatus(200).end();
+  // TODO: Blacklist the token
+  res.clearCookie("Authorization").sendStatus(200).end();
 });
 
 module.exports = auth;

@@ -26,6 +26,10 @@ Written by Justin Tijunelis
   text-align: center;
 }
 
+#sign-up #sign-up-success {
+  text-align: center;
+}
+
 @media (max-width: 768.9px) {
   #sign-up #sign-up-form {
     width: 100%;
