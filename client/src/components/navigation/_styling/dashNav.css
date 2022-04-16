@@ -1,6 +1,6 @@
 /* 
 Copyright Schulich Racing FSAE
-Written by Justin Tijunelis
+Written by Justin Tijunelis and Joey Van Lierop
 */
 
 #dash-nav {
@@ -43,10 +43,14 @@ Written by Justin Tijunelis
   height: 44px;
   width: 40%;
   margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 #dash-nav .right > * {
-  max-width: 200px;
+  width: 200px;
 }
 
 #dash-nav .segmented-control {
@@ -76,7 +80,7 @@ Written by Justin Tijunelis
     margin-right: 0px;
   }
 
-  #dash-nav .right * {
+  #dash-nav .right > * {
     max-width: 100%;
   }
 }

@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-#root {
+html {
   /* Core Colors */
   --black: #171717;
   --white: #fff;
