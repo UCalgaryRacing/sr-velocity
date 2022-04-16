@@ -1,5 +1,5 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
+// Written by Justin Tijunelis, Joey Van Lierop
 
 import React, { ButtonHTMLAttributes } from "react";
 import "./_styling/textButton.css";

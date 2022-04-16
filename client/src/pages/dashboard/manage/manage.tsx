@@ -52,21 +52,21 @@ const Manage: React.FC = () => {
   };
 
   const onSubmit = async (event: any) => {
-    if (loading) {
-      return;
-    }
-    event?.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 500)); // TEMP FOR TESTING
-    try {
-      const newSensor = await postSensor(values);
-      addCard(newSensor);
-      setOpen(false);
-      setValues(initialForm);
-    } catch {
-    } finally {
-      setLoading(false);
-    }
+    // if (loading) {
+    //   return;
+    // }
+    // event?.preventDefault();
+    // setLoading(true);
+    // await new Promise((r) => setTimeout(r, 500)); // TEMP FOR TESTING
+    // try {
+    //   const newSensor = await postSensor(values);
+    //   addCard(newSensor);
+    //   setOpen(false);
+    //   setValues(initialForm);
+    // } catch {
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   if (dashboard.section === "Manage") {
