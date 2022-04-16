@@ -10,8 +10,8 @@ import "./_styling/signUp.css";
 const SignUp: React.FC = () => {
   const [organization, setOrganization] = useState<string>("");
   const [organizations, setOrganizations] = useState<any[]>([]);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
   const [signedUp, setSignedUp] = useState<boolean>(false);
   const [values, handleChange] = useForm({
     name: "",
@@ -19,6 +19,12 @@ const SignUp: React.FC = () => {
     password: "",
     passwordConfirm: "",
   });
+
+  const alert = (description: string) => {
+    // Could we make a hook?
+    setAlertDescription(description);
+    setShowAlert(true);
+  };
 
   useEffect(() => {
     getOrganizationNames()
@@ -31,20 +37,17 @@ const SignUp: React.FC = () => {
       .catch((_: any) => {
         // Could provide the code depending on the error
         // Should probably not show the sign up page if we cannot fetch.
-        setError("Could not fetch organizations. Refresh to reattempt.");
-        setShowError(true);
+        alert("Could not fetch organizations. Refresh to reattempt.");
       });
   }, []);
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
     if (organization === "") {
-      setError("Please select your organization.");
-      setShowError(true);
+      alert("Please select your organization.");
     } else if (values.password !== values.passwordConfirm) {
       // Should probably have a hide/show on password fields
-      setError("Passwords do not match, please try again.");
-      setShowError(true);
+      alert("Passwords do not match, please try again.");
     } else {
       let credentials = { ...values };
       credentials.organizationId = organization;
@@ -54,8 +57,7 @@ const SignUp: React.FC = () => {
         .catch((err: any) => {
           // Should provide more detail, what if the user already exists?
           // What if the display name is not unique?
-          setError("Could not sign you up. Please try again.");
-          setShowError(true);
+          alert("Could not sign you up. Please try again.");
         });
     }
   };
@@ -121,10 +123,10 @@ const SignUp: React.FC = () => {
       </form>
       <Alert
         title="Something went wrong..."
-        description={error}
+        description={alertDescription}
         color="red"
-        onDismiss={() => setShowError(false)}
-        show={showError}
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
         slideOut
       />
     </div>

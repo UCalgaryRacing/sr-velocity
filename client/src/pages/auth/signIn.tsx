@@ -11,14 +11,20 @@ import { useAppDispatch, userSignedIn, User } from "state";
 import "./_styling/signIn.css";
 
 const SignIn: React.FC = () => {
-  const [showError, setShowError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
   const history = useHistory();
   const [values, handleChange] = useForm({
     email: "",
     password: "",
   });
   const setUser = bindActionCreators(userSignedIn, useAppDispatch());
+
+  const alert = (description: string) => {
+    // Could this be a hook instead?
+    setAlertDescription(description);
+    setShowAlert(true);
+  };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
@@ -32,9 +38,8 @@ const SignIn: React.FC = () => {
       })
       .catch((err: any) => {
         if (err.status === 500)
-          setError("Username or password not recognized, please try again.");
-        else setError("Your account has not been approved yet.");
-        setShowError(true);
+          alert("Username or password not recognized, please try again.");
+        else alert("Your account has not been approved yet.");
       });
   };
 
@@ -71,10 +76,10 @@ const SignIn: React.FC = () => {
       </form>
       <Alert
         title="Something went wrong..."
-        description={error}
+        description={alertDescription}
         color="red"
-        onDismiss={() => setShowError(false)}
-        show={showError}
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
         slideOut
       />
     </div>

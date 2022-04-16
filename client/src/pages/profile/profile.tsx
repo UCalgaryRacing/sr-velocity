@@ -2,11 +2,12 @@
 // Written by Jeremy Bilic, Justin Tijunelis
 
 import React, { useState } from "react";
-import { RootState, useAppSelector } from "state";
+import { RootState, useAppSelector, userSignedIn, useAppDispatch } from "state";
 import { useForm } from "hooks";
-import { InputField, TextButton } from "components/interface/";
-import { signUserOut } from "crud";
+import { InputField, TextButton, Alert } from "components/interface/";
+import { signUserOut, putUser } from "crud";
 import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import "./_styling/profile.css";
 
 // TODO: Add change password functionality
@@ -14,13 +15,32 @@ import "./_styling/profile.css";
 
 const Profile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user);
-  const [values, handleChange] = useForm({ ...user });
-  const [showError, setShowError] = useState(false);
+  const setUser = bindActionCreators(userSignedIn, useAppDispatch());
   const dispatch = useDispatch();
+
+  const [values, handleChange] = useForm({ ...user });
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertColor, setAlertColor] = useState<string>("");
+  const [alertTitle, setAlertTitle] = useState<string>("");
+  const [alertDescription, setAlertDescription] = useState<string>("");
+
+  const alert = (error: boolean, description: string) => {
+    // Could this be a hook instead?
+    if (error) setAlertTitle("Something went wrong...");
+    else setAlertTitle("Success!");
+    setAlertColor(error ? "red" : "green");
+    setAlertDescription(description);
+    setShowAlert(true);
+  };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
-    // Call function to update the user.
+    putUser(values)
+      .then((_: any) => {
+        setUser(values);
+        alert(false, "Your profile was updated!");
+      })
+      .catch((_: any) => alert(true, "Please try again..."));
   };
 
   const signOut = () => {
@@ -29,10 +49,7 @@ const Profile: React.FC = () => {
         dispatch({ type: "RESET" });
         window.location.href = "/";
       })
-      .catch((err: any) => {
-        console.log(err);
-        setShowError(true);
-      });
+      .catch((_: any) => alert(true, "Please try again..."));
   };
 
   return (
@@ -61,6 +78,14 @@ const Profile: React.FC = () => {
           <TextButton type="button" title="Sign Out" onClick={signOut} />
         </form>
       </div>
+      <Alert
+        title={alertTitle}
+        description={alertDescription}
+        color={alertColor}
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
     </div>
   );
 };
