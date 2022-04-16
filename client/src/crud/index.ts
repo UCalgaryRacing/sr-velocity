@@ -1,6 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
+export * from "./request";
 export * from "./operators";
 export * from "./sensors";
 export * from "./sessions";
