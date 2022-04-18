@@ -2,9 +2,9 @@
 // Written by Jeremy Bilic, Justin Tijunelis
 
 import React, { useState, useEffect } from "react";
-import { useForm } from "hooks";
 import { InputField, TextButton, DropDown, Alert } from "components/interface/";
 import { getOrganizationNames, registerUser } from "crud";
+import { useForm } from "hooks";
 import "./_styling/signUp.css";
 
 const SignUp: React.FC = () => {
@@ -13,6 +13,7 @@ const SignUp: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [signedUp, setSignedUp] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [values, handleChange] = useForm({
     name: "",
     email: "",
@@ -21,7 +22,6 @@ const SignUp: React.FC = () => {
   });
 
   const alert = (description: string) => {
-    // Could we make a hook?
     setAlertDescription(description);
     setShowAlert(true);
   };
@@ -49,14 +49,19 @@ const SignUp: React.FC = () => {
       // Should probably have a hide/show on password fields
       alert("Passwords do not match, please try again.");
     } else {
+      setLoading(true);
       let credentials = { ...values };
       credentials.organizationId = organization;
       delete credentials["passwordConfirm"];
       registerUser(credentials)
-        .then((_: any) => setSignedUp(true))
+        .then((_: any) => {
+          setLoading(false);
+          setSignedUp(true);
+        })
         .catch((err: any) => {
           // Should provide more detail, what if the user already exists?
           // What if the display name is not unique?
+          setLoading(false);
           alert("Could not sign you up. Please try again.");
         });
     }
@@ -105,7 +110,7 @@ const SignUp: React.FC = () => {
               onChange={handleChange}
               required
             />
-            <TextButton title="Sign Up" />
+            <TextButton title="Sign Up" loading={loading} />
             <div id="redirect">
               <b>
                 Already have an account?&nbsp;<a href="/sign-in">Sign In</a>

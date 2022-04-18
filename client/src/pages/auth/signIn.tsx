@@ -13,6 +13,7 @@ import "./_styling/signIn.css";
 const SignIn: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
   const [values, handleChange] = useForm({
     email: "",
@@ -21,22 +22,24 @@ const SignIn: React.FC = () => {
   const setUser = bindActionCreators(userSignedIn, useAppDispatch());
 
   const alert = (description: string) => {
-    // Could this be a hook instead?
     setAlertDescription(description);
     setShowAlert(true);
   };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
+    setLoading(true);
     signIn({
       email: values.email,
       password: values.password,
     })
       .then((user: User) => {
+        setLoading(false);
         setUser(user);
         history.push("/dashboard");
       })
       .catch((err: any) => {
+        setLoading(false);
         if (err.status === 500)
           alert("Username or password not recognized, please try again.");
         else alert("Your account has not been approved yet.");
@@ -63,7 +66,7 @@ const SignIn: React.FC = () => {
           onChange={handleChange}
           required
         />
-        <TextButton title="Sign In" />
+        <TextButton title="Sign In" loading={loading} />
         <div id="redirect">
           <b>
             Don't have an account?&nbsp;<a href="/sign-up">Sign Up</a>
