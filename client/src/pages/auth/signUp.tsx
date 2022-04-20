@@ -35,8 +35,6 @@ const SignUp: React.FC = () => {
         setOrganizations(orgs);
       })
       .catch((_: any) => {
-        // Could provide the code depending on the error
-        // Should probably not show the sign up page if we cannot fetch.
         alert("Could not fetch organizations. Refresh to reattempt.");
       });
   }, []);
@@ -46,7 +44,6 @@ const SignUp: React.FC = () => {
     if (organization === "") {
       alert("Please select your organization.");
     } else if (values.password !== values.passwordConfirm) {
-      // Should probably have a hide/show on password fields
       alert("Passwords do not match, please try again.");
     } else {
       setLoading(true);
@@ -59,10 +56,10 @@ const SignUp: React.FC = () => {
           setSignedUp(true);
         })
         .catch((err: any) => {
-          // Should provide more detail, what if the user already exists?
-          // What if the display name is not unique?
           setLoading(false);
-          alert("Could not sign you up. Please try again.");
+          if (err.status === 409)
+            alert("Looks like this email or display name already exists.");
+          else alert("Could not sign you up. Please try again.");
         });
     }
   };

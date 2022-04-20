@@ -9,6 +9,8 @@ import Manage from "./manage/manage";
 import { useWindowSize } from "hooks/";
 import { useSwipeable } from "react-swipeable";
 import { useAppSelector, RootState } from "state";
+import { getThings } from "crud";
+import { Thing } from "state";
 import "./_styling/dashboard.css";
 
 export const DashboardContext = React.createContext({
@@ -26,6 +28,19 @@ const Dashboard: React.FC = () => {
     trackMouse: true,
   });
   const size = useWindowSize();
+
+  useEffect(() => {
+    getThings()
+      .then((things: Thing[]) => {
+        // Update redux dashboard
+        // Prompt the user to select a thing
+        // Don't allow the user to exit without selecting a thing
+        // Handle case where there are no things
+      })
+      .catch((_: any) => {
+        // Could not fetch things, fuck!
+      });
+  }, []);
 
   useEffect(() => {
     if (size.width >= 768.9 && sideBarToggled) setSideBarToggled(false);
