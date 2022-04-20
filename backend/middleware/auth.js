@@ -1,43 +1,21 @@
-/*
- * Calls the next function if the auth is the required one or higher
- */
+// Copyright Schulich Racing, FSAE
+// Written by Arham Humayun, Justin Tijunelis
 
-permissionValues = {
-  Pending: 1,
-  Guest: 2,
-  Member: 3,
-  Lead: 4,
-  Admin: 5,
+const permissionValues = {
+  Admin: 4,
+  Lead: 3,
+  Member: 2,
+  Guest: 1,
+  Pending: 0,
 };
 
-async function hasAuth(perms, required_perms) {
-  return permissionValues[perms] >= permissionValues[required_perms];
-}
-
-async function withPendingAuth(req, res, next) {
-  next();
-}
-
-async function withGuestAuth(req, res, next) {
-  next();
-}
-
-async function withMemberAuth(req, res, next) {
-  next();
-}
-
-async function withLeadsAuth(req, res, next) {
-  next();
-}
-
-async function withAdminAuth(req, res, next) {
-  next();
-}
-
-module.exports = {
-  withPendingAuth,
-  withGuestAuth,
-  withMemberAuth,
-  withLeadsAuth,
-  withAdminAuth,
+const withMinimumAuth = (permission, jwtRequired = false) => {
+  return (req, res, next) => {
+    next();
+    // Read the current token and determine the permission level
+    // Make request directly to db service to determine the permission role
+    // Use the response to go to next or reject
+  };
 };
+
+module.exports = { withMinimumAuth };

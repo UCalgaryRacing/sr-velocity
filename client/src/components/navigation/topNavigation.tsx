@@ -4,10 +4,14 @@
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { useAppSelector, RootState } from "state";
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useWindowSize } from "hooks/index";
 import "./_styling/topNavigation.css";
 
 const TopNavigation: React.FC = () => {
   const state = useAppSelector((state: RootState) => state);
+  const size = useWindowSize();
 
   return (
     <>
@@ -38,12 +42,12 @@ const TopNavigation: React.FC = () => {
           <Nav className="ml-auto">
             {window.location.pathname !== "/about" && (
               <Nav.Link href="/about">
-                <b>About</b>
+                {size.width >= 768.9 ? <InfoOutlinedIcon /> : <b>About</b>}
               </Nav.Link>
             )}
             {!state.user && window.location.pathname !== "/signin" && (
               <Nav.Link href="/sign-in">
-                <b>Sign In</b>
+                {size.width >= 768.9 ? <PermIdentityIcon /> : <b>Sign In</b>}
               </Nav.Link>
             )}
             {state.user && window.location.pathname !== "/profile" && (
