@@ -1,27 +1,81 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React from "react";
-import { IconButton } from "components/interface";
+import React, { useState } from "react";
+import { IconButton, Alert } from "components/interface";
 import { CloseOutlined, Edit } from "@mui/icons-material";
+import { ThingModal } from "../modals/thingModal";
+import { ConfirmModal } from "components/modals";
 import { Thing } from "state";
+import { deleteThing } from "crud";
 import "./_styling/thingCard.css";
 
 interface ThingCardProps {
   thing: Thing;
+  onThingUpdate?: (thing: Thing) => void;
+  onThingDelete?: (thingId: string) => void;
 }
 
 // TODO: Show associated operators
-// Only show delete and edit if admin
 export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showThingModal, setShowThingModal] = useState<boolean>(false);
+  const [showConfirmationModal, setShowConfirmationModal] =
+    useState<boolean>(false);
+
+  const onDelete = () => {
+    setLoading(true);
+    deleteThing(props.thing._id)
+      .then((_: any) => {
+        if (props.onThingDelete) props.onThingDelete(props.thing._id);
+        setLoading(false);
+        setShowConfirmationModal(false);
+      })
+      .catch((_: any) => {
+        setLoading(false);
+        setShowAlert(true);
+      });
+  };
+
   return (
     <div className="thing-card">
       <div className="thing-title">
         <b>{props.thing.name}</b>
       </div>
       <div className="thing-id">Serial Number:&nbsp;{props.thing._id}</div>
-      <IconButton id="thing-delete" img={<CloseOutlined />} />
-      <IconButton id="thing-edit" img={<Edit />} />
+      <IconButton
+        id="thing-delete"
+        img={<CloseOutlined />}
+        onClick={() => setShowConfirmationModal(true)}
+      />
+      <IconButton
+        id="thing-edit"
+        img={<Edit />}
+        onClick={() => setShowThingModal(true)}
+      />
+      <ConfirmModal
+        show={showConfirmationModal}
+        toggle={() => setShowConfirmationModal(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
+      <ThingModal
+        show={showThingModal}
+        toggle={(thing: Thing) => {
+          if (props.onThingUpdate) props.onThingUpdate(thing);
+          setShowThingModal(false);
+        }}
+        thing={props.thing}
+      />
+      <Alert
+        title="Something went wrong..."
+        description="Please try again..."
+        color="red"
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
     </div>
   );
 };

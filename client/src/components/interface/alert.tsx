@@ -20,6 +20,7 @@ export const Alert: React.FC<AlertProps> = (props: AlertProps) => {
 
   useEffect(() => {
     if (props.color === "red") setColor("#ba1833");
+    else if (props.color === "green") setColor("#33ba18");
   }, [props.color]);
 
   useEffect(() => {

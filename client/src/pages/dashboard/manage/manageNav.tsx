@@ -12,9 +12,10 @@ import { Add } from "@mui/icons-material";
 
 interface ManageNavProps {
   onAddCard: () => void;
+  onSearchUpdate: (query: string) => void;
 }
 
-const ManageNav: React.FC<ManageNavProps> = (props) => {
+const ManageNav: React.FC<ManageNavProps> = (props: ManageNavProps) => {
   const [search, setSearch] = useState("");
 
   return (
@@ -31,7 +32,10 @@ const ManageNav: React.FC<ManageNavProps> = (props) => {
           placeholder="Search"
           id="manage-nav-search"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            props.onSearchUpdate(e.target.value);
+          }}
           required
         />
       </div>

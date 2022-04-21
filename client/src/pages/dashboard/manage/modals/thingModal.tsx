@@ -9,13 +9,15 @@ import { useForm } from "hooks";
 import { Thing } from "state";
 import { useAppSelector, RootState } from "state";
 
-interface ThingProps {
+interface ThingModalProps {
   show?: boolean;
   toggle: any;
   thing?: Thing;
 }
 
-export const ThingModal: React.FC<ThingProps> = (props: ThingProps) => {
+export const ThingModal: React.FC<ThingModalProps> = (
+  props: ThingModalProps
+) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -38,10 +40,9 @@ export const ThingModal: React.FC<ThingProps> = (props: ThingProps) => {
           setLoading(false);
           props.toggle(values);
         })
-        .catch((err: any) => {
+        .catch((_: any) => {
           setLoading(false);
-          if (err.status === 409) alert("Thing name must be unique.");
-          else alert("Please try again...");
+          alert("The thing name must be unique. Please try again...");
         });
     } else {
       postThing({ ...values, organizationId: state.user?.organizationId })
@@ -49,10 +50,9 @@ export const ThingModal: React.FC<ThingProps> = (props: ThingProps) => {
           setLoading(false);
           props.toggle(thing);
         })
-        .catch((err: any) => {
+        .catch((_: any) => {
           setLoading(false);
-          if (err.status === 409) alert("Thing name must be unique.");
-          else alert("Please try again...");
+          alert("The thing name must be unique. Please try again...");
         });
     }
   };

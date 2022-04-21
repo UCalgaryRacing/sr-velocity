@@ -6,7 +6,6 @@ Written by Justin Tijunelis
 #no-things {
   height: 100%;
   width: 100%;
-  margin-top: -54px;
   font-size: var(--fz-md);
   display: flex;
   text-align: center;

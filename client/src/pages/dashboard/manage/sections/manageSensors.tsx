@@ -44,7 +44,7 @@ export const ManageSensors: React.FC = () => {
   return (
     <div id="manage-sensors">
       <DashNav margin={context.margin}>
-        <ManageNav onAddCard={onNewSensor} />
+        <ManageNav onAddCard={onNewSensor} onSearchUpdate={onSearch} />
       </DashNav>
     </div>
   );

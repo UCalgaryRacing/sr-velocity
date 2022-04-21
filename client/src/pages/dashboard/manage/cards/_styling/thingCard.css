@@ -10,6 +10,7 @@ Written by Justin Tijunelis
   padding: 5px;
   position: relative;
   font-size: var(--fz-md);
+  margin-bottom: 10px;
 }
 
 .thing-card #thing-delete {
