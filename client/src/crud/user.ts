@@ -29,7 +29,11 @@ export const signUserOut = () => {
 };
 
 export const putUser = (user: User) => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<void>((resolve, reject) => {
+    request("PUT", "/database/users", user)
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
+  });
 };
 
 export const deleteUser = (userId: string) => {
@@ -40,6 +44,6 @@ export const approveUser = (userId: string) => {
   return new Promise<void>((resolve, reject) => {});
 };
 
-export const classifyUser = (user: User) => {
+export const promoteUser = (user: User) => {
   return new Promise<void>((resolve, reject) => {});
 };

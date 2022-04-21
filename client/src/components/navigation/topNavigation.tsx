@@ -45,16 +45,12 @@ const TopNavigation: React.FC = () => {
                 {size.width >= 768.9 ? <InfoOutlinedIcon /> : <b>About</b>}
               </Nav.Link>
             )}
-            {!state.user && window.location.pathname !== "/signin" && (
-              <Nav.Link href="/sign-in">
-                {size.width >= 768.9 ? <PermIdentityIcon /> : <b>Sign In</b>}
-              </Nav.Link>
-            )}
-            {state.user && window.location.pathname !== "/profile" && (
-              <Nav.Link href="/profile">
-                <b>{state.user.name}</b>
-              </Nav.Link>
-            )}
+            {window.location.pathname !== "/signin" &&
+              window.location.pathname !== "/profile" && (
+                <Nav.Link href={state.user ? "/profile" : "/sign-in"}>
+                  {size.width >= 768.9 ? <PermIdentityIcon /> : <b>Sign In</b>}
+                </Nav.Link>
+              )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

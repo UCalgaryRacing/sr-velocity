@@ -23,9 +23,10 @@ const Profile: React.FC = () => {
   const [alertColor, setAlertColor] = useState<string>("");
   const [alertTitle, setAlertTitle] = useState<string>("");
   const [alertDescription, setAlertDescription] = useState<string>("");
+  const [updateLoading, setUpdateLoading] = useState<boolean>(false);
+  const [signOutLoading, setSignOutLoading] = useState<boolean>(false);
 
   const alert = (error: boolean, description: string) => {
-    // Could this be a hook instead?
     if (error) setAlertTitle("Something went wrong...");
     else setAlertTitle("Success!");
     setAlertColor(error ? "red" : "green");
@@ -35,21 +36,31 @@ const Profile: React.FC = () => {
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
+    setUpdateLoading(true);
     putUser(values)
       .then((_: any) => {
         setUser(values);
         alert(false, "Your profile was updated!");
+        setUpdateLoading(false);
       })
-      .catch((_: any) => alert(true, "Please try again..."));
+      .catch((_: any) => {
+        alert(true, "Please try again...");
+        setUpdateLoading(false);
+      });
   };
 
   const signOut = () => {
+    setSignOutLoading(true);
     signUserOut()
       .then((_: any) => {
+        setSignOutLoading(false);
         dispatch({ type: "RESET" });
         window.location.href = "/";
       })
-      .catch((_: any) => alert(true, "Please try again..."));
+      .catch((_: any) => {
+        alert(true, "Please try again...");
+        setSignOutLoading(false);
+      });
   };
 
   return (
@@ -57,6 +68,9 @@ const Profile: React.FC = () => {
       <div id="profile-content">
         <form id="sign-in-form" onSubmit={onSubmit}>
           <img src="assets/team-logo.svg" />
+          <div id="header">
+            <b>Profile</b>
+          </div>
           <InputField
             name="name"
             type="name"
@@ -73,9 +87,14 @@ const Profile: React.FC = () => {
             onChange={handleChange}
             required
           />
-          <TextButton title="Update" />
+          <TextButton title="Update" loading={updateLoading} />
           <TextButton type="button" title="Change Password" />
-          <TextButton type="button" title="Sign Out" onClick={signOut} />
+          <TextButton
+            type="button"
+            title="Sign Out"
+            onClick={signOut}
+            loading={signOutLoading}
+          />
         </form>
       </div>
       <Alert

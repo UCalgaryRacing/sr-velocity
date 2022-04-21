@@ -11,6 +11,10 @@ Written by Justin Tijunelis
   width: 100%;
 }
 
+#profile #header {
+  text-align: center;
+}
+
 #profile #profile-content {
   max-width: 600px;
   margin: auto;
