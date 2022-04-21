@@ -1,4 +1,10 @@
-import GetAppIcon from "@material-ui/icons/GetApp";
+// Copyright Schulich Racing FSAE
+// Written by Jonathan Breidfjord
+
+import { Comment, GetApp } from "@mui/icons-material";
+import Comments from "./comments";
+import { IconButton } from "../../../../components/interface/iconButton";
+import { useState } from "react";
 
 export interface SessionType {
   id: number;
@@ -11,12 +17,14 @@ type Props = {
 };
 
 export default function Session({ session, handleDownload }: Props) {
+  const [showComments, setShowComments] = useState(false);
+
   return (
     <div className="session data-list-item">
       {session.name}
-      <button className="btn download" onClick={() => handleDownload(session)}>
-        <GetAppIcon />
-      </button>
+      <IconButton onClick={() => handleDownload(session)} img={<GetApp />} />
+      <IconButton onClick={() => setShowComments((prev) => !prev)} img={<Comment />} />
+      {showComments && <Comments item={session} itemType="session" />}
     </div>
   );
 }

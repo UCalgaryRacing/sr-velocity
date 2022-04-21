@@ -4,14 +4,16 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useForm } from "hooks";
-import { InputField, TextButton } from "components/interface/";
+import { InputField, TextButton, Alert } from "components/interface/";
 import { signIn } from "crud";
 import { bindActionCreators } from "redux";
 import { useAppDispatch, userSignedIn, User } from "state";
 import "./_styling/signIn.css";
 
 const SignIn: React.FC = () => {
-  const [showError, setShowError] = useState(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
   const [values, handleChange] = useForm({
     email: "",
@@ -19,22 +21,29 @@ const SignIn: React.FC = () => {
   });
   const setUser = bindActionCreators(userSignedIn, useAppDispatch());
 
-  const timeoutError = () => {
-    setShowError(true);
-    setTimeout(() => setShowError(false), 5000);
+  const alert = (description: string) => {
+    setAlertDescription(description);
+    setShowAlert(true);
   };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
+    setLoading(true);
     signIn({
       email: values.email,
       password: values.password,
     })
       .then((user: User) => {
+        setLoading(false);
         setUser(user);
         history.push("/dashboard");
       })
-      .catch((_: any) => timeoutError());
+      .catch((err: any) => {
+        setLoading(false);
+        if (err.status === 500)
+          alert("Username or password not recognized, please try again.");
+        else alert("Your account has not been approved yet.");
+      });
   };
 
   return (
@@ -57,12 +66,7 @@ const SignIn: React.FC = () => {
           onChange={handleChange}
           required
         />
-        <TextButton title="Sign In" />
-        {showError && (
-          <p id="sign-in-error">
-            Username or password not recognized, please try again.
-          </p>
-        )}
+        <TextButton title="Sign In" loading={loading} />
         <div id="redirect">
           <b>
             Don't have an account?&nbsp;<a href="/sign-up">Sign Up</a>
@@ -73,6 +77,14 @@ const SignIn: React.FC = () => {
           </b>
         </div>
       </form>
+      <Alert
+        title="Something went wrong..."
+        description={alertDescription}
+        color="red"
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
     </div>
   );
 };

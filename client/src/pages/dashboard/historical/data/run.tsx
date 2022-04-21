@@ -1,6 +1,10 @@
+// Copyright Schulich Racing FSAE
+// Written by Jonathan Breidfjord
+
+import { Comment } from "@mui/icons-material";
 import Comments from "./comments";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import CommentIcon from "@material-ui/icons/Comment";
+import { GetApp } from "@mui/icons-material";
+import { IconButton } from "../../../../components/interface/iconButton";
 import { useState } from "react";
 
 export interface RunType {
@@ -24,12 +28,8 @@ export default function Run({ run, handleDownload }: Props) {
       <p className="run-date">
         {run.startDate.toLocaleString()} - {run.endDate.toLocaleString()}
       </p>
-      <button className="btn download" onClick={() => handleDownload(run)}>
-        <GetAppIcon />
-      </button>
-      <button className="btn comment" onClick={() => setShowComments((prev) => !prev)}>
-        <CommentIcon />
-      </button>
+      <IconButton onClick={() => handleDownload(run)} img={<GetApp />} />
+      <IconButton onClick={() => setShowComments((prev) => !prev)} img={<Comment />} />
       {showComments && <Comments item={run} itemType="run" />}
     </div>
   );

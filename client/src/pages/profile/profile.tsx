@@ -2,10 +2,12 @@
 // Written by Jeremy Bilic, Justin Tijunelis
 
 import React, { useState } from "react";
-import { RootState, useAppSelector } from "state";
+import { RootState, useAppSelector, userSignedIn, useAppDispatch } from "state";
 import { useForm } from "hooks";
-import { InputField, TextButton } from "components/interface/";
-import { signUserOut } from "crud";
+import { InputField, TextButton, Alert } from "components/interface/";
+import { signUserOut, putUser } from "crud";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import "./_styling/profile.css";
 
 // TODO: Add change password functionality
@@ -13,22 +15,51 @@ import "./_styling/profile.css";
 
 const Profile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user);
+  const setUser = bindActionCreators(userSignedIn, useAppDispatch());
+  const dispatch = useDispatch();
+
   const [values, handleChange] = useForm({ ...user });
-  const [showError, setShowError] = useState(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertColor, setAlertColor] = useState<string>("");
+  const [alertTitle, setAlertTitle] = useState<string>("");
+  const [alertDescription, setAlertDescription] = useState<string>("");
+  const [updateLoading, setUpdateLoading] = useState<boolean>(false);
+  const [signOutLoading, setSignOutLoading] = useState<boolean>(false);
+
+  const alert = (error: boolean, description: string) => {
+    if (error) setAlertTitle("Something went wrong...");
+    else setAlertTitle("Success!");
+    setAlertColor(error ? "red" : "green");
+    setAlertDescription(description);
+    setShowAlert(true);
+  };
 
   const onSubmit = (event: any) => {
     event?.preventDefault();
-    // Call function to update the user.
+    setUpdateLoading(true);
+    putUser(values)
+      .then((_: any) => {
+        setUser(values);
+        alert(false, "Your profile was updated!");
+        setUpdateLoading(false);
+      })
+      .catch((_: any) => {
+        alert(true, "Please try again...");
+        setUpdateLoading(false);
+      });
   };
 
   const signOut = () => {
+    setSignOutLoading(true);
     signUserOut()
       .then((_: any) => {
-        // Success
-        // Send to the home page
+        setSignOutLoading(false);
+        dispatch({ type: "RESET" });
+        window.location.href = "/";
       })
       .catch((_: any) => {
-        // Failure
+        alert(true, "Please try again...");
+        setSignOutLoading(false);
       });
   };
 
@@ -37,6 +68,9 @@ const Profile: React.FC = () => {
       <div id="profile-content">
         <form id="sign-in-form" onSubmit={onSubmit}>
           <img src="assets/team-logo.svg" />
+          <div id="header">
+            <b>Profile</b>
+          </div>
           <InputField
             name="name"
             type="name"
@@ -53,11 +87,24 @@ const Profile: React.FC = () => {
             onChange={handleChange}
             required
           />
-          <TextButton title="Update" />
+          <TextButton title="Update" loading={updateLoading} />
           <TextButton type="button" title="Change Password" />
-          <TextButton type="button" title="Sign Out" onClick={signOut} />
+          <TextButton
+            type="button"
+            title="Sign Out"
+            onClick={signOut}
+            loading={signOutLoading}
+          />
         </form>
       </div>
+      <Alert
+        title={alertTitle}
+        description={alertDescription}
+        color={alertColor}
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
     </div>
   );
 };

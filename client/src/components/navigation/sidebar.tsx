@@ -9,6 +9,8 @@ import {
   useAppDispatch,
   RootState,
   dashboardPageSelected,
+  UserRole,
+  isAuthAtLeast,
 } from "state";
 import {
   History,
@@ -41,10 +43,9 @@ const structure = [
     children: ["Data", "Plots"],
   },
   {
-    // TODO: Only show this if the user is a lead or admin
     name: "Manage",
     image: <DataObject />,
-    children: ["Organization", "Things", "Sensors", "Operators"],
+    children: ["Organization", "Things", "Sensors", "Operators", "Functions"],
   },
 ];
 
@@ -55,7 +56,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
-  const dashboard = useAppSelector((state: RootState) => state.dashboard);
+  const state = useAppSelector((state: RootState) => state);
   const selected = bindActionCreators(dashboardPageSelected, useAppDispatch());
   const size = useWindowSize();
 
@@ -87,9 +88,14 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                 key={sub.name}
                 title={sub.name}
                 icon={sub.image}
-                defaultOpen={sub.children.includes(dashboard.page)}
+                defaultOpen={sub.children.includes(state.dashboard.page)}
               >
                 {sub.children.map((name) => {
+                  if (
+                    isAuthAtLeast(state.user, UserRole.LEAD) &&
+                    name === "Manage"
+                  )
+                    return;
                   return (
                     <>
                       <MenuItem
@@ -97,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                         onClick={() =>
                           selected({ page: name, section: sub.name })
                         }
-                        active={name === dashboard.page}
+                        active={name === state.dashboard.page}
                       >
                         {name}
                       </MenuItem>

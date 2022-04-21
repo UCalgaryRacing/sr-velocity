@@ -48,3 +48,13 @@
   color: white;
   z-index: 10000000;
 }
+
+@media only screen and (max-width: 768.9px) {
+  #top-navigation .mr-auto {
+    margin-left: 0px;
+  }
+
+  #top-navigation .ml-auto {
+    padding-right: 0px;
+  }
+}

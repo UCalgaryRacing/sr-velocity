@@ -3,9 +3,9 @@
 const express = require("express");
 const iot = express.Router();
 const call = require("../utilities/call");
+const { withMinimumAuth } = require("../middleware/auth");
 
-// TODO: Add authentication for specfic calls
-iot.all("*", async (req, res) => {
+iot.all("*", withMinimumAuth("Lead"), async (req, res) => {
   const response = await call(process.env.IOT_MS_ROUTE + req.path, req.method, {
     headers: req.headers,
     json: req.body,
