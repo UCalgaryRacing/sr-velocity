@@ -31,6 +31,7 @@ import { useWindowSize } from "hooks/index";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./_styling/sidebar.css";
 
+// TODO: Change color of header if child is selected.
 const structure = [
   {
     name: "Streaming",
@@ -45,7 +46,14 @@ const structure = [
   {
     name: "Manage",
     image: <DataObject />,
-    children: ["Organization", "Things", "Sensors", "Operators", "Functions"],
+    children: [
+      "Organization",
+      "Profile",
+      "Users",
+      "Things",
+      "Sensors",
+      "Operators",
+    ],
   },
 ];
 

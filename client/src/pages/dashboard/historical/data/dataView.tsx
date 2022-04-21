@@ -46,9 +46,6 @@ const DataView: React.FC = () => {
             ]}
             onChange={setListType}
           />
-          <ToolTip value="New Chart">
-            <IconButton img={<Add />} />
-          </ToolTip>
         </div>
         <div className="right"></div>
       </DashNav>
