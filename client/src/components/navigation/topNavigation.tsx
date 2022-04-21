@@ -17,7 +17,7 @@ const TopNavigation: React.FC = () => {
     <>
       {window.location.pathname === "/dashboard" && (
         <div className="dash-title">
-          <b>{state.dashboard.section}</b>
+          <b>{state.dashboard.page}</b>
         </div>
       )}
       <Navbar

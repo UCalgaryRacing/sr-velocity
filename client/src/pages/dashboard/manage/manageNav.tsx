@@ -25,16 +25,6 @@ const ManageNav: React.FC<ManageNavProps> = (props) => {
         </ToolTip>
       </div>
       <div className="right">
-        <DropDown
-          options={[
-            { value: "alphabetical", label: "Alphabetical" },
-            { value: "date", label: "Date created" },
-          ]}
-          placeholder="Sort"
-          id="manage-nav-sort"
-        >
-          Sort
-        </DropDown>
         <InputField
           name="search"
           type="name"

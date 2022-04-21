@@ -5,6 +5,7 @@
   border: 0px solid;
   border-radius: var(--border-radius);
   transition-duration: 0.3s;
+  font-size: 0;
 }
 
 .icon-button > svg {

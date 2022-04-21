@@ -5,7 +5,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import React from "react";
 import { Sensor } from "state";
-import "./_styling/manageCard.css";
+//import "./_styling/manageCard.css";
 
 interface SensorCardProps {
   data: Sensor;

@@ -6,7 +6,7 @@ import { request } from ".";
 
 export const getThings = () => {
   return new Promise<Thing[]>((resolve, reject) => {
-    request("GET", "/database/thing")
+    request("GET", "/database/things")
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -14,7 +14,7 @@ export const getThings = () => {
 
 export const postThing = (thing: Thing) => {
   return new Promise<Thing>((resolve, reject) => {
-    request("POST", "/database/thing", thing)
+    request("POST", "/database/things", thing)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -22,7 +22,7 @@ export const postThing = (thing: Thing) => {
 
 export const putThing = (thing: Thing) => {
   return new Promise<void>((resolve, reject) => {
-    request("PUT", "/database/thing", thing)
+    request("PUT", "/database/things", thing)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -30,7 +30,7 @@ export const putThing = (thing: Thing) => {
 
 export const deleteThing = (thingId: string) => {
   return new Promise<void>((resolve, reject) => {
-    request("DELETE", "/database/thing/" + thingId)
+    request("DELETE", "/database/things/" + thingId)
       .then((_: any) => resolve())
       .catch((err: any) => reject(err));
   });

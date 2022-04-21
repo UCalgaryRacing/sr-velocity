@@ -47,9 +47,9 @@ const structure = [
     name: "Manage",
     image: <DataObject />,
     children: [
-      "Organization",
+      "Organization", // Only show if lead/admin
       "Profile",
-      "Users",
+      "Users", // Only show if lead/admin
       "Things",
       "Sensors",
       "Operators",
