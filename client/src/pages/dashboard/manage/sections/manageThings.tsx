@@ -3,19 +3,26 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
-import { TextButton, Alert } from "components/interface";
+import {
+  TextButton,
+  InputField,
+  IconButton,
+  ToolTip,
+  Alert,
+} from "components/interface";
 import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
-import ManageNav from "../manageNav";
 import { ThingModal } from "../modals/thingModal";
 import { ThingCard } from "../cards";
 import { getThings } from "crud";
 import { Thing } from "state";
+import { Add } from "@mui/icons-material";
 import "./_styling/manageThings.css";
 
 // TODO: Hide and show UI based on auth level
 export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
+  const [query, setQuery] = useState<string>("");
   const [things, setThings] = useState<Thing[]>([]);
   const [thingCards, setThingCards] = useState<any[]>([]);
   const [error, setError] = useState<boolean>(false);
@@ -126,7 +133,7 @@ export const ManageThings: React.FC = () => {
               <>
                 <b>
                   {!error
-                    ? "You organization has no Things yet."
+                    ? "Your organization has no Things yet."
                     : "Could not fetch things, please refresh."}
                 </b>
                 {!error && (
@@ -142,10 +149,28 @@ export const ManageThings: React.FC = () => {
       ) : (
         <div id="manage-things">
           <DashNav margin={context.margin}>
-            <ManageNav
-              onAddCard={() => setShowThingModal(true)}
-              onSearchUpdate={onSearch}
-            />
+            <div className="left">
+              <ToolTip value="Add">
+                <IconButton
+                  onClick={() => setShowThingModal(true)}
+                  img={<Add />}
+                />
+              </ToolTip>
+            </div>
+            <div className="right">
+              <InputField
+                name="search"
+                type="name"
+                placeholder="Search"
+                id="manage-nav-search"
+                value={query}
+                onChange={(e: any) => {
+                  setQuery(e.target.value);
+                  onSearch(e.target.value);
+                }}
+                required
+              />
+            </div>
           </DashNav>
           <div id="thing-cards">{thingCards}</div>
         </div>

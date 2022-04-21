@@ -4,7 +4,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import DashNav from "components/navigation/dashNav";
-import ManageNav from "../manageNav";
 import { RootState, Sensor, useAppSelector } from "state";
 
 const initialForm = {
@@ -43,9 +42,7 @@ export const ManageSensors: React.FC = () => {
 
   return (
     <div id="manage-sensors">
-      <DashNav margin={context.margin}>
-        <ManageNav onAddCard={onNewSensor} onSearchUpdate={onSearch} />
-      </DashNav>
+      <DashNav margin={context.margin}></DashNav>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { ThingModal } from "../modals/thingModal";
 import { ConfirmModal } from "components/modals";
 import { Thing } from "state";
 import { deleteThing } from "crud";
+import { useAppSelector, RootState, UserRole, isAuthAtLeast } from "state";
 import "./_styling/thingCard.css";
 
 interface ThingCardProps {
@@ -18,6 +19,7 @@ interface ThingCardProps {
 
 // TODO: Show associated operators
 export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
+  const user = useAppSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showThingModal, setShowThingModal] = useState<boolean>(false);
@@ -44,16 +46,20 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
         <b>{props.thing.name}</b>
       </div>
       <div className="thing-id">Serial Number:&nbsp;{props.thing._id}</div>
-      <IconButton
-        id="thing-delete"
-        img={<CloseOutlined />}
-        onClick={() => setShowConfirmationModal(true)}
-      />
-      <IconButton
-        id="thing-edit"
-        img={<Edit />}
-        onClick={() => setShowThingModal(true)}
-      />
+      {isAuthAtLeast(user, UserRole.ADMIN) && (
+        <>
+          <IconButton
+            id="thing-delete"
+            img={<CloseOutlined />}
+            onClick={() => setShowConfirmationModal(true)}
+          />
+          <IconButton
+            id="thing-edit"
+            img={<Edit />}
+            onClick={() => setShowThingModal(true)}
+          />
+        </>
+      )}
       <ConfirmModal
         show={showConfirmationModal}
         toggle={() => setShowConfirmationModal(false)}
