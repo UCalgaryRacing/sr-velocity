@@ -45,7 +45,7 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
       <div className="thing-title">
         <b>{props.thing.name}</b>
       </div>
-      <div className="thing-id">Serial Number:&nbsp;{props.thing._id}</div>
+      <div className="thing-id">SN:&nbsp;{props.thing._id}</div>
       {isAuthAtLeast(user, UserRole.ADMIN) && (
         <>
           <IconButton

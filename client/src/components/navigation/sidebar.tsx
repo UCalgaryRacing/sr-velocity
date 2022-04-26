@@ -47,9 +47,9 @@ const structure = [
     name: "Manage",
     image: <DataObject />,
     children: [
-      "Organization", // Only show if lead/admin
+      "Organization",
       "Profile",
-      "Users", // Only show if lead/admin
+      "Users",
       "Things",
       "Sensors",
       "Operators",
@@ -67,6 +67,8 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const state = useAppSelector((state: RootState) => state);
   const selected = bindActionCreators(dashboardPageSelected, useAppDispatch());
   const size = useWindowSize();
+
+  // TODO: Hide manage tabs based on permissions
 
   return (
     <ProSidebar
@@ -100,8 +102,13 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
               >
                 {sub.children.map((name) => {
                   if (
-                    isAuthAtLeast(state.user, UserRole.LEAD) &&
-                    name === "Manage"
+                    !isAuthAtLeast(state.user, UserRole.ADMIN) &&
+                    name === "Organization"
+                  )
+                    return;
+                  if (
+                    !isAuthAtLeast(state.user, UserRole.LEAD) &&
+                    name === "Users"
                   )
                     return;
                   return (
