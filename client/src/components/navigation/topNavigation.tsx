@@ -4,7 +4,6 @@
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { useAppSelector, RootState } from "state";
-import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useWindowSize } from "hooks/index";
 import "./_styling/topNavigation.css";

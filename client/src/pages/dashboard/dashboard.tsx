@@ -8,9 +8,15 @@ import Historical from "./historical/historical";
 import Manage from "./manage/manage";
 import { useWindowSize } from "hooks/";
 import { useSwipeable } from "react-swipeable";
-import { useAppSelector, RootState } from "state";
-import { getThings } from "crud";
-import { Thing } from "state";
+import {
+  useAppSelector,
+  RootState,
+  useAppDispatch,
+  organizationFetched,
+  Organization,
+} from "state";
+import { getOrganization } from "crud";
+import { bindActionCreators } from "redux";
 import "./_styling/dashboard.css";
 
 export const DashboardContext = React.createContext({
@@ -19,9 +25,17 @@ export const DashboardContext = React.createContext({
 });
 
 const Dashboard: React.FC = () => {
-  const [sideBarToggled, setSideBarToggled] = useState(false);
-  const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
   const dashboard = useAppSelector((state: RootState) => state.dashboard);
+  const setOrganization = bindActionCreators(
+    organizationFetched,
+    useAppDispatch()
+  );
+
+  const [sideBarToggled, setSideBarToggled] = useState<boolean>(false);
+  const [sideBarCollapsed, setSideBarCollapsed] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [setupError, setSetupError] = useState<boolean>(false);
+
   const gestures = useSwipeable({
     onSwipedRight: (_) => size.width <= 768.9 && setSideBarToggled(true),
     onSwipedLeft: (_) => size.width <= 768.9 && setSideBarToggled(false),
@@ -30,16 +44,14 @@ const Dashboard: React.FC = () => {
   const size = useWindowSize();
 
   useEffect(() => {
-    getThings()
-      .then((things: Thing[]) => {
-        // Update redux dashboard
-        // Prompt the user to select a thing
-        // Don't allow the user to exit without selecting a thing
-        // Handle case where there are no things
+    setLoading(true);
+    getOrganization()
+      .then((organization: Organization) => {
+        setOrganization(organization);
+        setLoading(false);
       })
-      .catch((_: any) => {
-        // Could not fetch things, fuck!
-      });
+      .catch((_: any) => setSetupError(true));
+    // TODO: Actually show loading stuff
   }, []);
 
   useEffect(() => {
@@ -49,23 +61,28 @@ const Dashboard: React.FC = () => {
   return (
     <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} onCollapse={setSideBarCollapsed} />
-      <div
-        id="content"
-        style={{
-          marginLeft: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
-        }}
-      >
-        <DashboardContext.Provider
-          value={{
-            page: dashboard!.page,
-            margin: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+      {loading ? (
+        ""
+      ) : (
+        <div
+          id="content"
+          style={{
+            marginLeft:
+              size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
           }}
         >
-          <Streaming />
-          <Historical />
-          <Manage />
-        </DashboardContext.Provider>
-      </div>
+          <DashboardContext.Provider
+            value={{
+              page: dashboard!.page,
+              margin: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+            }}
+          >
+            <Streaming />
+            <Historical />
+            <Manage />
+          </DashboardContext.Provider>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,6 +12,7 @@ interface AlertProps {
   show: boolean;
   slideOut?: boolean;
   duration?: number;
+  // TODO: Add a margin
 }
 
 export const Alert: React.FC<AlertProps> = (props: AlertProps) => {

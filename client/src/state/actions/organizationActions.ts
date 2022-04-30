@@ -6,7 +6,6 @@ import { Organization } from "../types";
 
 export enum OrganizationActionType {
   FETCHED = "organizationFetched",
-  // More in the future when we open up the service for other organizations
 }
 
 interface OrganizationFetchedAction {

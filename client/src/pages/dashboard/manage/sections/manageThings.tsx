@@ -15,13 +15,19 @@ import DashNav from "components/navigation/dashNav";
 import { ThingModal } from "../modals/thingModal";
 import { ThingCard } from "../cards";
 import { getThings } from "crud";
-import { Thing } from "state";
+import {
+  useAppSelector,
+  RootState,
+  Thing,
+  isAuthAtLeast,
+  UserRole,
+} from "state";
 import { Add } from "@mui/icons-material";
 import "./_styling/manageThings.css";
 
-// TODO: Hide and show UI based on auth level
 export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
+  const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
   const [things, setThings] = useState<Thing[]>([]);
   const [thingCards, setThingCards] = useState<any[]>([]);
@@ -71,7 +77,7 @@ export const ManageThings: React.FC = () => {
   };
 
   const onNewThing = (thing: Thing) => {
-    if (thing._id) {
+    if (thing && thing._id) {
       let updatedThings = [...things];
       let updated = false;
       for (let i in updatedThings) {
@@ -120,8 +126,8 @@ export const ManageThings: React.FC = () => {
   return (
     <>
       {noThings || error || fetching ? (
-        <div id="no-things">
-          <div id="no-thing-content">
+        <div id="manage-loading">
+          <div id="manage-loading-content">
             {fetching ? (
               <>
                 <CircularProgress style={{ color: "black" }} />
@@ -136,7 +142,7 @@ export const ManageThings: React.FC = () => {
                     ? "Your organization has no Things yet."
                     : "Could not fetch things, please refresh."}
                 </b>
-                {!error && (
+                {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
                   <TextButton
                     title="Create a new Thing"
                     onClick={() => setShowThingModal(true)}
@@ -150,12 +156,14 @@ export const ManageThings: React.FC = () => {
         <div id="manage-things">
           <DashNav margin={context.margin}>
             <div className="left">
-              <ToolTip value="Add">
-                <IconButton
-                  onClick={() => setShowThingModal(true)}
-                  img={<Add />}
-                />
-              </ToolTip>
+              {isAuthAtLeast(user, UserRole.ADMIN) && (
+                <ToolTip value="Add">
+                  <IconButton
+                    onClick={() => setShowThingModal(true)}
+                    img={<Add />}
+                  />
+                </ToolTip>
+              )}
             </div>
             <div className="right">
               <InputField

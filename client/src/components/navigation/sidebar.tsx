@@ -68,8 +68,6 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const selected = bindActionCreators(dashboardPageSelected, useAppDispatch());
   const size = useWindowSize();
 
-  // TODO: Hide manage tabs based on permissions
-
   return (
     <ProSidebar
       collapsed={!((collapsed && !props.toggled) || size.width <= 768.9)}
@@ -132,7 +130,14 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
       </SidebarContent>
       <SidebarFooter>
         <Menu>
-          <SubMenu key="Settings" title="Settings" icon={<Settings />} />
+          <SubMenu
+            key="Settings"
+            title="Settings"
+            icon={<Settings />}
+            onClick={() => {
+              // TODO: Show settings modal
+            }}
+          />
         </Menu>
       </SidebarFooter>
     </ProSidebar>

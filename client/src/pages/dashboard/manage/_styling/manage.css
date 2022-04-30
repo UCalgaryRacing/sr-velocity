@@ -26,3 +26,47 @@ Written by Joey Van Lierop
 #add-popup > * {
   width: 100%;
 }
+
+#centered {
+  display: flex;
+  font-size: var(--fz-md);
+  height: calc(100% + 54px);
+  margin-top: -54px;
+}
+
+#centered img {
+  width: 100%;
+}
+
+#centered #header {
+  text-align: center;
+}
+
+#centered #centered-content {
+  max-width: 600px;
+  margin: auto;
+}
+
+#manage-loading {
+  height: 100%;
+  width: 100%;
+  font-size: var(--fz-md);
+  display: flex;
+  text-align: center;
+}
+
+#manage-loading #manage-loading-content {
+  width: 300px;
+  margin: auto;
+}
+
+#manage-loading .text-button {
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 768.9px) {
+  #centered {
+    margin-top: 0px;
+    height: 100%;
+  }
+}

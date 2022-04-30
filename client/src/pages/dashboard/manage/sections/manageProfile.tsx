@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { InputField, TextButton, Alert } from "components/interface/";
 import { signUserOut, putUser } from "crud";
 import { useForm } from "hooks";
-import "./_styling/manageProfile.css";
 
 export const ManageProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user);
@@ -61,13 +60,10 @@ export const ManageProfile: React.FC = () => {
   };
 
   return (
-    <div id="profile">
-      <div id="profile-content">
+    <div id="centered">
+      <div id="centered-content">
         <form id="sign-in-form" onSubmit={onSubmit}>
           <img src="assets/team-logo.svg" />
-          <div id="header">
-            <b>Profile</b>
-          </div>
           <InputField
             name="name"
             type="name"
@@ -85,7 +81,7 @@ export const ManageProfile: React.FC = () => {
             required
           />
           <TextButton title="Update" loading={updateLoading} />
-          <TextButton type="button" title="Change Password" />
+          {/* <TextButton type="button" title="Change Password" /> TODO */}
           <TextButton
             type="button"
             title="Sign Out"
