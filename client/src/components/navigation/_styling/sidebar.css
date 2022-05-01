@@ -65,6 +65,14 @@
   border-color: var(--black);
 }
 
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item:hover,
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item:hover .pro-arrow,
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item:hover svg {
+  color: black;
+  border-color: black !important;
+  fill: black;
+}
+
 .pro-sidebar > .pro-sidebar-inner > .pro-sidebar-layout .pro-sidebar-footer {
   border: 0px solid;
 }
