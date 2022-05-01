@@ -10,3 +10,4 @@ export * from "./textArea";
 export * from "./tooltip";
 export * from "./slider";
 export * from "./alert";
+export * from "./multiSelect";

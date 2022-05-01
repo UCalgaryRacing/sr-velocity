@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Ryan Painchaud, Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Hamburger from "hamburger-react";
 import { bindActionCreators } from "redux";
 import {
@@ -31,42 +31,61 @@ import { useWindowSize } from "hooks/index";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./_styling/sidebar.css";
 
-// TODO: Change color of header if child is selected.
-const structure = [
-  {
-    name: "Streaming",
-    image: <StackedLineChart />,
-    children: ["Real-Time Charts", "Raw Data"],
-  },
-  {
-    name: "Historical",
-    image: <History />,
-    children: ["Data", "Plots"],
-  },
-  {
-    name: "Manage",
-    image: <DataObject />,
-    children: [
-      "Organization",
-      "Profile",
-      "Users",
-      "Things",
-      "Sensors",
-      "Operators",
-    ],
-  },
-];
-
 interface SidebarProps {
   toggled: boolean;
   onCollapse?: (v: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [structure, setStructure] = useState<any>([
+    {
+      name: "Streaming",
+      image: <StackedLineChart />,
+      children: ["Real-Time Charts", "Raw Data"],
+      color: "#fff",
+    },
+    {
+      name: "Historical",
+      image: <History />,
+      children: ["Data", "Plots"],
+      color: "#fff",
+    },
+    {
+      name: "Manage",
+      image: <DataObject />,
+      children: [
+        "Organization",
+        "Profile",
+        "Users",
+        "Things",
+        "Sensors",
+        "Operators",
+      ],
+      color: "#fff",
+    },
+  ]);
   const state = useAppSelector((state: RootState) => state);
   const selected = bindActionCreators(dashboardPageSelected, useAppDispatch());
   const size = useWindowSize();
+
+  useEffect(() => {
+    let updatedStructure = [...structure];
+    for (let section of structure) {
+      if (section.name === state.dashboard.section) {
+        section.image = React.cloneElement(section.image, {
+          htmlColor: "#171717",
+        });
+        section.color = "#171717";
+      } else {
+        section.image = React.cloneElement(section.image, {
+          htmlColor: "#fff",
+        });
+        section.color = "#fff";
+      }
+    }
+    setStructure(updatedStructure);
+  }, [state.dashboard.section]);
 
   return (
     <ProSidebar
@@ -90,15 +109,17 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
       )}
       <SidebarContent>
         <Menu popperArrow={true}>
-          {structure.map((sub) => {
+          {structure.map((sub: any) => {
             return (
               <SubMenu
                 key={sub.name}
                 title={sub.name}
                 icon={sub.image}
                 defaultOpen={sub.children.includes(state.dashboard.page)}
+                style={{ color: sub.color }}
+                id={sub.color === "#fff" ? "unselected" : "selected"}
               >
-                {sub.children.map((name) => {
+                {sub.children.map((name: string) => {
                   if (
                     !isAuthAtLeast(state.user, UserRole.ADMIN) &&
                     name === "Organization"
@@ -117,6 +138,10 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                           selected({ page: name, section: sub.name })
                         }
                         active={name === state.dashboard.page}
+                        style={{
+                          color:
+                            name === state.dashboard.page ? "#000" : "#fff",
+                        }}
                       >
                         {name}
                       </MenuItem>
