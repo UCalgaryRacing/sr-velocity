@@ -13,15 +13,16 @@ import {
   UserRole,
   isAuthAtLeast,
   Thing,
+  Operator,
 } from "state";
 
 interface ThingCardProps {
   thing: Thing;
+  operators: Operator[];
   onThingUpdate?: (thing: Thing) => void;
   onThingDelete?: (thingId: string) => void;
 }
 
-// TODO: Show associated operators
 export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
   const user = useAppSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,6 +51,22 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
         <b>{props.thing.name}</b>
       </div>
       <div className="thing-id">SN:&nbsp;{props.thing._id}</div>
+      {props.operators.length > 0 && (
+        <div>
+          Operator(s):
+          {(() => {
+            let operatorsString = " ";
+            for (const operator of props.operators) {
+              operatorsString += operator.name + ", ";
+            }
+            operatorsString = operatorsString.substring(
+              0,
+              operatorsString.length - 2
+            );
+            return operatorsString;
+          })()}
+        </div>
+      )}
       {isAuthAtLeast(user, UserRole.ADMIN) && (
         <>
           <IconButton
@@ -65,6 +82,9 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
         </>
       )}
       <ConfirmModal
+        title={
+          "Are you sure you want to delete Thing '" + props.thing.name + "'?"
+        }
         show={showConfirmationModal}
         toggle={() => setShowConfirmationModal(false)}
         onConfirm={onDelete}

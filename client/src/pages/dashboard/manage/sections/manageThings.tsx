@@ -14,11 +14,12 @@ import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import { ThingModal } from "../modals/thingModal";
 import { ThingCard } from "../cards";
-import { getThings } from "crud";
+import { getThings, getOperators } from "crud";
 import {
   useAppSelector,
   RootState,
   Thing,
+  Operator,
   isAuthAtLeast,
   UserRole,
 } from "state";
@@ -28,6 +29,7 @@ export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
+  const [operators, setOperators] = useState<Operator[]>([]);
   const [things, setThings] = useState<Thing[]>([]);
   const [thingCards, setThingCards] = useState<any[]>([]);
   const [error, setError] = useState<boolean>(false);
@@ -40,14 +42,22 @@ export const ManageThings: React.FC = () => {
 
   useEffect(() => {
     getThings()
-      .then((items: Thing[]) => {
-        items.sort((a: Thing, b: Thing) =>
-          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-        );
-        setThings(items);
-        generateThingCards(items);
-        setNoThings(items.length === 0);
-        setFetching(false);
+      .then((things: Thing[]) => {
+        getOperators()
+          .then((operators: Operator[]) => {
+            setOperators(operators);
+            things.sort((a: Thing, b: Thing) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
+            setThings(things);
+            generateThingCards(things, operators);
+            setNoThings(things.length === 0);
+            setFetching(false);
+          })
+          .catch((_: any) => {
+            setFetching(false);
+            setError(true);
+          });
       })
       .catch((_: any) => {
         setFetching(false);
@@ -60,12 +70,15 @@ export const ManageThings: React.FC = () => {
     setShowAlert(true);
   };
 
-  const generateThingCards = (items: Thing[]) => {
+  const generateThingCards = (things: Thing[], operators: Operator[]) => {
     let cards = [];
-    for (const thing of items) {
+    for (const thing of things) {
       cards.push(
         <ThingCard
           thing={thing}
+          operators={operators.filter((operator) =>
+            thing.operatorIds.includes(operator._id)
+          )}
           key={thing._id}
           onThingUpdate={onNewThing}
           onThingDelete={onDeleteThing}
@@ -90,7 +103,7 @@ export const ManageThings: React.FC = () => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       });
       setThings(updatedThings);
-      generateThingCards(updatedThings);
+      generateThingCards(updatedThings, operators);
       setNoThings(false);
       if (updated) alert("The thing was updated.");
       else alert("The thing was created.");
@@ -106,7 +119,7 @@ export const ManageThings: React.FC = () => {
       }
     }
     setThings(updatedThings);
-    generateThingCards(updatedThings);
+    generateThingCards(updatedThings, operators);
     setNoThings(updatedThings.length === 0);
     alert("The thing was deleted.");
   };
@@ -118,7 +131,7 @@ export const ManageThings: React.FC = () => {
         matchingThings.push(thing);
       }
     }
-    generateThingCards(matchingThings);
+    generateThingCards(matchingThings, operators);
     setNoMatchingThings(matchingThings.length === 0);
   };
 
