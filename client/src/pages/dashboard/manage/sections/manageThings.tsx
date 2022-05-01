@@ -23,7 +23,6 @@ import {
   UserRole,
 } from "state";
 import { Add } from "@mui/icons-material";
-import "./_styling/manageThings.css";
 
 export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
@@ -42,9 +41,9 @@ export const ManageThings: React.FC = () => {
   useEffect(() => {
     getThings()
       .then((items: Thing[]) => {
-        items.sort((a: Thing, b: Thing) => {
-          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-        });
+        items.sort((a: Thing, b: Thing) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
         setThings(items);
         generateThingCards(items);
         setNoThings(items.length === 0);
@@ -94,7 +93,7 @@ export const ManageThings: React.FC = () => {
       generateThingCards(updatedThings);
       setNoThings(false);
       if (updated) alert("The thing was updated.");
-      else alert("The thing was created");
+      else alert("The thing was created.");
     }
     setShowThingModal(false);
   };
@@ -140,7 +139,7 @@ export const ManageThings: React.FC = () => {
                 <b>
                   {!error
                     ? "Your organization has no Things yet."
-                    : "Could not fetch things, please refresh."}
+                    : "Could not fetch Things, please refresh."}
                 </b>
                 {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
                   <TextButton
@@ -184,8 +183,8 @@ export const ManageThings: React.FC = () => {
         </div>
       )}
       {noMatchingThings && (
-        <div id="no-things">
-          <div id="no-thing-content">
+        <div id="no-match">
+          <div id="no-match-content">
             <b>No matching Things found...</b>
           </div>
         </div>

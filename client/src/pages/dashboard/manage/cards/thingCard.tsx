@@ -6,10 +6,14 @@ import { IconButton, Alert } from "components/interface";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import { ThingModal } from "../modals/thingModal";
 import { ConfirmModal } from "components/modals";
-import { Thing } from "state";
 import { deleteThing } from "crud";
-import { useAppSelector, RootState, UserRole, isAuthAtLeast } from "state";
-import "./_styling/thingCard.css";
+import {
+  useAppSelector,
+  RootState,
+  UserRole,
+  isAuthAtLeast,
+  Thing,
+} from "state";
 
 interface ThingCardProps {
   thing: Thing;
@@ -41,20 +45,20 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
   };
 
   return (
-    <div className="thing-card">
-      <div className="thing-title">
+    <div className="card">
+      <div className="card-title">
         <b>{props.thing.name}</b>
       </div>
       <div className="thing-id">SN:&nbsp;{props.thing._id}</div>
       {isAuthAtLeast(user, UserRole.ADMIN) && (
         <>
           <IconButton
-            id="thing-delete"
+            id="card-delete"
             img={<CloseOutlined />}
             onClick={() => setShowConfirmationModal(true)}
           />
           <IconButton
-            id="thing-edit"
+            id="card-edit"
             img={<Edit />}
             onClick={() => setShowThingModal(true)}
           />

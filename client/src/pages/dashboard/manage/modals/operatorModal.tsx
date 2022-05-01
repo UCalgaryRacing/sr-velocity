@@ -4,26 +4,26 @@
 import React, { useState } from "react";
 import { BaseModal } from "components/modals";
 import { InputField, TextButton, Alert } from "components/interface";
-import { postThing, putThing } from "crud";
+import { postOperator, putOperator } from "crud";
 import { useForm } from "hooks";
-import { Thing } from "state";
+import { Operator } from "state";
 import { useAppSelector, RootState } from "state";
 
-interface ThingModalProps {
+interface OperatorModalProps {
   show?: boolean;
   toggle: any;
-  thing?: Thing;
+  operator?: Operator;
 }
 
-export const ThingModal: React.FC<ThingModalProps> = (
-  props: ThingModalProps
+export const OperatorModal: React.FC<OperatorModalProps> = (
+  props: OperatorModalProps
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const user = useAppSelector((state: RootState) => state.user);
   const [values, handleChange] = useForm(
-    props.thing ? props.thing : { name: "" }
+    props.operator ? props.operator : { name: "" }
   );
 
   const alert = (description: string) => {
@@ -34,25 +34,25 @@ export const ThingModal: React.FC<ThingModalProps> = (
   const onSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
-    if (props.thing) {
-      putThing(values)
+    if (props.operator) {
+      putOperator(values)
         .then((_: any) => {
           setLoading(false);
           props.toggle(values);
         })
         .catch((_: any) => {
           setLoading(false);
-          alert("The thing name must be unique. Please try again...");
+          alert("The operator name must be unique. Please try again...");
         });
     } else {
-      postThing({ ...values, organizationId: user?.organizationId })
-        .then((thing: Thing) => {
+      postOperator({ ...values, organizationId: user?.organizationId })
+        .then((operator: Operator) => {
           setLoading(false);
-          props.toggle(thing);
+          props.toggle(operator);
         })
         .catch((_: any) => {
           setLoading(false);
-          alert("The thing name must be unique. Please try again...");
+          alert("The operator name must be unique. Please try again...");
         });
     }
   };
@@ -60,7 +60,7 @@ export const ThingModal: React.FC<ThingModalProps> = (
   return (
     <>
       <BaseModal
-        title={props.thing ? "Edit Thing" : "New Thing"}
+        title={props.operator ? "Edit Operator" : "New Operator"}
         show={props.show}
         toggle={props.toggle}
       >

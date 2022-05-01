@@ -64,6 +64,21 @@ Written by Joey Van Lierop
   margin-top: 20px;
 }
 
+#no-match {
+  width: 100%;
+  height: 100%;
+}
+
+#no-match-content {
+  text-align: center;
+  font-size: var(--fz-lg);
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 @media only screen and (max-width: 768.9px) {
   #centered {
     margin-top: 0px;

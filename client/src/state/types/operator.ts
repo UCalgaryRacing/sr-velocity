@@ -4,6 +4,6 @@
 export type Operator = {
   _id: string;
   name: string;
-  height: number;
-  weight: number;
+  organizationId: string;
+  thingIds: string[];
 };

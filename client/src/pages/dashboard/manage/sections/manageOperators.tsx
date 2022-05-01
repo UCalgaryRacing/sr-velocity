@@ -4,13 +4,27 @@
 import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import {
+  TextButton,
+  IconButton,
+  ToolTip,
+  Alert,
+  InputField,
+} from "components/interface";
+import { CircularProgress } from "@mui/material";
+import { OperatorCard } from "../cards";
+import { OperatorModal } from "../modals/operatorModal";
+import {
   useAppSelector,
   RootState,
   Operator,
   isAuthAtLeast,
   UserRole,
 } from "state";
+import DashNav from "components/navigation/dashNav";
+import { getOperators } from "crud";
+import { Add } from "@mui/icons-material";
 
+// TODO: Show associated things
 export const ManageOperators: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
@@ -18,7 +32,7 @@ export const ManageOperators: React.FC = () => {
   const [operators, setOperators] = useState<Operator[]>([]);
   const [operatorCards, setOperatorCards] = useState<any[]>([]);
   const [error, setError] = useState<boolean>(false);
-  const [fetching, setFetching] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<boolean>(true);
   const [noOperators, setNoOperators] = useState<boolean>(false);
   const [noMatchingOperators, setNoMatchingOperators] =
     useState<boolean>(false);
@@ -27,7 +41,20 @@ export const ManageOperators: React.FC = () => {
   const [showOperatorModal, setShowOperatorModal] = useState<boolean>(false);
 
   useEffect(() => {
-    // TODO: Fetch operators
+    getOperators()
+      .then((items: Operator[]) => {
+        items.sort((a: Operator, b: Operator) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setOperators(items);
+        generateOperatorCards(items);
+        setNoOperators(items.length === 0);
+        setFetching(false);
+      })
+      .catch((_: any) => {
+        setFetching(false);
+        setError(true);
+      });
   }, []);
 
   const alert = (description: string) => {
@@ -36,15 +63,54 @@ export const ManageOperators: React.FC = () => {
   };
 
   const generateOperatorCards = (items: Operator[]) => {
-    // TODO
+    let cards = [];
+    for (const operator of items) {
+      cards.push(
+        <OperatorCard
+          operator={operator}
+          key={operator._id}
+          onOperatorUpdate={onNewOperator}
+          onOperatorDelete={onDeleteOperator}
+        />
+      );
+    }
+    setOperatorCards(cards);
   };
 
   const onNewOperator = (operator: Operator) => {
-    // TODO
+    if (operator && operator._id) {
+      let updatedOperators = [...operators];
+      let updated = false;
+      for (let i in updatedOperators) {
+        if (updatedOperators[i]._id === operator._id) {
+          updatedOperators[i] = operator;
+          updated = true;
+        }
+      }
+      if (!updated) updatedOperators.push(operator);
+      updatedOperators.sort((a: Operator, b: Operator) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
+      setOperators(updatedOperators);
+      generateOperatorCards(updatedOperators);
+      setNoOperators(false);
+      if (updated) alert("The operator was updated.");
+      else alert("The operator was created.");
+    }
+    setShowOperatorModal(false);
   };
 
   const onDeleteOperator = (operatorId: string) => {
-    // TODO
+    let updatedOperators = [];
+    for (let operator of [...operators]) {
+      if (operator._id !== operatorId) {
+        updatedOperators.push(operator);
+      }
+    }
+    setOperators(updatedOperators);
+    generateOperatorCards(updatedOperators);
+    setNoOperators(updatedOperators.length === 0);
+    alert("The operator was deleted.");
   };
 
   const onSearch = (query: string) => {
@@ -58,5 +124,82 @@ export const ManageOperators: React.FC = () => {
     setNoMatchingOperators(matchingOperators.length === 0);
   };
 
-  return <></>;
+  return (
+    <>
+      {noOperators || error || fetching ? (
+        <div id="manage-loading">
+          <div id="manage-loading-content">
+            {fetching ? (
+              <>
+                <CircularProgress style={{ color: "black" }} />
+                <br />
+                <br />
+                <b>Fetching Operators...</b>
+              </>
+            ) : (
+              <>
+                <b>
+                  {!error
+                    ? "Your organization has no Operators yet."
+                    : "Could not fetch Operators, please refresh."}
+                </b>
+                {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
+                  <TextButton
+                    title="Create a new Operator"
+                    onClick={() => setShowOperatorModal(true)}
+                  />
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div id="manage-operators">
+          <DashNav margin={context.margin}>
+            <div className="left">
+              {isAuthAtLeast(user, UserRole.ADMIN) && (
+                <ToolTip value="Add">
+                  <IconButton
+                    onClick={() => setShowOperatorModal(true)}
+                    img={<Add />}
+                  />
+                </ToolTip>
+              )}
+            </div>
+            <div className="right">
+              <InputField
+                name="search"
+                type="name"
+                placeholder="Search"
+                id="manage-nav-search"
+                value={query}
+                onChange={(e: any) => {
+                  setQuery(e.target.value);
+                  onSearch(e.target.value);
+                }}
+                required
+              />
+            </div>
+          </DashNav>
+          <div id="operator-cards">{operatorCards}</div>
+        </div>
+      )}
+      {noMatchingOperators && (
+        <div id="no-match">
+          <div id="no-match-content">
+            <b>No matching Operators found...</b>
+          </div>
+        </div>
+      )}
+      <OperatorModal show={showOperatorModal} toggle={onNewOperator} />
+      <Alert
+        title="Success!"
+        description={alertDescription}
+        color="green"
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
+    </>
+  );
 };

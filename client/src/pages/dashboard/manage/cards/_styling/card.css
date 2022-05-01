@@ -3,7 +3,7 @@ Copyright Schulich Racing, FSAE
 Written by Justin Tijunelis
 */
 
-.thing-card {
+.card {
   border-radius: var(--border-radius);
   border: 1px solid var(--red);
   min-height: 87px;
@@ -13,13 +13,13 @@ Written by Justin Tijunelis
   margin-bottom: 10px;
 }
 
-.thing-card #thing-delete {
+.card #card-delete {
   position: absolute;
   top: 5px;
   right: 5px;
 }
 
-.thing-card #thing-edit {
+.card #card-edit {
   position: absolute;
   top: 45px;
   right: 5px;
