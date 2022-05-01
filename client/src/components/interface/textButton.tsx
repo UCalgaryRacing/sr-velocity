@@ -28,7 +28,7 @@ export const TextButton: React.FC<TextButtonProps> = ({
     >
       <b>
         {loading ? (
-          <CircularProgress style={{ padding: 4, color: "white" }} />
+          <CircularProgress style={{ padding: 8, color: "white" }} />
         ) : (
           title
         )}

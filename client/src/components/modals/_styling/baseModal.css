@@ -21,6 +21,10 @@ Written by Justin Tijunelis
   margin-top: 10px;
 }
 
+.modal-header .h4 {
+  font-size: var(--fz-md);
+}
+
 .base-modal-close {
   border: none;
   background-color: transparent;

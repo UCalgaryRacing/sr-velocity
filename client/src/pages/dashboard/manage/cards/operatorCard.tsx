@@ -65,6 +65,11 @@ export const OperatorCard: React.FC<OperatorCardProps> = (
         </>
       )}
       <ConfirmModal
+        title={
+          "Are you sure you want to delete Operator '" +
+          props.operator.name +
+          "'?"
+        }
         show={showConfirmationModal}
         toggle={() => setShowConfirmationModal(false)}
         onConfirm={onDelete}
