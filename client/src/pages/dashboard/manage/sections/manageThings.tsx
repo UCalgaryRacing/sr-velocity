@@ -76,9 +76,7 @@ export const ManageThings: React.FC = () => {
       cards.push(
         <ThingCard
           thing={thing}
-          operators={operators.filter((operator) =>
-            thing.operatorIds.includes(operator._id)
-          )}
+          operators={operators}
           key={thing._id}
           onThingUpdate={onNewThing}
           onThingDelete={onDeleteThing}

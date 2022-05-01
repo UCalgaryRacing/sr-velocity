@@ -32,6 +32,7 @@ export const ThingModal: React.FC<ThingModalProps> = (
   };
 
   const onSubmit = (e: any) => {
+    // TODO: Handle all thing-operator associations
     e.preventDefault();
     setLoading(true);
     if (props.thing) {

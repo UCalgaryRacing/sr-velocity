@@ -32,6 +32,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
   };
 
   const onSubmit = (e: any) => {
+    // TODO: Handle all thing-operator associations
     e.preventDefault();
     setLoading(true);
     if (props.operator) {

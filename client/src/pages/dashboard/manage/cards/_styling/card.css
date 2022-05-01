@@ -13,6 +13,12 @@ Written by Justin Tijunelis
   margin-bottom: 10px;
 }
 
+.card .card-title {
+  font-size: var(--fz-lg);
+  margin-bottom: 0px;
+  text-decoration: underline;
+}
+
 .card #card-delete {
   position: absolute;
   top: 5px;

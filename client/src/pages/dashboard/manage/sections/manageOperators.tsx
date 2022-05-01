@@ -17,18 +17,19 @@ import {
   useAppSelector,
   RootState,
   Operator,
+  Thing,
   isAuthAtLeast,
   UserRole,
 } from "state";
 import DashNav from "components/navigation/dashNav";
-import { getOperators } from "crud";
+import { getOperators, getThings } from "crud";
 import { Add } from "@mui/icons-material";
 
-// TODO: Show associated things
 export const ManageOperators: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
+  const [things, setThings] = useState<Thing[]>([]);
   const [operators, setOperators] = useState<Operator[]>([]);
   const [operatorCards, setOperatorCards] = useState<any[]>([]);
   const [error, setError] = useState<boolean>(false);
@@ -42,14 +43,22 @@ export const ManageOperators: React.FC = () => {
 
   useEffect(() => {
     getOperators()
-      .then((items: Operator[]) => {
-        items.sort((a: Operator, b: Operator) =>
-          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-        );
-        setOperators(items);
-        generateOperatorCards(items);
-        setNoOperators(items.length === 0);
-        setFetching(false);
+      .then((operators: Operator[]) => {
+        getThings()
+          .then((things: Thing[]) => {
+            setThings(things);
+            operators.sort((a: Operator, b: Operator) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
+            setOperators(operators);
+            generateOperatorCards(operators, things);
+            setNoOperators(operators.length === 0);
+            setFetching(false);
+          })
+          .catch((_: any) => {
+            setFetching(false);
+            setError(true);
+          });
       })
       .catch((_: any) => {
         setFetching(false);
@@ -62,12 +71,13 @@ export const ManageOperators: React.FC = () => {
     setShowAlert(true);
   };
 
-  const generateOperatorCards = (items: Operator[]) => {
+  const generateOperatorCards = (operators: Operator[], things: Thing[]) => {
     let cards = [];
-    for (const operator of items) {
+    for (const operator of operators) {
       cards.push(
         <OperatorCard
           operator={operator}
+          things={things}
           key={operator._id}
           onOperatorUpdate={onNewOperator}
           onOperatorDelete={onDeleteOperator}
@@ -92,7 +102,7 @@ export const ManageOperators: React.FC = () => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
       setOperators(updatedOperators);
-      generateOperatorCards(updatedOperators);
+      generateOperatorCards(updatedOperators, things);
       setNoOperators(false);
       if (updated) alert("The operator was updated.");
       else alert("The operator was created.");
@@ -108,7 +118,7 @@ export const ManageOperators: React.FC = () => {
       }
     }
     setOperators(updatedOperators);
-    generateOperatorCards(updatedOperators);
+    generateOperatorCards(updatedOperators, things);
     setNoOperators(updatedOperators.length === 0);
     alert("The operator was deleted.");
   };
@@ -120,7 +130,7 @@ export const ManageOperators: React.FC = () => {
         matchingOperators.push(thing);
       }
     }
-    generateOperatorCards(matchingOperators);
+    generateOperatorCards(matchingOperators, things);
     setNoMatchingOperators(matchingOperators.length === 0);
   };
 

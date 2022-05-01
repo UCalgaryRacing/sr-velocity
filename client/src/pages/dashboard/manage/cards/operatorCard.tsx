@@ -13,10 +13,12 @@ import {
   UserRole,
   isAuthAtLeast,
   Operator,
+  Thing,
 } from "state";
 
 interface OperatorCardProps {
   operator: Operator;
+  things: Thing[];
   onOperatorUpdate?: (operator: Operator) => void;
   onOperatorDelete?: (operatorId: string) => void;
 }
@@ -50,6 +52,23 @@ export const OperatorCard: React.FC<OperatorCardProps> = (
       <div className="card-title">
         <b>{props.operator.name}</b>
       </div>
+      {props.things.length > 0 && (
+        <div>
+          <b>Associated Thing(s):</b>
+          {(() => {
+            let thingsString = " ";
+            let associatedThings = props.things.filter((thing) =>
+              props.operator.thingIds.includes(thing._id)
+            );
+            console.log(props.things);
+            console.log(props.operator);
+            for (const thing of associatedThings)
+              thingsString += thing.name + ", ";
+            thingsString = thingsString.substring(0, thingsString.length - 2);
+            return thingsString;
+          })()}
+        </div>
+      )}
       {isAuthAtLeast(user, UserRole.ADMIN) && (
         <>
           <IconButton

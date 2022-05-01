@@ -50,15 +50,19 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
       <div className="card-title">
         <b>{props.thing.name}</b>
       </div>
-      <div className="thing-id">SN:&nbsp;{props.thing._id}</div>
+      <div className="thing-id">
+        <b>SN:</b>&nbsp;{props.thing._id}
+      </div>
       {props.operators.length > 0 && (
         <div>
-          Operator(s):
+          <b>Associated Operator(s):</b>
           {(() => {
             let operatorsString = " ";
-            for (const operator of props.operators) {
+            let associatedOperators = props.operators.filter((operator) =>
+              props.thing.operatorIds.includes(operator._id)
+            );
+            for (const operator of associatedOperators)
               operatorsString += operator.name + ", ";
-            }
             operatorsString = operatorsString.substring(
               0,
               operatorsString.length - 2
