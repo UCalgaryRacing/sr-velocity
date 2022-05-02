@@ -191,7 +191,7 @@ export const ManageOperators: React.FC = () => {
               />
             </div>
           </DashNav>
-          <div id="operator-cards">{operatorCards}</div>
+          <div id="manage-grid">{operatorCards}</div>
         </div>
       )}
       {noMatchingOperators && (

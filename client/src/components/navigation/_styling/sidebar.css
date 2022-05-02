@@ -57,6 +57,10 @@
   margin: 13.5px;
 }
 
+.pro-sidebar .hamburger-react:hover {
+  color: black;
+}
+
 #unselected .pro-arrow {
   border-color: var(--white);
 }
@@ -92,6 +96,10 @@
 .pro-sidebar.collapsed {
   width: 76px;
   min-width: 76px;
+}
+
+.pro-sidebar.collapsed .pro-menu > ul > .pro-menu-item.pro-sub-menu:hover svg {
+  fill: black;
 }
 
 @media only screen and (max-width: 768.9px) {

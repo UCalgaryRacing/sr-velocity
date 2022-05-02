@@ -163,7 +163,7 @@ export const ManageThings: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div id="manage-things">
+        <div id="">
           <DashNav margin={context.margin}>
             <div className="left">
               {isAuthAtLeast(user, UserRole.ADMIN) && (
@@ -190,7 +190,7 @@ export const ManageThings: React.FC = () => {
               />
             </div>
           </DashNav>
-          <div id="thing-cards">{thingCards}</div>
+          <div id="manage-grid">{thingCards}</div>
         </div>
       )}
       {noMatchingThings && (

@@ -33,7 +33,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   };
 
   return (
-    <div id="chart-view">
+    <div>
       <DashNav margin={context.margin}>
         <div className="left">
           <ToolTip value="New Chart">
@@ -52,7 +52,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           </ToolTip>
         </div>
       </DashNav>
-      {charts}
+      <div id="chart-view">{charts}</div>
     </div>
   );
 };
