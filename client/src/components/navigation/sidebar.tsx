@@ -98,6 +98,7 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
         <SidebarHeader>
           <div>
             <Hamburger
+              key="hamburger"
               onToggle={() => {
                 if (props.onCollapse) props.onCollapse(!collapsed);
                 setCollapsed(!collapsed);

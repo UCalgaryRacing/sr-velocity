@@ -99,6 +99,7 @@ export const OperatorCard: React.FC<OperatorCardProps> = (
           setShowOperatorModal(false);
         }}
         operator={props.operator}
+        things={props.things}
       />
       <Alert
         title="Something went wrong..."

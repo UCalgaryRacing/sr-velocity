@@ -13,5 +13,6 @@ a:hover {
 }
 
 :focus-visible {
-  outline: var(--black) auto 2px;
+  outline: var(--black) 1px;
+  outline-width: 0px;
 }

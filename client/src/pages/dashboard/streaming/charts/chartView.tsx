@@ -23,12 +23,15 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     let chartUI = [];
     chartUI.push(
       <ChartBox
+        key={1}
         title={"This is a custom chart title"}
         type={ChartType.LINE}
         realtime
       />
     );
-    chartUI.push(<ChartBox title={"Title"} type={ChartType.LINE} realtime />);
+    chartUI.push(
+      <ChartBox key={2} title={"Title"} type={ChartType.LINE} realtime />
+    );
     setCharts(chartUI);
   };
 

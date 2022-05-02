@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { signUserOut } from "crud";
 import { RootState, useAppSelector, userSignedOut } from "state";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Alert } from "components/interface";
 

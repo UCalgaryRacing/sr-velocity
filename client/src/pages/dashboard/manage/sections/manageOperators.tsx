@@ -201,7 +201,11 @@ export const ManageOperators: React.FC = () => {
           </div>
         </div>
       )}
-      <OperatorModal show={showOperatorModal} toggle={onNewOperator} />
+      <OperatorModal
+        show={showOperatorModal}
+        toggle={onNewOperator}
+        things={things}
+      />
       <Alert
         title="Success!"
         description={alertDescription}

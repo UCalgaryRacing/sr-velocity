@@ -30,6 +30,10 @@ Written by Justin Tijunelis
   color: var(--gray);
 }
 
+.input-field input:focus {
+  border: 1px solid var(--black);
+}
+
 .input-field input:focus ~ label {
   bottom: 58px !important;
   color: var(--black) !important;

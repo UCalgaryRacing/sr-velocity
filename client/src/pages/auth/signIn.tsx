@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis, Jeremy Bilic
 
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { useForm } from "hooks";
 import { InputField, TextButton, Alert } from "components/interface/";
 import { signIn } from "crud";

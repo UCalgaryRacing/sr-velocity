@@ -84,9 +84,8 @@ Written by Joey Van Lierop
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1000px) {
   #manage-grid {
-    display: block;
     grid-template-columns: 1fr;
     grid-gap: 10px;
   }

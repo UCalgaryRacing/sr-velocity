@@ -34,14 +34,27 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <AuthWrapper>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/home" component={Home} />
-            <Route exact path="/dashboard" component={Dashboard} />
-            <Route exact path="/profile" component={Profile} />
-            <Route exact path="/sign-in" component={SignIn} />
-            <Route exact path="/sign-up" component={SignUp} />
-            <Route exact path="/licenses" component={Licenses} />
-            <Route component={NotFound} />
+            <Route path="/">
+              <Home />
+            </Route>
+            <Route path="/home">
+              <Home />
+            </Route>
+            <Route path="/dashboard">
+              <Dashboard />
+            </Route>
+            <Route path="/sign-in">
+              <SignIn />
+            </Route>
+            <Route path="/sign-up">
+              <SignUp />
+            </Route>
+            <Route path="/licenses">
+              <Licenses />
+            </Route>
+            <Route>
+              <NotFound />
+            </Route>
           </AuthWrapper>
         </Switch>
       </Router>

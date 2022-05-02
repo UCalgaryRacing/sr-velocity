@@ -101,6 +101,7 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
           setShowThingModal(false);
         }}
         thing={props.thing}
+        operators={props.operators}
       />
       <Alert
         title="Something went wrong..."

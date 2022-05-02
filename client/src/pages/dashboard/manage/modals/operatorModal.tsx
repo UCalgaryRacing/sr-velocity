@@ -1,23 +1,32 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { BaseModal } from "components/modals";
-import { InputField, TextButton, Alert } from "components/interface";
+import {
+  InputField,
+  TextButton,
+  Alert,
+  MultiSelect,
+} from "components/interface";
 import { postOperator, putOperator } from "crud";
 import { useForm } from "hooks";
-import { Operator } from "state";
+import { Operator, Thing } from "state";
 import { useAppSelector, RootState } from "state";
 
 interface OperatorModalProps {
   show?: boolean;
   toggle: any;
   operator?: Operator;
+  things: Thing[];
 }
 
 export const OperatorModal: React.FC<OperatorModalProps> = (
   props: OperatorModalProps
 ) => {
+  const [thingOptions, setThingOptions] = useState<any[]>([]);
+  const [selectedThings, setSelectedThings] = useState<any[]>();
+  const [thingIds, setThingIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -26,17 +35,38 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
     props.operator ? props.operator : { name: "" }
   );
 
+  useLayoutEffect(() => {
+    if (props.things.length === 0) return;
+    let thingOptions = [];
+    for (const thing of props.things) {
+      thingOptions.push({ key: thing.name, _id: thing._id });
+    }
+    setThingOptions(thingOptions);
+    if (props.operator) {
+      let associatedThings = props.things.filter((thing) =>
+        props.operator!.thingIds.includes(thing._id)
+      );
+      let selectedThings = [];
+      let thingIds = [];
+      for (const thing of associatedThings) {
+        selectedThings.push({ key: thing.name, _id: thing._id });
+        thingIds.push(thing._id);
+      }
+      setSelectedThings(selectedThings);
+      setThingIds(thingIds);
+    }
+  }, [props.things, props.operator]);
+
   const alert = (description: string) => {
     setAlertDescription(description);
     setShowAlert(true);
   };
 
   const onSubmit = (e: any) => {
-    // TODO: Handle all thing-operator associations
     e.preventDefault();
     setLoading(true);
     if (props.operator) {
-      putOperator(values)
+      putOperator({ ...values, thingIds: thingIds })
         .then((_: any) => {
           setLoading(false);
           props.toggle(values);
@@ -46,7 +76,11 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           alert("The operator name must be unique. Please try again...");
         });
     } else {
-      postOperator({ ...values, organizationId: user?.organizationId })
+      postOperator({
+        ...values,
+        organizationId: user?.organizationId,
+        thingIds: thingIds,
+      })
         .then((operator: Operator) => {
           setLoading(false);
           props.toggle(operator);
@@ -56,6 +90,13 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           alert("The operator name must be unique. Please try again...");
         });
     }
+  };
+
+  const onSelect = (selectedList: any[], _: any[]) => {
+    let thingIds: string[] = [];
+    for (let item of selectedList) thingIds.push(item._id);
+    setSelectedThings(selectedList);
+    setThingIds(thingIds);
   };
 
   return (
@@ -72,6 +113,12 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           onChange={handleChange}
           minLength={4}
           required
+        />
+        <MultiSelect
+          placeholder="Things"
+          options={thingOptions}
+          selectedValues={selectedThings}
+          onSelect={onSelect}
         />
         <TextButton title="Save" onClick={onSubmit} loading={loading} />
       </BaseModal>

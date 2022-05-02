@@ -9,6 +9,7 @@ import {
   IconButton,
   ToolTip,
   Alert,
+  DropDown,
 } from "components/interface";
 import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
@@ -200,7 +201,11 @@ export const ManageThings: React.FC = () => {
           </div>
         </div>
       )}
-      <ThingModal show={showThingModal} toggle={onNewThing} />
+      <ThingModal
+        show={showThingModal}
+        toggle={onNewThing}
+        operators={operators}
+      />
       <Alert
         title="Success!"
         description={alertDescription}
