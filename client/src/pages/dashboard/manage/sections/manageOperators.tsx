@@ -25,6 +25,7 @@ import DashNav from "components/navigation/dashNav";
 import { getOperators, getThings } from "crud";
 import { Add } from "@mui/icons-material";
 
+// TODO: Filter by Thing
 export const ManageOperators: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);

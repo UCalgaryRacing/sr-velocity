@@ -28,6 +28,14 @@ export const signUserOut = () => {
   });
 };
 
+export const getUsers = () => {
+  return new Promise<User[]>((resolve, reject) => {
+    request("POST", "/users")
+      .then((users: User[]) => resolve(users))
+      .catch((err: any) => reject(err));
+  });
+};
+
 export const putUser = (user: User) => {
   return new Promise<void>((resolve, reject) => {
     request("PUT", "/database/users", user)
@@ -36,14 +44,18 @@ export const putUser = (user: User) => {
   });
 };
 
+export const changeUserRole = (user: User) => {
+  return new Promise<void>((resolve, reject) => {
+    request("PUT", "/database/users/promote", user)
+      .then((_: any) => resolve())
+      .catch((err: any) => reject());
+  });
+};
+
 export const deleteUser = (userId: string) => {
-  return new Promise<void>((resolve, reject) => {});
-};
-
-export const approveUser = (userId: string) => {
-  return new Promise<void>((resolve, reject) => {});
-};
-
-export const promoteUser = (user: User) => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<void>((resolve, reject) => {
+    request("DELETE", "/database/users/" + userId)
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
+  });
 };

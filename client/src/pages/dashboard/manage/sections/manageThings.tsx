@@ -26,6 +26,7 @@ import {
 } from "state";
 import { Add } from "@mui/icons-material";
 
+// TODO: Filter by operator
 export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
