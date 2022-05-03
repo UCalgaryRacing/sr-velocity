@@ -83,6 +83,7 @@ const SignUp: React.FC = () => {
               placeholder="Select Organization..."
               options={organizations}
               onChange={(value: any) => setOrganization(value._id)}
+              isSearchable
             />
             <InputField
               name="email"

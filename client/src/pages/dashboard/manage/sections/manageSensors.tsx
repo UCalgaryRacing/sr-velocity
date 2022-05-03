@@ -223,6 +223,7 @@ export const ManageSensors: React.FC = () => {
                         if (thing._id === value.value) setThing(thing);
                     }}
                     defaultValue={{ value: thing._id, label: thing.name }}
+                    isSearchable
                   />
                   <InputField
                     name="search"
@@ -243,7 +244,7 @@ export const ManageSensors: React.FC = () => {
           ) : (
             <div id="manage-loading">
               <div id="manage-loading-content">
-                <b>Select the Thing you want to see Sensors for:</b>
+                <b>Select the Thing you want Sensors for:</b>
                 <br />
                 <br />
                 <DropDown

@@ -6,7 +6,7 @@ import { BaseModal } from "components/modals";
 import { InputField, TextButton, Alert, DropDown } from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
-import { Sensor, numberToHex } from "state";
+import { Sensor, numberToHex, hexToNumber, sensorTypes } from "state";
 
 interface SensorModalProps {
   show?: boolean;
@@ -49,15 +49,44 @@ export const SensorModal: React.FC<SensorModalProps> = (
     setShowAlert(true);
   };
 
-  const onTypeSelected = () => {};
-
   const onSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
     if (props.sensor) {
-      // put
+      let sensor = {
+        ...props.sensor,
+        ...values,
+        canId: hexToNumber(values.canId),
+        type: type,
+      };
+      putSensor(sensor)
+        .then((_: any) => {
+          setLoading(false);
+          props.toggle(sensor);
+        })
+        .catch((err: any) => {
+          setLoading(false);
+          if (err.status === 409)
+            alert(
+              "The Sensor name and CAN ID must be unique. Please try again..."
+            );
+          else alert("Please try again...");
+        });
     } else {
-      // post
+      let sensor = { ...values, canId: hexToNumber(values.canId), type: type };
+      postSensor(sensor)
+        .then((sensor: Sensor) => {
+          setLoading(false);
+          props.toggle(sensor);
+        })
+        .catch((err: any) => {
+          setLoading(false);
+          if (err.status === 409)
+            alert(
+              "The Sensor name and CAN ID must be unique. Please try again..."
+            );
+          else alert("Please try again...");
+        });
     }
   };
 
@@ -75,7 +104,19 @@ export const SensorModal: React.FC<SensorModalProps> = (
           onChange={handleChange}
           required
         />
-        {/* Need dropdown for type */}
+        <DropDown
+          placeholder="Sensor Type"
+          options={(() => {
+            let options: any[] = [];
+            for (const [key, value] of Object.entries(sensorTypes))
+              options.push({ value: key, label: value });
+            return options;
+          })()}
+          onChange={(value: any) => {
+            setType(value.value);
+          }}
+          isSearchable
+        />
         <InputField
           name="category"
           placeholder="Category"

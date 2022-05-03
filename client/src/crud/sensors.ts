@@ -13,7 +13,7 @@ export const getSensors = (thingId: string) => {
 };
 
 export const postSensor = (sensor: Sensor) => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<Sensor>((resolve, reject) => {
     request("POST", "/database/sensors", sensor)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
