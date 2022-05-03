@@ -53,7 +53,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
       setSelectedThings(selectedThings);
       setThingIds(thingIds);
     }
-  }, [props.things, props.operator]);
+  }, [props.things, props.operator, props.show]);
 
   const alert = (description: string) => {
     setAlertDescription(description);

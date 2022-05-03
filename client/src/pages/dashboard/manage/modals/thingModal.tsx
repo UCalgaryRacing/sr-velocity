@@ -56,7 +56,7 @@ export const ThingModal: React.FC<ThingModalProps> = (
       setSelectedOperators(selectedOperators);
       setOperatorIds(operatorIds);
     }
-  }, [props.operators, props.thing]);
+  }, [props.operators, props.thing, props.show]);
 
   const alert = (description: string) => {
     setAlertDescription(description);
