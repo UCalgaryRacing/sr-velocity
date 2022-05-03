@@ -35,8 +35,13 @@ Written by Justin Tijunelis
   font-weight: bold;
 }
 
+.multiSelectContainer ul li {
+  cursor: pointer;
+}
+
 .multiSelectContainer ul li:hover {
   background-color: #ba183380;
+  cursor: pointer;
 }
 
 .multiSelectContainer ul .highlightOption {
