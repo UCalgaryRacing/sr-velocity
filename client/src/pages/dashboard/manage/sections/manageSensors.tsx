@@ -100,6 +100,7 @@ export const ManageSensors: React.FC = () => {
           key={sensor._id}
           onSensorUpdate={onNewSensor}
           onSensorDelete={onDeleteSensor}
+          thing={thing!}
         />
       );
     }
@@ -270,7 +271,7 @@ export const ManageSensors: React.FC = () => {
           </div>
         </div>
       )}
-      <SensorModal show={showSensorModal} toggle={onNewSensor} />
+      <SensorModal show={showSensorModal} toggle={onNewSensor} thing={thing!} />
       <Alert
         title="Success!"
         description={alertDescription}

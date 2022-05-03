@@ -46,7 +46,7 @@
   top: 21px;
   left: 82px;
   color: white;
-  z-index: 10000000;
+  z-index: 1044;
 }
 
 @media only screen and (max-width: 768.9px) {

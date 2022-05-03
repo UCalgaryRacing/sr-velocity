@@ -1,17 +1,18 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BaseModal } from "components/modals";
 import { InputField, TextButton, Alert, DropDown } from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
-import { Sensor, numberToHex, hexToNumber, sensorTypes } from "state";
+import { Sensor, Thing, numberToHex, hexToNumber, sensorTypes } from "state";
 
 interface SensorModalProps {
   show?: boolean;
   toggle: any;
   sensor?: Sensor;
+  thing: Thing;
 }
 
 const initialValues = {
@@ -51,6 +52,21 @@ export const SensorModal: React.FC<SensorModalProps> = (
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    let canIdValid =
+      (values.canId.length === 8 || values.canId.length === 10) &&
+      !(values.canId.length === 8 && !/[0-9a-fA-F]{8}/.test(values.canId)) &&
+      !(
+        values.canId.length === 10 && !/0[xX][0-9a-fA-F]{8}/.test(values.canId)
+      );
+    if (!canIdValid) {
+      alert("Please provide a valid CAN ID.");
+      return;
+    }
+    if (type === "") {
+      alert("Please select a type for the Sensor.");
+      return;
+    }
+    return;
     setLoading(true);
     if (props.sensor) {
       let sensor = {
@@ -73,7 +89,12 @@ export const SensorModal: React.FC<SensorModalProps> = (
           else alert("Please try again...");
         });
     } else {
-      let sensor = { ...values, canId: hexToNumber(values.canId), type: type };
+      let sensor = {
+        ...values,
+        canId: hexToNumber(values.canId),
+        type: type,
+        thingId: props.thing._id,
+      };
       postSensor(sensor)
         .then((sensor: Sensor) => {
           setLoading(false);
@@ -119,21 +140,20 @@ export const SensorModal: React.FC<SensorModalProps> = (
         />
         <InputField
           name="category"
-          placeholder="Category"
+          title="Category"
           value={values.category}
           onChange={handleChange}
         />
         <InputField
           name="canId"
-          placeholder="CAN ID"
-          pattern="0[xX][0-9a-fA-F]+"
+          title="CAN ID ([0x]########)"
           value={values.canId}
           onChange={handleChange}
           required
         />
         <InputField
           name="frequency"
-          placeholder="Frequency"
+          title="Frequency"
           type="number"
           value={values.frequency}
           onChange={handleChange}
@@ -141,55 +161,55 @@ export const SensorModal: React.FC<SensorModalProps> = (
         />
         <InputField
           name="unit"
-          placeholder="Unit"
+          title="Unit"
           value={values.unit}
           onChange={handleChange}
         />
         <InputField
           name="lowerCalibration"
-          placeholder="Lower Calibration"
+          title="Lower Calibration"
           type="number"
           value={values.lowerCalibration}
           onChange={handleChange}
         />
         <InputField
           name="upperCalibration"
-          placeholder="Upper Calibration"
+          title="Upper Calibration"
           type="number"
           value={values.upperCalibration}
           onChange={handleChange}
         />
         <InputField
           name="conversionMultiplier"
-          placeholder="Conversion Multiplier"
+          title="Conversion Multiplier"
           type="number"
           value={values.conversionMultiplier}
           onChange={handleChange}
         />
         <InputField
           name="lowerWarning"
-          placeholder="Lower Warning"
+          title="Lower Warning"
           type="number"
           value={values.lowerWarning}
           onChange={handleChange}
         />
         <InputField
           name="upperWarning"
-          placeholder="Upper Warning"
+          title="Upper Warning"
           type="number"
           value={values.lowerWarning}
           onChange={handleChange}
         />
         <InputField
           name="lowerDanger"
-          placeholder="Lower Danger"
+          title="Lower Danger"
           type="number"
           value={values.lowerDanger}
           onChange={handleChange}
         />
         <InputField
           name="upperDanger"
-          placeholder="Upper Danger"
+          title="Upper Danger"
           type="number"
           value={values.upperDanger}
           onChange={handleChange}

@@ -10,6 +10,7 @@ import {
   RootState,
   isAuthAtLeast,
   UserRole,
+  Thing,
 } from "state";
 import { SensorModal } from "../modals/sensorModal";
 import { ConfirmModal } from "components/modals";
@@ -18,6 +19,7 @@ import { numberToHex, sensorTypes } from "state";
 
 interface SensorCardProps {
   sensor: Sensor;
+  thing: Thing;
   onSensorUpdate?: (sensor: Sensor) => void;
   onSensorDelete?: (sensorId: string) => void;
 }
@@ -126,6 +128,7 @@ export const SensorCard: React.FC<SensorCardProps> = (
           setShowSensorModal(false);
         }}
         sensor={props.sensor}
+        thing={props.thing}
       />
       <Alert
         title="Something went wrong..."
