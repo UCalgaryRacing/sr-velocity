@@ -39,8 +39,13 @@ export const ManageProfile: React.FC = () => {
         alert(false, "Your profile was updated!");
         setUpdateLoading(false);
       })
-      .catch((_: any) => {
-        alert(true, "Please try again...");
+      .catch((err: any) => {
+        if (err.status === 409)
+          alert(
+            true,
+            "Your email must be globally unique, and your username must be unique to the organization."
+          );
+        else alert(true, "Please try again...");
         setUpdateLoading(false);
       });
   };

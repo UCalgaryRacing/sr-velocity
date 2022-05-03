@@ -73,9 +73,11 @@ export const ThingModal: React.FC<ThingModalProps> = (
           setLoading(false);
           props.toggle(thing);
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          alert("The thing name must be unique. Please try again...");
+          if (err.status === 409)
+            alert("The Thing name must be unique. Please try again...");
+          else alert("Please try again...");
         });
     } else {
       postThing({
@@ -86,9 +88,11 @@ export const ThingModal: React.FC<ThingModalProps> = (
           setLoading(false);
           props.toggle(thing);
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          alert("The thing name must be unique. Please try again...");
+          if (err.status === 409)
+            alert("The Thing name must be unique. Please try again...");
+          else alert("Please try again...");
         });
     }
   };

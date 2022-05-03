@@ -53,8 +53,10 @@ export const ManageOrganization: React.FC = () => {
         alert(false, "Your organization was updated!");
         setUpdateLoading(false);
       })
-      .catch((_: any) => {
-        alert(true, "Please try again...");
+      .catch((err: any) => {
+        if (err.status === 409)
+          alert(true, "This organization name is already taken.");
+        else alert(true, "Please try again...");
         setUpdateLoading(false);
       });
   };

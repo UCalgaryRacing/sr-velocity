@@ -70,9 +70,11 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           setLoading(false);
           props.toggle(operator);
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          alert("The operator name must be unique. Please try again...");
+          if (err.status === 409)
+            alert("The Operator name must be unique. Please try again...");
+          else alert("Please try again...");
         });
     } else {
       postOperator({
@@ -83,9 +85,11 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           setLoading(false);
           props.toggle(operator);
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          alert("The operator name must be unique. Please try again...");
+          if (err.status === 409)
+            alert("The Operator name must be unique. Please try again...");
+          else alert("Please try again...");
         });
     }
   };
