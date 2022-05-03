@@ -102,13 +102,13 @@ export const ManageThings: React.FC = () => {
         }
       }
       if (!updated) updatedThings.push(thing);
-      updatedThings.sort((a: Thing, b: Thing) => {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      });
+      updatedThings.sort((a: Thing, b: Thing) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
       setThings(updatedThings);
       setNoThings(false);
-      if (updated) alert("The thing was updated.");
-      else alert("The thing was created.");
+      if (updated) alert("The Thing was updated.");
+      else alert("The Thing was created.");
     }
     setShowThingModal(false);
   };
@@ -122,7 +122,7 @@ export const ManageThings: React.FC = () => {
     }
     setThings(updatedThings);
     setNoThings(updatedThings.length === 0);
-    alert("The thing was deleted.");
+    alert("The Thing was deleted.");
   };
 
   const onSearch = (query: string) => {
@@ -166,11 +166,11 @@ export const ManageThings: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div id="">
+        <div id="manage-content">
           <DashNav margin={context.margin}>
             <div className="left">
               {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <ToolTip value="Add">
+                <ToolTip value="New Thing">
                   <IconButton
                     onClick={() => setShowThingModal(true)}
                     img={<Add />}

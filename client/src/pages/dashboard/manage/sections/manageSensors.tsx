@@ -4,194 +4,280 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import DashNav from "components/navigation/dashNav";
-import { RootState, Sensor, useAppSelector } from "state";
-
-const initialForm = {
-  type: "",
-  category: "",
-  name: "",
-  frequency: "",
-  unit: "",
-  canId: "",
-  lowerCalibration: "",
-  conversionMultiplier: "",
-  upperWarning: "",
-  lowerWarning: "",
-  upperDanger: "",
-  lowerDanger: "",
-  disabled: false,
-};
+import {
+  isAuthAtLeast,
+  RootState,
+  Sensor,
+  Thing,
+  useAppSelector,
+  UserRole,
+} from "state";
+import { SensorCard } from "../cards";
+import { getThings, getSensors } from "crud";
+import { CircularProgress } from "@mui/material";
+import {
+  TextButton,
+  InputField,
+  Alert,
+  ToolTip,
+  IconButton,
+  DropDown,
+} from "components/interface";
+import { Add } from "@mui/icons-material";
+import { SensorModal } from "../modals/sensorModal";
 
 export const ManageSensors: React.FC = () => {
   const context = useContext(DashboardContext);
-  const dashboard = useAppSelector((state: RootState) => state.dashboard);
+  const user = useAppSelector((state: RootState) => state.user);
+  const [query, setQuery] = useState<string>("");
+  const [thing, setThing] = useState<Thing>();
+  const [things, setThings] = useState<Thing[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [sensorCards, setSensorCards] = useState<any>([]);
+  const [errorFetchingThings, setErrorFetchingThings] =
+    useState<boolean>(false);
+  const [errorFetchingSensors, setErrorFetchingSensors] =
+    useState<boolean>(false);
+  const [fetchingThings, setFetchingThings] = useState<boolean>(true);
+  const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
+  const [noThings, setNoThings] = useState<boolean>(false);
+  const [noSensors, setNoSensors] = useState<boolean>(false);
+  const [noMatchingSensors, setNoMatchingSensors] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
+  const [showSensorModal, setShowSensorModal] = useState<boolean>(false);
 
   useEffect(() => {
-    // Fetch sensors
-    // We need to know the thing in the dashboard
+    getThings()
+      .then((things: Thing[]) => {
+        things.sort((a: Thing, b: Thing) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setThings(things);
+        setNoThings(things.length === 0);
+        setFetchingThings(false);
+      })
+      .catch((_: any) => {
+        setFetchingThings(false);
+        setErrorFetchingThings(true);
+      });
   }, []);
 
-  const onNewSensor = () => {
-    // Make request to post the sensor
-    // On success, add a new card in the correct order
+  useEffect(() => {
+    if (thing) {
+      setFetchingSensors(true);
+      getSensors(thing?._id)
+        .then((sensors: Sensor[]) => {
+          sensors.sort((a: Sensor, b: Sensor) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+          );
+          setSensors(sensors);
+          setNoSensors(sensors.length === 0);
+          setFetchingSensors(false);
+        })
+        .catch((_: any) => {
+          setFetchingSensors(false);
+          setErrorFetchingSensors(true);
+        });
+    }
+  }, [thing]);
+
+  useEffect(() => {
+    generateSensorCards(sensors);
+  }, [sensors]);
+
+  const alert = (description: string) => {
+    setAlertDescription(description);
+    setShowAlert(true);
   };
 
-  const onSearch = (query: string) => {};
+  const generateSensorCards = (sensors: Sensor[]) => {
+    let cards = [];
+    for (const sensor of sensors) {
+      cards.push(
+        <SensorCard
+          sensor={sensor}
+          key={sensor._id}
+          onSensorUpdate={onNewSensor}
+          onSensorDelete={onDeleteSensor}
+        />
+      );
+    }
+    setSensorCards(cards);
+  };
+
+  const onNewSensor = (sensor: Sensor) => {
+    if (sensor && sensor._id) {
+      let updatedSensors = [...sensors];
+      let updated = false;
+      for (let i in updatedSensors) {
+        if (updatedSensors[i]._id === sensor._id) {
+          updatedSensors[i] = sensor;
+          updated = true;
+        }
+      }
+      if (!updated) updatedSensors.push(sensor);
+      updatedSensors.sort((a: Sensor, b: Sensor) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
+      setSensors(updatedSensors);
+      setNoSensors(false);
+      if (updated) alert("The Sensor was updated.");
+      else alert("The Sensor was created.");
+    }
+    setShowSensorModal(false);
+  };
+
+  const onDeleteSensor = (sensorId: string) => {
+    let updatedSensors = [];
+    for (let sensor of [...sensors]) {
+      if (sensor._id !== sensorId) {
+        updatedSensors.push(sensor);
+      }
+    }
+    setSensors(updatedSensors);
+    setNoSensors(updatedSensors.length === 0);
+    alert("The Sensor was deleted.");
+  };
+
+  const onSearch = (query: string) => {
+    let matchingSensors = [];
+    for (let sensor of [...sensors]) {
+      let lowerQuery = query.toLowerCase();
+      let name = sensor.name.toLowerCase();
+      let category = sensor.category ? sensor.category.toLowerCase() : "";
+      if (name.includes(lowerQuery) || category.includes(lowerQuery)) {
+        matchingSensors.push(sensor);
+      }
+    }
+    generateSensorCards(matchingSensors);
+    setNoMatchingSensors(matchingSensors.length === 0);
+  };
 
   return (
-    <div id="manage-sensors">
-      <DashNav margin={context.margin}></DashNav>
-    </div>
+    <>
+      {noThings ||
+      noSensors ||
+      errorFetchingThings ||
+      errorFetchingSensors ||
+      fetchingThings ||
+      fetchingSensors ? (
+        <div id="manage-loading">
+          <div id="manage-loading-content">
+            {fetchingThings || fetchingSensors ? (
+              <>
+                <CircularProgress style={{ color: "black" }} />
+                <br />
+                <br />
+                <b>Fetching&nbsp;{fetchingThings ? "Things" : "Sensors"}...</b>
+              </>
+            ) : (
+              <>
+                <b>
+                  {!thing && (
+                    <>
+                      {!errorFetchingThings
+                        ? "Your organization has no Things yet. You can create one on the Thing page."
+                        : "Could not fetch Things, please refresh."}
+                    </>
+                  )}
+                  {!errorFetchingSensors && thing
+                    ? "The Thing has no Sensors yet."
+                    : "Could not fetch Sensors, please refresh."}
+                </b>
+                {!errorFetchingSensors &&
+                  thing &&
+                  isAuthAtLeast(user, UserRole.ADMIN) && (
+                    <TextButton
+                      title="Create a new Sensor"
+                      onClick={() => setShowSensorModal(true)}
+                    />
+                  )}
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div id="manage-content">
+          {thing ? (
+            <>
+              <DashNav margin={context.margin}>
+                <div className="left">
+                  {isAuthAtLeast(user, UserRole.ADMIN) && (
+                    <ToolTip value="New Sensor">
+                      <IconButton
+                        onClick={() => setShowSensorModal(true)}
+                        img={<Add />}
+                      />
+                    </ToolTip>
+                  )}
+                </div>
+                <div className="right">
+                  <DropDown
+                    placeholder="Select Thing..."
+                    options={things.map((thing) => {
+                      return { value: thing._id, label: thing.name };
+                    })}
+                    onChange={(value: any) => {
+                      for (const thing of things)
+                        if (thing._id === value.value) setThing(thing);
+                    }}
+                    defaultValue={{ value: thing._id, label: thing.name }}
+                  />
+                  <InputField
+                    name="search"
+                    type="name"
+                    placeholder="Search"
+                    id="manage-nav-search"
+                    value={query}
+                    onChange={(e: any) => {
+                      setQuery(e.target.value);
+                      onSearch(e.target.value);
+                    }}
+                    required
+                  />
+                </div>
+              </DashNav>
+              <div id="manage-grid">{sensorCards}</div>
+            </>
+          ) : (
+            <div id="manage-loading">
+              <div id="manage-loading-content">
+                <b>Select the Thing you want to see Sensors for:</b>
+                <br />
+                <br />
+                <DropDown
+                  placeholder="Select Thing..."
+                  options={things.map((thing) => {
+                    return { value: thing._id, label: thing.name };
+                  })}
+                  onChange={(value: any) => {
+                    console.log(value);
+                    for (const thing of things)
+                      if (thing._id === value.value) setThing(thing);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      {noMatchingSensors && (
+        <div id="no-match">
+          <div id="no-match-content">
+            <b>No matching Sensors found...</b>
+          </div>
+        </div>
+      )}
+      <SensorModal show={showSensorModal} toggle={onNewSensor} />
+      <Alert
+        title="Success!"
+        description={alertDescription}
+        color="green"
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
+    </>
   );
 };
-
-// const dashboard = useAppSelector((state: RootState) => state.dashboard);
-// const [cards, setCards] = useState<{ [key: string]: Sensor[] }>({});
-// const [open, setOpen] = useState(false);
-// const [loading, setLoading] = useState(false);
-// const [values, handleChange, setValues] = useForm(initialForm);
-
-// const addCard = (newCard: Sensor) => {
-//   let newCards = { ...cards };
-//   if (newCards[context.page]) {
-//     newCards[context.page].push(newCard);
-//   } else {
-//     newCards = {
-//       ...newCards,
-//       [context.page]: [newCard],
-//     };
-//   }
-//   setCards(newCards);
-// };
-
-// const onSubmit = async (event: any) => {
-//   // if (loading) {
-//   //   return;
-//   // }
-//   // event?.preventDefault();
-//   // setLoading(true);
-//   // await new Promise((r) => setTimeout(r, 500)); // TEMP FOR TESTING
-//   // try {
-//   //   const newSensor = await postSensor(values);
-//   //   addCard(newSensor);
-//   //   setOpen(false);
-//   //   setValues(initialForm);
-//   // } catch {
-//   // } finally {
-//   //   setLoading(false);
-//   // }
-// };
-
-// if (dashboard.section === "Manage") {
-//   return (
-//     <>
-//       <DashNav margin={context.margin}>
-//         <ManageNav onAddCard={() => setOpen(true)} />
-//       </DashNav>
-//       <div>
-//         {cards[context.page]?.map((data) => (
-//           <ManageCard key={data._id} data={data} />
-//         ))}
-//       </div>
-//       <Modal
-//         open={open}
-//         onClose={() => setOpen(false)}
-//         aria-labelledby="modal-modal-title"
-//         aria-describedby="modal-modal-description"
-//       >
-//         {/*TODO: Add form wrapper*/}
-//         <div id="add-popup">
-//           <h2>New sensor</h2>
-//           <InputField
-//             name="name"
-//             placeholder="Name"
-//             value={values.name}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="type"
-//             placeholder="Type"
-//             value={values.type}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="category"
-//             placeholder="Category"
-//             value={values.category}
-//             onChange={handleChange}
-//           />
-//           <InputField
-//             name="canId"
-//             placeholder="CanID"
-//             pattern="[a-fA-F\d]+"
-//             value={values.canId}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="frequency"
-//             placeholder="Frequency"
-//             type="number"
-//             value={values.frequency}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="unit"
-//             placeholder="Unit"
-//             type="number"
-//             value={values.unit}
-//             onChange={handleChange}
-//           />
-//           <InputField
-//             name="lowerCalibration"
-//             placeholder="Lower Calibration"
-//             type="number"
-//             value={values.lowerCalibration}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="conversionMultiplier"
-//             placeholder="Calibration Multiplier"
-//             type="number"
-//             value={values.conversionMultiplier}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="upperWarning"
-//             placeholder="Upper Warning"
-//             type="number"
-//             value={values.upperWarning}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="lowerWarning"
-//             placeholder="Lower Warning"
-//             type="number"
-//             value={values.lowerWarning}
-//             onChange={handleChange}
-//             required
-//           />
-//           <InputField
-//             name="upperDanger"
-//             placeholder="Upper Danger"
-//             type="number"
-//             value={values.upperDanger}
-//             onChange={handleChange}
-//             required
-//           />
-//           <TextButton title="Add" loading={loading} onClick={onSubmit} />
-//         </div>
-//       </Modal>
-//     </>
-//   );
-// } else {
-//   return <></>;
-// }

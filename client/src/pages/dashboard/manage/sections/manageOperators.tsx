@@ -166,11 +166,11 @@ export const ManageOperators: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div id="manage-operators">
+        <div id="manage-content">
           <DashNav margin={context.margin}>
             <div className="left">
               {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <ToolTip value="Add">
+                <ToolTip value="New Operator">
                   <IconButton
                     onClick={() => setShowOperatorModal(true)}
                     img={<Add />}

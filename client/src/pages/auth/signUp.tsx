@@ -7,6 +7,7 @@ import { getOrganizationNames, registerUser } from "crud";
 import { useForm } from "hooks";
 import "./_styling/signUp.css";
 
+// TODO: Load to get organizations
 const SignUp: React.FC = () => {
   const [organization, setOrganization] = useState<string>("");
   const [organizations, setOrganizations] = useState<any[]>([]);
@@ -79,8 +80,8 @@ const SignUp: React.FC = () => {
               required
             />
             <DropDown
-              options={organizations}
               placeholder="Select Organization..."
+              options={organizations}
               onChange={(value: any) => setOrganization(value._id)}
             />
             <InputField

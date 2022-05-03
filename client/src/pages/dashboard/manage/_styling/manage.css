@@ -47,6 +47,11 @@ Written by Joey Van Lierop
   margin: auto;
 }
 
+#manage-content {
+  min-height: 100%;
+  height: 100%;
+}
+
 #manage-loading {
   height: 100%;
   width: 100%;
@@ -56,7 +61,8 @@ Written by Joey Van Lierop
 }
 
 #manage-loading #manage-loading-content {
-  width: 300px;
+  max-width: 400px;
+  width: 100%;
   margin: auto;
 }
 
