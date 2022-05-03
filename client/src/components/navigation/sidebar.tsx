@@ -116,7 +116,6 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                 key={sub.name}
                 title={sub.name}
                 icon={sub.image}
-                defaultOpen={sub.children.includes(state.dashboard.page)}
                 style={{ color: sub.color }}
                 id={sub.color === "#fff" ? "unselected" : "selected"}
               >
