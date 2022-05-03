@@ -54,16 +54,17 @@ export const OperatorCard: React.FC<OperatorCardProps> = (
       </div>
       {props.things.length > 0 && (
         <div>
-          <b>Associated Thing(s):</b>
+          <b>Associated Thing(s):&nbsp;</b>
           {(() => {
-            let thingsString = " ";
+            let thingsString = "";
             let associatedThings = props.things.filter((thing) =>
               props.operator.thingIds.includes(thing._id)
             );
             for (const thing of associatedThings)
               thingsString += thing.name + ", ";
             thingsString = thingsString.substring(0, thingsString.length - 2);
-            return thingsString;
+            if (associatedThings.length === 0) return "None";
+            else return thingsString;
           })()}
         </div>
       )}

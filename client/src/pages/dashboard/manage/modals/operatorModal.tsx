@@ -1,7 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BaseModal } from "components/modals";
 import {
   InputField,
@@ -12,7 +12,6 @@ import {
 import { postOperator, putOperator } from "crud";
 import { useForm } from "hooks";
 import { Operator, Thing } from "state";
-import { useAppSelector, RootState } from "state";
 
 interface OperatorModalProps {
   show?: boolean;
@@ -30,12 +29,11 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
-  const user = useAppSelector((state: RootState) => state.user);
   const [values, handleChange] = useForm(
     props.operator ? props.operator : { name: "" }
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (props.things.length === 0) return;
     let thingOptions = [];
     for (const thing of props.things) {
@@ -66,10 +64,11 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
     e.preventDefault();
     setLoading(true);
     if (props.operator) {
-      putOperator({ ...values, thingIds: thingIds })
+      let operator = { ...values, thingIds: thingIds };
+      putOperator(operator)
         .then((_: any) => {
           setLoading(false);
-          props.toggle(values);
+          props.toggle(operator);
         })
         .catch((_: any) => {
           setLoading(false);
@@ -78,7 +77,6 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
     } else {
       postOperator({
         ...values,
-        organizationId: user?.organizationId,
         thingIds: thingIds,
       })
         .then((operator: Operator) => {
@@ -92,7 +90,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
     }
   };
 
-  const onSelect = (selectedList: any[], _: any[]) => {
+  const onThingChange = (selectedList: any[], _: any[]) => {
     let thingIds: string[] = [];
     for (let item of selectedList) thingIds.push(item._id);
     setSelectedThings(selectedList);
@@ -118,7 +116,8 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           placeholder="Things"
           options={thingOptions}
           selectedValues={selectedThings}
-          onSelect={onSelect}
+          onSelect={onThingChange}
+          onRemove={onThingChange}
         />
         <TextButton title="Save" onClick={onSubmit} loading={loading} />
       </BaseModal>

@@ -51,7 +51,6 @@ export const ManageThings: React.FC = () => {
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             );
             setThings(things);
-            generateThingCards(things, operators);
             setNoThings(things.length === 0);
             setFetching(false);
           })
@@ -65,6 +64,10 @@ export const ManageThings: React.FC = () => {
         setError(true);
       });
   }, []);
+
+  useEffect(() => {
+    generateThingCards(things, operators);
+  }, [things, operators]);
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -102,7 +105,6 @@ export const ManageThings: React.FC = () => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       });
       setThings(updatedThings);
-      generateThingCards(updatedThings, operators);
       setNoThings(false);
       if (updated) alert("The thing was updated.");
       else alert("The thing was created.");
@@ -118,7 +120,6 @@ export const ManageThings: React.FC = () => {
       }
     }
     setThings(updatedThings);
-    generateThingCards(updatedThings, operators);
     setNoThings(updatedThings.length === 0);
     alert("The thing was deleted.");
   };

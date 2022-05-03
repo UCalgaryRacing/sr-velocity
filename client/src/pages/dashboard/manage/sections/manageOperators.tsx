@@ -51,7 +51,6 @@ export const ManageOperators: React.FC = () => {
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             );
             setOperators(operators);
-            generateOperatorCards(operators, things);
             setNoOperators(operators.length === 0);
             setFetching(false);
           })
@@ -65,6 +64,10 @@ export const ManageOperators: React.FC = () => {
         setError(true);
       });
   }, []);
+
+  useEffect(() => {
+    generateOperatorCards(operators, things);
+  }, [operators, things]);
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -102,7 +105,6 @@ export const ManageOperators: React.FC = () => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
       setOperators(updatedOperators);
-      generateOperatorCards(updatedOperators, things);
       setNoOperators(false);
       if (updated) alert("The operator was updated.");
       else alert("The operator was created.");
@@ -118,7 +120,6 @@ export const ManageOperators: React.FC = () => {
       }
     }
     setOperators(updatedOperators);
-    generateOperatorCards(updatedOperators, things);
     setNoOperators(updatedOperators.length === 0);
     alert("The operator was deleted.");
   };

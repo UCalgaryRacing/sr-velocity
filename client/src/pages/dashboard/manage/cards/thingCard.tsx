@@ -55,9 +55,9 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
       </div>
       {props.operators.length > 0 && (
         <div>
-          <b>Associated Operator(s):</b>
+          <b>Associated Operator(s):&nbsp;</b>
           {(() => {
-            let operatorsString = " ";
+            let operatorsString = "";
             let associatedOperators = props.operators.filter((operator) =>
               props.thing.operatorIds.includes(operator._id)
             );
@@ -67,7 +67,8 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
               0,
               operatorsString.length - 2
             );
-            return operatorsString;
+            if (associatedOperators.length === 0) return "None";
+            else return operatorsString;
           })()}
         </div>
       )}
