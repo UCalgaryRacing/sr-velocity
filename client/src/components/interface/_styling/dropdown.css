@@ -7,23 +7,28 @@
   border: 1px solid var(--red);
 }
 
-.css-1okebmr-indicatorSeparator {
+.dropdown *[class*="-indicatorSeparator"] {
   background-color: var(--red) !important;
 }
 
-.css-tlfecz-indicatorContainer,
-.css-1gtu0rj-indicatorContainer {
+.dropdown *[class*="-indicatorContainer"] {
   color: var(--red) !important;
 }
 
-.css-12fg80a-indicatorContainer:hover,
-.css-7rqokr-indicatorContainer:hover {
-  color: var(--red) !important;
+.dropdown *[class*="-indicatorContainer"]:hover {
+  color: rgba(var(--red), 0.5) !important;
 }
 
-.css-1s2u09g-control,
-.css-1pahdxg-control {
+.dropdown *[class*="-menu"] {
+  background-color: white;
+}
+
+.dropdown *[class*="-control"] {
   height: 44px;
+}
+
+.dropdown *[class*="-option"]:active {
+  background-color: var(--red);
 }
 
 #react-select-3-listbox {
