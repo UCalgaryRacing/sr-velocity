@@ -194,13 +194,13 @@ export const ManageThings: React.FC = () => {
             </div>
           </DashNav>
           <div id="manage-grid">{thingCards}</div>
-        </div>
-      )}
-      {noMatchingThings && (
-        <div id="no-match">
-          <div id="no-match-content">
-            <b>No matching Things found...</b>
-          </div>
+          {noMatchingThings && (
+            <div id="no-match">
+              <div id="no-match-content">
+                <b>No matching Things found...</b>
+              </div>
+            </div>
+          )}
         </div>
       )}
       <ThingModal

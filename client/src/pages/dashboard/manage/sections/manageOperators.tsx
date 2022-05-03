@@ -194,13 +194,13 @@ export const ManageOperators: React.FC = () => {
             </div>
           </DashNav>
           <div id="manage-grid">{operatorCards}</div>
-        </div>
-      )}
-      {noMatchingOperators && (
-        <div id="no-match">
-          <div id="no-match-content">
-            <b>No matching Operators found...</b>
-          </div>
+          {noMatchingOperators && (
+            <div id="no-match">
+              <div id="no-match-content">
+                <b>No matching Operators found...</b>
+              </div>
+            </div>
+          )}
         </div>
       )}
       <OperatorModal

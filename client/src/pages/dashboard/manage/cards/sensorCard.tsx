@@ -24,6 +24,7 @@ interface SensorCardProps {
   onSensorDelete?: (sensorId: string) => void;
 }
 
+// TODO: Add disabled styling
 export const SensorCard: React.FC<SensorCardProps> = (
   props: SensorCardProps
 ) => {

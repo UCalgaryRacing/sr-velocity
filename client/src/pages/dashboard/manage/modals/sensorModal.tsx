@@ -43,6 +43,7 @@ const numberFields = [
   "upperDanger",
 ];
 
+// TODO: Add disabled toggle
 export const SensorModal: React.FC<SensorModalProps> = (
   props: SensorModalProps
 ) => {

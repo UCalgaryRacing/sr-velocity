@@ -194,6 +194,31 @@ export const ManageSensors: React.FC = () => {
                       onClick={() => setShowSensorModal(true)}
                     />
                   )}
+                {!errorFetchingSensors && thing && (
+                  <>
+                    {isAuthAtLeast(user, UserRole.ADMIN) && (
+                      <>
+                        <br />
+                        <br />
+                        <b>Or select a different Thing:</b>
+                      </>
+                    )}
+                    <br />
+                    <br />
+                    <DropDown
+                      placeholder="Select Thing..."
+                      options={things.map((thing) => {
+                        return { value: thing._id, label: thing.name };
+                      })}
+                      onChange={(value: any) => {
+                        for (const thing of things)
+                          if (thing._id === value.value) setThing(thing);
+                      }}
+                      defaultValue={{ value: thing._id, label: thing.name }}
+                      isSearchable
+                    />
+                  </>
+                )}
               </>
             )}
           </div>
@@ -241,6 +266,13 @@ export const ManageSensors: React.FC = () => {
                 </div>
               </DashNav>
               <div id="manage-grid">{sensorCards}</div>
+              {noMatchingSensors && (
+                <div id="no-match">
+                  <div id="no-match-content">
+                    <b>No matching Sensors found...</b>
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <div id="manage-loading">
@@ -257,17 +289,11 @@ export const ManageSensors: React.FC = () => {
                     for (const thing of things)
                       if (thing._id === value.value) setThing(thing);
                   }}
+                  isSearchable
                 />
               </div>
             </div>
           )}
-        </div>
-      )}
-      {noMatchingSensors && (
-        <div id="no-match">
-          <div id="no-match-content">
-            <b>No matching Sensors found...</b>
-          </div>
         </div>
       )}
       <SensorModal show={showSensorModal} toggle={onNewSensor} thing={thing!} />
