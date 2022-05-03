@@ -17,7 +17,7 @@ Written by Justin Tijunelis
   margin-top: -5px;
 }
 
-.modal-content .base-modal-body > * {
+.modal-content .base-modal-body form > * {
   margin-top: 14px;
 }
 

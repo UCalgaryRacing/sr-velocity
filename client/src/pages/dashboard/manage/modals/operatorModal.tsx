@@ -107,12 +107,13 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
         title={props.operator ? "Edit Operator" : "New Operator"}
         show={props.show}
         toggle={props.toggle}
+        onSubmit={onSubmit}
+        handleChange={handleChange}
       >
         <InputField
           name="name"
           title="Name"
           value={values.name}
-          onChange={handleChange}
           minLength={4}
           required
         />
@@ -123,7 +124,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           onSelect={onThingChange}
           onRemove={onThingChange}
         />
-        <TextButton title="Save" onClick={onSubmit} loading={loading} />
+        <TextButton title="Save" loading={loading} />
       </BaseModal>
       <Alert
         title="Something went wrong..."

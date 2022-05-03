@@ -34,13 +34,16 @@ export const BaseModal: React.FC<ModalProps> = (props: ModalProps) => {
         {props.onSubmit || props.handleChange ? (
           <form autoComplete="off" onSubmit={props.onSubmit}>
             {props.children.map((child: any, i: number) => {
-              if (React.isValidElement(child)) {
+              if (
+                React.isValidElement(child) &&
+                // @ts-ignore
+                child["type"].name == "InputField"
+              ) {
                 let hc = props.handleChange;
                 return React.cloneElement(child, {
                   // @ts-ignore
                   onChange: hc,
                   key: i,
-                  placeholder: " ",
                 });
               }
               return child;

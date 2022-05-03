@@ -144,6 +144,8 @@ export const SensorModal: React.FC<SensorModalProps> = (
         title={props.sensor ? "Edit Sensor" : "New Sensor"}
         show={props.show}
         toggle={props.toggle}
+        onSubmit={onSubmit}
+        handleChange={handleChange}
       >
         <InputField
           name="name"
@@ -266,7 +268,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
           ]}
           onChange={setDisabled}
         />
-        <TextButton title="Save" onClick={onSubmit} loading={loading} />
+        <TextButton title="Save" loading={loading} />
       </BaseModal>
       <Alert
         title="Something went wrong..."

@@ -110,12 +110,13 @@ export const ThingModal: React.FC<ThingModalProps> = (
         title={props.thing ? "Edit Thing" : "New Thing"}
         show={props.show}
         toggle={props.toggle}
+        onSubmit={onSubmit}
+        handleChange={handleChange}
       >
         <InputField
           name="name"
           title="Name"
           value={values.name}
-          onChange={handleChange}
           minLength={4}
           required
         />
