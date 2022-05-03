@@ -182,9 +182,14 @@ export const ManageSensors: React.FC = () => {
                         : "Could not fetch Things, please refresh."}
                     </>
                   )}
-                  {!errorFetchingSensors && thing
-                    ? "The Thing has no Sensors yet."
-                    : "Could not fetch Sensors, please refresh."}
+                  {thing && (
+                    <>
+                      {" "}
+                      {!errorFetchingSensors && thing
+                        ? "The Thing has no Sensors yet."
+                        : "Could not fetch Sensors, please refresh."}
+                    </>
+                  )}
                 </b>
                 {!errorFetchingSensors &&
                   thing &&

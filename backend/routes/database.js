@@ -10,15 +10,19 @@ database.all("*", async (req, res) => {
   call(process.env.DATABASE_MS_ROUTE + req.path, req.method, {
     headers: headers,
     json: req.body,
-  }).then(async (response) => {
-    if (response.statusCode === 200) {
-      if (response.body)
-        res.status(response.statusCode).json(response.body).end();
-      else res.status(response.statusCode).end();
-    } else {
-      res.status(response.statusCode).end();
-    }
-  });
+  })
+    .then(async (response) => {
+      if (response.statusCode === 200) {
+        if (response.body)
+          res.status(response.statusCode).json(response.body).end();
+        else res.status(response.statusCode).end();
+      } else {
+        res.status(response.statusCode).end();
+      }
+    })
+    .catch((_) => {
+      res.status(500).end();
+    });
 });
 
 module.exports = database;
