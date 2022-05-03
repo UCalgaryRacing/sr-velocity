@@ -32,10 +32,11 @@ Written by Justin Tijunelis
 
 .multiSelectContainer ul {
   border: 0px solid;
+  font-weight: bold;
 }
 
 .multiSelectContainer ul li:hover {
-  background-color: var(--red);
+  background-color: #ba183380;
 }
 
 .multiSelectContainer ul .highlightOption {
@@ -44,4 +45,5 @@ Written by Justin Tijunelis
 
 .multiSelectContainer .chip {
   background-color: var(--red);
+  font-weight: bold;
 }
