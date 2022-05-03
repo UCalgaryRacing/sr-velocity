@@ -3,7 +3,13 @@
 
 import React, { useState } from "react";
 import { BaseModal } from "components/modals";
-import { InputField, TextButton, Alert, DropDown } from "components/interface";
+import {
+  InputField,
+  TextButton,
+  Alert,
+  DropDown,
+  SegmentedControl,
+} from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
 import { Sensor, Thing, numberToHex, hexToNumber, sensorTypes } from "state";
@@ -50,6 +56,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const [type, setType] = useState<string>(
     props.sensor ? props.sensor.type : ""
   );
+  const [disabled, setDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -92,6 +99,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         ...props.sensor,
         ...values,
         canId: hexToNumber(values.canId),
+        disabled: disabled,
       });
       putSensor(sensor)
         .then((_: any) => {
@@ -112,7 +120,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         canId: hexToNumber(values.canId),
         type: type,
         thingId: props.thing._id,
-        disabled: false,
+        disabled: disabled,
       });
       postSensor(sensor)
         .then((sensor: Sensor) => {
@@ -241,6 +249,22 @@ export const SensorModal: React.FC<SensorModalProps> = (
           type="number"
           value={values.upperDanger}
           onChange={handleChange}
+        />
+        <SegmentedControl
+          name="sensor-toggle"
+          options={[
+            {
+              label: "Enabled",
+              value: false,
+              default: props.sensor ? !props.sensor.disabled : true,
+            },
+            {
+              label: "Disabled",
+              value: true,
+              default: props.sensor ? props.sensor.disabled : false,
+            },
+          ]}
+          onChange={setDisabled}
         />
         <TextButton title="Save" onClick={onSubmit} loading={loading} />
       </BaseModal>
