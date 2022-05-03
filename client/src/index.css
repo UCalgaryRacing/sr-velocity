@@ -20,9 +20,11 @@ code {
 html {
   /* Core Colors */
   --black: #171717;
+  color: var(--black);
   --white: #fff;
   --red: #ba1833;
   --gray: #444444;
+  --medium-gray: #777777;
   --lightgray: #f8f8f8;
 
   /* Accent Colors */

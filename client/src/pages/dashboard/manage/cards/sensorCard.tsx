@@ -50,16 +50,23 @@ export const SensorCard: React.FC<SensorCardProps> = (
   };
 
   return (
-    <div className="card">
+    <div
+      className="card"
+      style={{ color: props.sensor.disabled ? "#777777" : "#171717" }}
+    >
       <div className="card-title">
-        <b>{props.sensor.name}</b>
+        <b>
+          {props.sensor.name +
+            " " +
+            (props.sensor.disabled ? " - DISABLED" : "")}
+        </b>
       </div>
       <div>
         <b>Category:&nbsp;</b>
         {props.sensor.category ? props.sensor.category : "N/A"}
       </div>
       <div>
-        <b>Type:&nbsp;</b>
+        <b>Data Type:&nbsp;</b>
         {(() => {
           // @ts-ignore
           return sensorTypes[props.sensor.type];
@@ -78,6 +85,12 @@ export const SensorCard: React.FC<SensorCardProps> = (
         {props.sensor.unit ? props.sensor.unit : "N/A"}
       </div>
       <div>
+        <b>Conversion Multiplier:&nbsp;</b>
+        {props.sensor.conversionMultiplier
+          ? props.sensor.conversionMultiplier
+          : "N/A"}
+      </div>
+      <div>
         <b>Lower Calibration:&nbsp;</b>
         {props.sensor.lowerCalibration ? props.sensor.lowerCalibration : "N/A"}
       </div>
@@ -86,10 +99,12 @@ export const SensorCard: React.FC<SensorCardProps> = (
         {props.sensor.upperCalibration ? props.sensor.upperCalibration : "N/A"}
       </div>
       <div>
-        <b>Conversion Multiplier:&nbsp;</b>
-        {props.sensor.conversionMultiplier
-          ? props.sensor.conversionMultiplier
-          : "N/A"}
+        <b>Lower Warning:&nbsp;</b>
+        {props.sensor.lowerWarning ? props.sensor.lowerWarning : "N/A"}
+      </div>
+      <div>
+        <b>Upper Warning:&nbsp;</b>
+        {props.sensor.upperWarning ? props.sensor.upperWarning : "N/A"}
       </div>
       <div>
         <b>Lower Danger:&nbsp;</b>
