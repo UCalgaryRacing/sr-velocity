@@ -254,7 +254,6 @@ export const ManageSensors: React.FC = () => {
                     return { value: thing._id, label: thing.name };
                   })}
                   onChange={(value: any) => {
-                    console.log(value);
                     for (const thing of things)
                       if (thing._id === value.value) setThing(thing);
                   }}

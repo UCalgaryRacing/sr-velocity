@@ -32,10 +32,23 @@ const initialValues = {
   disabled: false,
 };
 
+const numberFields = [
+  "frequency",
+  "lowerCalibration",
+  "upperCalibration",
+  "conversionMultiplier",
+  "lowerWarning",
+  "upperWarning",
+  "lowerDanger",
+  "upperDanger",
+];
+
 export const SensorModal: React.FC<SensorModalProps> = (
   props: SensorModalProps
 ) => {
-  const [type, setType] = useState<string>("");
+  const [type, setType] = useState<string>(
+    props.sensor ? props.sensor.type : ""
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -48,6 +61,12 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const alert = (description: string) => {
     setAlertDescription(description);
     setShowAlert(true);
+  };
+
+  const cleanSensor = (sensor: any) => {
+    let cleaned = { ...sensor };
+    for (const key of numberFields) cleaned[key] = Number(cleaned[key]);
+    return cleaned;
   };
 
   const onSubmit = (e: any) => {
@@ -66,15 +85,13 @@ export const SensorModal: React.FC<SensorModalProps> = (
       alert("Please select a type for the Sensor.");
       return;
     }
-    return;
     setLoading(true);
     if (props.sensor) {
-      let sensor = {
+      let sensor = cleanSensor({
         ...props.sensor,
         ...values,
         canId: hexToNumber(values.canId),
-        type: type,
-      };
+      });
       putSensor(sensor)
         .then((_: any) => {
           setLoading(false);
@@ -89,12 +106,13 @@ export const SensorModal: React.FC<SensorModalProps> = (
           else alert("Please try again...");
         });
     } else {
-      let sensor = {
+      let sensor = cleanSensor({
         ...values,
         canId: hexToNumber(values.canId),
         type: type,
         thingId: props.thing._id,
-      };
+        disabled: false,
+      });
       postSensor(sensor)
         .then((sensor: Sensor) => {
           setLoading(false);
@@ -136,6 +154,15 @@ export const SensorModal: React.FC<SensorModalProps> = (
           onChange={(value: any) => {
             setType(value.value);
           }}
+          defaultValue={(() => {
+            return props.sensor
+              ? {
+                  value: props.sensor.type,
+                  // @ts-ignore
+                  label: sensorTypes[props.sensor.type],
+                }
+              : null;
+          })()}
           isSearchable
         />
         <InputField

@@ -66,7 +66,7 @@ export const SensorCard: React.FC<SensorCardProps> = (
       </div>
       <div>
         <b>Can ID:&nbsp;</b>
-        {numberToHex(props.sensor.canId)}
+        0x{numberToHex(props.sensor.canId)}
       </div>
       <div>
         <b>Frequency:&nbsp;</b>
