@@ -187,9 +187,9 @@ export const ManageOperators: React.FC = () => {
       ) : (
         <div id="manage-content">
           <DashNav margin={context.margin}>
-            <div className="left">
-              {isAuthAtLeast(user, UserRole.ADMIN) &&
-                (size.width >= 768.9 ? (
+            {isAuthAtLeast(user, UserRole.ADMIN) && (
+              <div className="left">
+                {size.width >= 768.9 ? (
                   <ToolTip value="New Operator">
                     <IconButton
                       onClick={() => setShowOperatorModal(true)}
@@ -201,8 +201,9 @@ export const ManageOperators: React.FC = () => {
                     title="New Operator"
                     onClick={() => setShowOperatorModal(true)}
                   />
-                ))}
-            </div>
+                )}
+              </div>
+            )}
             <div className="right">
               <DropDown
                 placeholder="Filter by Thing..."
