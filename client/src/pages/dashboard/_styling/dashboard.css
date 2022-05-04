@@ -16,6 +16,19 @@
   transition-duration: 0.3s;
 }
 
+#dashboard #dashboard-loading {
+  display: flex;
+  min-height: calc(100vh - 120px);
+  width: 100%;
+}
+
+#dashboard #dashboard-loading #dashboard-loading-content {
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+}
+
 @media only screen and (max-width: 768.9px) {
   #dashboard {
     touch-action: pan-y;

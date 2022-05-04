@@ -30,8 +30,8 @@ export const signUserOut = () => {
 
 export const getUsers = () => {
   return new Promise<User[]>((resolve, reject) => {
-    request("POST", "/users")
-      .then((users: User[]) => resolve(users))
+    request("GET", "/database/users")
+      .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
 };
@@ -48,7 +48,7 @@ export const changeUserRole = (user: User) => {
   return new Promise<void>((resolve, reject) => {
     request("PUT", "/database/users/promote", user)
       .then((_: any) => resolve())
-      .catch((err: any) => reject());
+      .catch((err: any) => reject(err));
   });
 };
 

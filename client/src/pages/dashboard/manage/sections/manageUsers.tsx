@@ -5,20 +5,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import { UserCard } from "../cards";
 import { CircularProgress } from "@mui/material";
-import { InputField, Alert } from "components/interface";
-import {
-  useAppSelector,
-  RootState,
-  User,
-  isAuthAtLeast,
-  UserRole,
-} from "state";
+import { InputField, Alert, DropDown } from "components/interface";
+import { User } from "state";
 import { getUsers } from "crud";
 import DashNav from "components/navigation/dashNav";
 
 export const ManageUsers: React.FC = () => {
   const context = useContext(DashboardContext);
-  const user = useAppSelector((state: RootState) => state.user);
+  const [roleFilter, setRoleFilter] = useState<string>("All");
   const [query, setQuery] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
   const [userCards, setUserCards] = useState<any[]>([]);
@@ -47,6 +41,18 @@ export const ManageUsers: React.FC = () => {
     generateUserCards(users);
   }, [users]);
 
+  useEffect(() => {
+    if (roleFilter === "All") {
+      generateUserCards(users);
+    } else {
+      let filteredUsers = [];
+      for (const user of users)
+        if (user.role === roleFilter) filteredUsers.push(user);
+      generateUserCards(filteredUsers);
+      setNoMatchingUsers(filteredUsers.length === 0);
+    }
+  }, [roleFilter]);
+
   const alert = (description: string) => {
     setAlertDescription(description);
     setShowAlert(true);
@@ -54,18 +60,41 @@ export const ManageUsers: React.FC = () => {
 
   const generateUserCards = (users: User[]) => {
     let cards = [];
+    let adminCount = 0;
+    for (const user of users) if (user.role === "Admin") adminCount++;
     for (const user of users) {
-      cards.push(<UserCard key={user._id} />); // TODO: Add props
+      cards.push(
+        <UserCard
+          user={user}
+          key={user._id}
+          onUserDelete={onDeleteUser}
+          onUserRoleChange={onUserRoleChange}
+          onlyAdmin={adminCount === 1}
+        />
+      );
     }
     setUserCards(cards);
   };
 
   const onDeleteUser = (userId: string) => {
-    // TODO
+    let updatedUsers = [];
+    for (let user of [...users])
+      if (user._id !== userId) updatedUsers.push(user);
+    setUsers(updatedUsers);
+    alert("The User was deleted.");
   };
 
-  const onPromoteUser = (userId: string) => {
-    // TODO
+  const onUserRoleChange = (user: User) => {
+    if (user && user._id) {
+      let updatedUsers = [...users];
+      for (let i in updatedUsers) {
+        if (updatedUsers[i]._id === user._id) {
+          updatedUsers[i] = user;
+        }
+      }
+      setUsers(updatedUsers);
+      alert("The user's role was updated.");
+    }
   };
 
   const onSearch = (query: string) => {
@@ -106,6 +135,20 @@ export const ManageUsers: React.FC = () => {
           <DashNav margin={context.margin}>
             <div className="left"></div>
             <div className="right">
+              <DropDown
+                placeholder="Filter by Role..."
+                options={[
+                  { value: "All", label: "All" },
+                  { value: "Admin", label: "Admin" },
+                  { value: "Lead", label: "Lead" },
+                  { value: "Member", label: "Member" },
+                  { value: "Guest", label: "Guest" },
+                  { value: "Pending", label: "Pending" },
+                ]}
+                onChange={(value: any) => setRoleFilter(value.value)}
+                defaultValue={{ value: "All", label: "All" }}
+                isSearchable
+              />
               <InputField
                 name="search"
                 type="name"

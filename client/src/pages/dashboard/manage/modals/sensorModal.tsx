@@ -162,9 +162,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
               options.push({ value: key, label: value });
             return options;
           })()}
-          onChange={(value: any) => {
-            setType(value.value);
-          }}
+          onChange={(value: any) => setType(value.value)}
           defaultValue={(() => {
             return props.sensor
               ? {

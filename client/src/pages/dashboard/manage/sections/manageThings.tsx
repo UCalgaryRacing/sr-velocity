@@ -115,11 +115,8 @@ export const ManageThings: React.FC = () => {
 
   const onDeleteThing = (thingId: string) => {
     let updatedThings = [];
-    for (let thing of [...things]) {
-      if (thing._id !== thingId) {
-        updatedThings.push(thing);
-      }
-    }
+    for (let thing of [...things])
+      if (thing._id !== thingId) updatedThings.push(thing);
     setThings(updatedThings);
     setNoThings(updatedThings.length === 0);
     alert("The Thing was deleted.");

@@ -17,6 +17,7 @@ import {
 } from "state";
 import { getOrganization } from "crud";
 import { bindActionCreators } from "redux";
+import { CircularProgress } from "@mui/material";
 import "./_styling/dashboard.css";
 
 export const DashboardContext = React.createContext({
@@ -33,7 +34,7 @@ const Dashboard: React.FC = () => {
 
   const [sideBarToggled, setSideBarToggled] = useState<boolean>(false);
   const [sideBarCollapsed, setSideBarCollapsed] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [setupError, setSetupError] = useState<boolean>(false);
 
   const gestures = useSwipeable({
@@ -50,8 +51,10 @@ const Dashboard: React.FC = () => {
         setOrganization(organization);
         setLoading(false);
       })
-      .catch((_: any) => setSetupError(true));
-    // TODO: Actually show loading stuff
+      .catch((_: any) => {
+        setLoading(false);
+        setSetupError(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -61,27 +64,48 @@ const Dashboard: React.FC = () => {
   return (
     <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} onCollapse={setSideBarCollapsed} />
-      {loading ? (
-        ""
-      ) : (
+      {loading || setupError ? (
         <div
-          id="content"
+          id="dashboard-loading"
           style={{
             marginLeft:
               size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
           }}
         >
-          <DashboardContext.Provider
-            value={{
-              page: dashboard!.page,
-              margin: size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+          <div id="dashboard-loading-content">
+            {loading && (
+              <>
+                <CircularProgress style={{ color: "black" }} />
+                <br />
+                <br />
+                <b>Preparing the dashboard...</b>
+              </>
+            )}
+            <b>{setupError && "Something went wrong. Please refresh."}</b>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div
+            id="content"
+            style={{
+              marginLeft:
+                size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
             }}
           >
-            <Streaming />
-            <Historical />
-            <Manage />
-          </DashboardContext.Provider>
-        </div>
+            <DashboardContext.Provider
+              value={{
+                page: dashboard!.page,
+                margin:
+                  size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+              }}
+            >
+              <Streaming />
+              <Historical />
+              <Manage />
+            </DashboardContext.Provider>
+          </div>
+        </>
       )}
     </div>
   );

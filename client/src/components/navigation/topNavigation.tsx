@@ -44,7 +44,7 @@ const TopNavigation: React.FC = () => {
                 {size.width >= 768.9 ? <InfoOutlinedIcon /> : <b>About</b>}
               </Nav.Link>
             )}
-            {window.location.pathname !== "/signin" && !state.user && (
+            {window.location.pathname !== "/sign-in" && !state.user && (
               <Nav.Link href="/sign-in">
                 <b>Sign In</b>
               </Nav.Link>

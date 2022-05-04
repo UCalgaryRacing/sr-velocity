@@ -14,26 +14,30 @@ auth.all(
     call(process.env.DATABASE_MS_ROUTE + "/auth" + req.path, req.method, {
       headers: req.headers,
       json: req.body,
-    }).then(async (response) => {
-      if (response.statusCode === 200) {
-        for (const header in response.headers) {
-          if (header === "set-cookie") {
-            let cookies = response.headers[header][0].split(";");
-            for (let cookie of cookies) {
-              let split = cookie.trim().split("=");
-              if (!["Max-Age", "Path", "HttpOnly"].includes(split[0])) {
-                res.cookie(split[0], split[1], { httpOnly: true });
+    })
+      .then(async (response) => {
+        if (response.statusCode === 200) {
+          for (const header in response.headers) {
+            if (header === "set-cookie") {
+              let cookies = response.headers[header][0].split(";");
+              for (let cookie of cookies) {
+                let split = cookie.trim().split("=");
+                if (!["Max-Age", "Path", "HttpOnly"].includes(split[0])) {
+                  res.cookie(split[0], split[1], { httpOnly: true });
+                }
               }
             }
           }
+          if (response.body) {
+            res.status(response.statusCode).json(response.body).end();
+          } else res.status(response.statusCode).end();
+        } else {
+          res.status(response.statusCode).end();
         }
-        if (response.body) {
-          res.status(response.statusCode).json(response.body).end();
-        } else res.status(response.statusCode).end();
-      } else {
-        res.status(response.statusCode).end();
-      }
-    });
+      })
+      .catch((_) => {
+        res.status(500).end();
+      });
   }
 );
 
