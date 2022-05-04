@@ -30,6 +30,7 @@ import { Add } from "@mui/icons-material";
 export const ManageThings: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
+  const [operatorFilter, setOperatorFilter] = useState<string>("All");
   const [query, setQuery] = useState<string>("");
   const [operators, setOperators] = useState<Operator[]>([]);
   const [things, setThings] = useState<Thing[]>([]);
@@ -47,6 +48,9 @@ export const ManageThings: React.FC = () => {
       .then((things: Thing[]) => {
         getOperators()
           .then((operators: Operator[]) => {
+            operators.sort((a: Operator, b: Operator) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
             setOperators(operators);
             things.sort((a: Thing, b: Thing) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -69,6 +73,19 @@ export const ManageThings: React.FC = () => {
   useEffect(() => {
     generateThingCards(things, operators);
   }, [things, operators]);
+
+  useEffect(() => {
+    if (operatorFilter === "All") {
+      generateThingCards(things, operators);
+    } else {
+      let filteredThings = [];
+      for (const thing of things)
+        if (thing.operatorIds.includes(operatorFilter))
+          filteredThings.push(thing);
+      generateThingCards(filteredThings, operators);
+      setNoMatchingThings(filteredThings.length === 0);
+    }
+  }, [operatorFilter]);
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -176,6 +193,18 @@ export const ManageThings: React.FC = () => {
               )}
             </div>
             <div className="right">
+              <DropDown
+                placeholder="Filter by Operator..."
+                options={(() => {
+                  let options = [{ value: "All", label: "All" }];
+                  for (const operator of operators)
+                    options.push({ value: operator._id, label: operator.name });
+                  return options;
+                })()}
+                onChange={(value: any) => setOperatorFilter(value.value)}
+                defaultValue={{ value: "All", label: "All" }}
+                isSearchable
+              />
               <InputField
                 name="search"
                 type="name"

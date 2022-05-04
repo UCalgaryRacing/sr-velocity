@@ -9,6 +9,7 @@ import {
   ToolTip,
   Alert,
   InputField,
+  DropDown,
 } from "components/interface";
 import { CircularProgress } from "@mui/material";
 import { OperatorCard } from "../cards";
@@ -25,10 +26,10 @@ import DashNav from "components/navigation/dashNav";
 import { getOperators, getThings } from "crud";
 import { Add } from "@mui/icons-material";
 
-// TODO: Filter by Thing
 export const ManageOperators: React.FC = () => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
+  const [thingFilter, setThingFilter] = useState<string>("All");
   const [query, setQuery] = useState<string>("");
   const [things, setThings] = useState<Thing[]>([]);
   const [operators, setOperators] = useState<Operator[]>([]);
@@ -47,6 +48,9 @@ export const ManageOperators: React.FC = () => {
       .then((operators: Operator[]) => {
         getThings()
           .then((things: Thing[]) => {
+            things.sort((a: Thing, b: Thing) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
             setThings(things);
             operators.sort((a: Operator, b: Operator) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -69,6 +73,19 @@ export const ManageOperators: React.FC = () => {
   useEffect(() => {
     generateOperatorCards(operators, things);
   }, [operators, things]);
+
+  useEffect(() => {
+    if (thingFilter === "All") {
+      generateOperatorCards(operators, things);
+    } else {
+      let filteredOperators = [];
+      for (const operator of operators)
+        if (operator.thingIds.includes(thingFilter))
+          filteredOperators.push(operator);
+      generateOperatorCards(filteredOperators, things);
+      setNoMatchingOperators(filteredOperators.length === 0);
+    }
+  }, [thingFilter]);
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -179,6 +196,18 @@ export const ManageOperators: React.FC = () => {
               )}
             </div>
             <div className="right">
+              <DropDown
+                placeholder="Filter by Thing..."
+                options={(() => {
+                  let options = [{ value: "All", label: "All" }];
+                  for (const thing of things)
+                    options.push({ value: thing._id, label: thing.name });
+                  return options;
+                })()}
+                onChange={(value: any) => setThingFilter(value.value)}
+                defaultValue={{ value: "All", label: "All" }}
+                isSearchable
+              />
               <InputField
                 name="search"
                 type="name"
