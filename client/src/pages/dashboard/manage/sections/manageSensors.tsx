@@ -46,6 +46,7 @@ export const ManageSensors: React.FC = () => {
   const [noSensors, setNoSensors] = useState<boolean>(false);
   const [noMatchingSensors, setNoMatchingSensors] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [errorAlert, setErrorAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showSensorModal, setShowSensorModal] = useState<boolean>(false);
 
@@ -88,8 +89,9 @@ export const ManageSensors: React.FC = () => {
     generateSensorCards(sensors);
   }, [sensors]);
 
-  const alert = (description: string) => {
+  const alert = (error: boolean, description: string) => {
     setAlertDescription(description);
+    setErrorAlert(error);
     setShowAlert(true);
   };
 
@@ -125,8 +127,8 @@ export const ManageSensors: React.FC = () => {
       );
       setSensors(updatedSensors);
       setNoSensors(false);
-      if (updated) alert("The Sensor was updated.");
-      else alert("The Sensor was created.");
+      if (updated) alert(false, "The Sensor was updated.");
+      else alert(false, "The Sensor was created.");
     }
     setShowSensorModal(false);
   };
@@ -140,7 +142,7 @@ export const ManageSensors: React.FC = () => {
     }
     setSensors(updatedSensors);
     setNoSensors(updatedSensors.length === 0);
-    alert("The Sensor was deleted.");
+    alert(false, "The Sensor was deleted.");
   };
 
   const onSearch = (query: string) => {
@@ -239,14 +241,28 @@ export const ManageSensors: React.FC = () => {
                     {size.width >= 768.9 ? (
                       <ToolTip value="New Sensor">
                         <IconButton
-                          onClick={() => setShowSensorModal(true)}
+                          onClick={() => {
+                            if (sensors.length === 256)
+                              alert(
+                                true,
+                                "Each thing can only have 256 sensors."
+                              );
+                            else setShowSensorModal(true);
+                          }}
                           img={<Add />}
                         />
                       </ToolTip>
                     ) : (
                       <TextButton
                         title="New Sensor"
-                        onClick={() => setShowSensorModal(true)}
+                        onClick={() => {
+                          if (sensors.length === 256)
+                            alert(
+                              true,
+                              "Each thing can only have 256 sensors."
+                            );
+                          else setShowSensorModal(true);
+                        }}
                       />
                     )}
                   </div>
