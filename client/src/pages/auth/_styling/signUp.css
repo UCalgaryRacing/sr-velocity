@@ -18,6 +18,10 @@ Written by Justin Tijunelis
   padding: 10px;
 }
 
+#sign-up #sign-up-loading {
+  text-align: center;
+}
+
 #sign-up #sign-up-form > * {
   margin-bottom: 20px;
 }

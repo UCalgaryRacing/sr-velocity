@@ -4,16 +4,18 @@
 import React, { useState, useEffect } from "react";
 import { InputField, TextButton, DropDown, Alert } from "components/interface/";
 import { getOrganizationNames, registerUser } from "crud";
+import { CircularProgress } from "@mui/material";
 import { useForm } from "hooks";
 import "./_styling/signUp.css";
 
-// TODO: Load to get organizations
+// TODO: Have minimum password requirements wth regex
 const SignUp: React.FC = () => {
   const [organization, setOrganization] = useState<string>("");
   const [organizations, setOrganizations] = useState<any[]>([]);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [signedUp, setSignedUp] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [values, handleChange] = useForm({
     name: "",
@@ -28,15 +30,18 @@ const SignUp: React.FC = () => {
   };
 
   useEffect(() => {
+    setFetching(true);
     getOrganizationNames()
       .then((organizations: any[]) => {
         let orgs = [];
         for (let org of organizations)
           orgs.push({ value: org._id, label: org.name });
         setOrganizations(orgs);
+        setFetching(false);
       })
       .catch((_: any) => {
         alert("Could not fetch organizations. Refresh to reattempt.");
+        setFetching(false);
       });
   }, []);
 
@@ -70,60 +75,75 @@ const SignUp: React.FC = () => {
     <div className="page-content" id="sign-up">
       <form id="sign-up-form" onSubmit={onSubmit}>
         <img src="assets/team-logo.svg" />
-        {!signedUp ? (
-          <>
-            <InputField
-              name="name"
-              type="name"
-              title="Display Name"
-              value={values.name}
-              onChange={handleChange}
-              required
-            />
-            <DropDown
-              placeholder="Select Organization..."
-              options={organizations}
-              onChange={(value: any) => setOrganization(value.value)}
-              isSearchable
-            />
-            <InputField
-              name="email"
-              type="email"
-              title="Email"
-              value={values.email}
-              onChange={handleChange}
-              required
-            />
-            <InputField
-              name="password"
-              type="password"
-              title="Password"
-              value={values.password}
-              onChange={handleChange}
-              required
-            />
-            <InputField
-              name="passwordConfirm"
-              type="password"
-              title="Password Confirmation"
-              value={values.passwordConfirm}
-              onChange={handleChange}
-              required
-            />
-            <TextButton title="Sign Up" loading={loading} />
-            <div id="redirect">
-              <b>
-                Already have an account?&nbsp;<a href="/sign-in">Sign In</a>
-              </b>
-            </div>
-          </>
-        ) : (
-          <div id="sign-up-success">
-            Success! Please wait for an admin to approve your request.
+        {fetching ? (
+          <div id="sign-up-loading">
+            <CircularProgress style={{ color: "black" }} />
             <br />
             <br />
-            <TextButton title="Back To Home Page" href="/" />
+            <b>Fetching Organizations...</b>
           </div>
+        ) : (
+          <>
+            {!signedUp ? (
+              <>
+                <InputField
+                  name="name"
+                  type="name"
+                  title="Display Name"
+                  value={values.name}
+                  minLength={6}
+                  maxLength={20}
+                  onChange={handleChange}
+                  required
+                />
+                <DropDown
+                  placeholder="Select Organization..."
+                  options={organizations}
+                  onChange={(value: any) => setOrganization(value.value)}
+                  isSearchable
+                />
+                <InputField
+                  name="email"
+                  type="email"
+                  title="Email"
+                  value={values.email}
+                  onChange={handleChange}
+                  required
+                />
+                <InputField
+                  name="password"
+                  type="password"
+                  title="Password"
+                  value={values.password}
+                  onChange={handleChange}
+                  minLength={6}
+                  required
+                />
+                <InputField
+                  name="passwordConfirm"
+                  type="password"
+                  title="Password Confirmation"
+                  value={values.passwordConfirm}
+                  onChange={handleChange}
+                  minLength={6}
+                  required
+                />
+                <TextButton title="Sign Up" loading={loading} />
+                <div id="redirect">
+                  <b>
+                    Already have an account?&nbsp;<a href="/sign-in">Sign In</a>
+                  </b>
+                </div>
+              </>
+            ) : (
+              <div id="sign-up-success">
+                Success! Please wait for an admin to approve your request.
+                <br />
+                <br />
+                <TextButton title="Back To Home Page" href="/" />
+              </div>
+            )}
+          </>
         )}
       </form>
       <Alert

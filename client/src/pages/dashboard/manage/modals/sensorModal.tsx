@@ -152,6 +152,8 @@ export const SensorModal: React.FC<SensorModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
+          minLength={4}
+          maxLength={20}
           required
         />
         <DropDown
@@ -178,12 +180,16 @@ export const SensorModal: React.FC<SensorModalProps> = (
           name="category"
           title="Category"
           value={values.category}
+          minLength={4}
+          maxLength={20}
           onChange={handleChange}
         />
         <InputField
           name="canId"
           title="CAN ID ([0x]########)"
           value={values.canId}
+          minLength={8}
+          maxLength={10}
           onChange={handleChange}
           required
         />
@@ -199,6 +205,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
           name="unit"
           title="Unit"
           value={values.unit}
+          maxLength={10}
           onChange={handleChange}
         />
         <InputField

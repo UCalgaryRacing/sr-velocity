@@ -69,6 +69,7 @@ Written by Justin Tijunelis and Joey Van Lierop
 
   #dash-nav .left {
     margin-left: 0px;
+    margin-bottom: 10px;
     width: 100%;
   }
 
@@ -78,7 +79,6 @@ Written by Justin Tijunelis and Joey Van Lierop
 
   #dash-nav .right {
     margin-right: 0px;
-    margin-top: 5px;
     width: 100%;
   }
 

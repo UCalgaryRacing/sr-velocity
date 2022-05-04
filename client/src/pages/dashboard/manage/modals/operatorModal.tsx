@@ -115,6 +115,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
           title="Name"
           value={values.name}
           minLength={4}
+          maxLength={20}
           required
         />
         <MultiSelect
