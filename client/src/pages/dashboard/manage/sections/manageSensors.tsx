@@ -56,6 +56,7 @@ export const ManageSensors: React.FC = () => {
         things.sort((a: Thing, b: Thing) =>
           a.name.toLowerCase().localeCompare(b.name.toLowerCase())
         );
+        if (things.length === 1) setThing(thing);
         setThings(things);
         setNoThings(things.length === 0);
         setFetchingThings(false);
@@ -329,7 +330,7 @@ export const ManageSensors: React.FC = () => {
       <Alert
         title="Success!"
         description={alertDescription}
-        color="green"
+        color={errorAlert ? "red" : "green"}
         onDismiss={() => setShowAlert(false)}
         show={showAlert}
         slideOut
