@@ -131,9 +131,8 @@ export const ManageUsers: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div id="">
+        <div>
           <DashNav margin={context.margin}>
-            <div className="left"></div>
             <div className="right">
               <DropDown
                 placeholder="Filter by Role..."

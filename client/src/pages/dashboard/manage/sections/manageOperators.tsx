@@ -25,8 +25,10 @@ import {
 import DashNav from "components/navigation/dashNav";
 import { getOperators, getThings } from "crud";
 import { Add } from "@mui/icons-material";
+import { useWindowSize } from "hooks";
 
 export const ManageOperators: React.FC = () => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [thingFilter, setThingFilter] = useState<string>("All");
@@ -186,14 +188,20 @@ export const ManageOperators: React.FC = () => {
         <div id="manage-content">
           <DashNav margin={context.margin}>
             <div className="left">
-              {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <ToolTip value="New Operator">
-                  <IconButton
+              {isAuthAtLeast(user, UserRole.ADMIN) &&
+                (size.width >= 768.9 ? (
+                  <ToolTip value="New Operator">
+                    <IconButton
+                      onClick={() => setShowOperatorModal(true)}
+                      img={<Add />}
+                    />
+                  </ToolTip>
+                ) : (
+                  <TextButton
+                    title="New Operator"
                     onClick={() => setShowOperatorModal(true)}
-                    img={<Add />}
                   />
-                </ToolTip>
-              )}
+                ))}
             </div>
             <div className="right">
               <DropDown

@@ -25,8 +25,10 @@ import {
 } from "components/interface";
 import { Add } from "@mui/icons-material";
 import { SensorModal } from "../modals/sensorModal";
+import { useWindowSize } from "hooks";
 
 export const ManageSensors: React.FC = () => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
@@ -184,7 +186,6 @@ export const ManageSensors: React.FC = () => {
                   )}
                   {thing && (
                     <>
-                      {" "}
                       {!errorFetchingSensors && thing
                         ? "The Thing has no Sensors yet."
                         : "Could not fetch Sensors, please refresh."}
@@ -234,14 +235,20 @@ export const ManageSensors: React.FC = () => {
             <>
               <DashNav margin={context.margin}>
                 <div className="left">
-                  {isAuthAtLeast(user, UserRole.ADMIN) && (
-                    <ToolTip value="New Sensor">
-                      <IconButton
+                  {isAuthAtLeast(user, UserRole.ADMIN) &&
+                    (size.width >= 768.9 ? (
+                      <ToolTip value="New Sensor">
+                        <IconButton
+                          onClick={() => setShowSensorModal(true)}
+                          img={<Add />}
+                        />
+                      </ToolTip>
+                    ) : (
+                      <TextButton
+                        title="New Sensor"
                         onClick={() => setShowSensorModal(true)}
-                        img={<Add />}
                       />
-                    </ToolTip>
-                  )}
+                    ))}
                 </div>
                 <div className="right">
                   <DropDown

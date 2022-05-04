@@ -25,9 +25,10 @@ import {
   UserRole,
 } from "state";
 import { Add } from "@mui/icons-material";
+import { useWindowSize } from "hooks";
 
-// TODO: Filter by operator
 export const ManageThings: React.FC = () => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [operatorFilter, setOperatorFilter] = useState<string>("All");
@@ -183,14 +184,20 @@ export const ManageThings: React.FC = () => {
         <div id="manage-content">
           <DashNav margin={context.margin}>
             <div className="left">
-              {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <ToolTip value="New Thing">
-                  <IconButton
+              {isAuthAtLeast(user, UserRole.ADMIN) &&
+                (size.width >= 768.9 ? (
+                  <ToolTip value="New Thing">
+                    <IconButton
+                      onClick={() => setShowThingModal(true)}
+                      img={<Add />}
+                    />
+                  </ToolTip>
+                ) : (
+                  <TextButton
+                    title="New Thing"
                     onClick={() => setShowThingModal(true)}
-                    img={<Add />}
                   />
-                </ToolTip>
-              )}
+                ))}
             </div>
             <div className="right">
               <DropDown

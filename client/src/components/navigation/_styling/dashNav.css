@@ -78,9 +78,15 @@ Written by Justin Tijunelis and Joey Van Lierop
 
   #dash-nav .right {
     margin-right: 0px;
+    margin-top: 5px;
+    width: 100%;
   }
 
   #dash-nav .right > * {
-    max-width: 100%;
+    width: 100%;
+  }
+
+  #dash-nav .left > * {
+    margin-right: 0px;
   }
 }
