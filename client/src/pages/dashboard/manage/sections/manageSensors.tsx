@@ -237,11 +237,26 @@ export const ManageSensors: React.FC = () => {
           {thing ? (
             <>
               <DashNav margin={context.margin}>
-                {isAuthAtLeast(user, UserRole.ADMIN) && (
-                  <div className="left">
-                    {size.width >= 768.9 ? (
-                      <ToolTip value="New Sensor">
-                        <IconButton
+                <div className="left">
+                  {isAuthAtLeast(user, UserRole.ADMIN) && (
+                    <>
+                      {size.width >= 768.9 ? (
+                        <ToolTip value="New Sensor">
+                          <IconButton
+                            onClick={() => {
+                              if (sensors.length === 256)
+                                alert(
+                                  true,
+                                  "Each thing can only have 256 sensors."
+                                );
+                              else setShowSensorModal(true);
+                            }}
+                            img={<Add />}
+                          />
+                        </ToolTip>
+                      ) : (
+                        <TextButton
+                          title="New Sensor"
                           onClick={() => {
                             if (sensors.length === 256)
                               alert(
@@ -250,24 +265,11 @@ export const ManageSensors: React.FC = () => {
                               );
                             else setShowSensorModal(true);
                           }}
-                          img={<Add />}
                         />
-                      </ToolTip>
-                    ) : (
-                      <TextButton
-                        title="New Sensor"
-                        onClick={() => {
-                          if (sensors.length === 256)
-                            alert(
-                              true,
-                              "Each thing can only have 256 sensors."
-                            );
-                          else setShowSensorModal(true);
-                        }}
-                      />
-                    )}
-                  </div>
-                )}
+                      )}
+                    </>
+                  )}
+                </div>
                 <div className="right">
                   <DropDown
                     placeholder="Select Thing..."

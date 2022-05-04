@@ -27,7 +27,6 @@ Written by Justin Tijunelis and Joey Van Lierop
 #dash-nav .left {
   display: flex;
   align-items: center;
-  height: 44px;
   width: 60%;
   margin-left: 5px;
 }
@@ -43,9 +42,6 @@ Written by Justin Tijunelis and Joey Van Lierop
   height: 44px;
   width: 40%;
   margin-right: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
   gap: 10px;
 }
 
