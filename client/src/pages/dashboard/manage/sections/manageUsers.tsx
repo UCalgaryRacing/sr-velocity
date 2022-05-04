@@ -6,7 +6,7 @@ import { DashboardContext } from "pages/dashboard/dashboard";
 import { UserCard } from "../cards";
 import { CircularProgress } from "@mui/material";
 import { InputField, Alert, DropDown } from "components/interface";
-import { User } from "state";
+import { User, UserRole } from "state";
 import { getUsers } from "crud";
 import DashNav from "components/navigation/dashNav";
 
@@ -69,7 +69,7 @@ export const ManageUsers: React.FC = () => {
           key={user._id}
           onUserDelete={onDeleteUser}
           onUserRoleChange={onUserRoleChange}
-          onlyAdmin={adminCount === 1}
+          onlyAdmin={adminCount === 1 && user.role === UserRole.ADMIN}
         />
       );
     }

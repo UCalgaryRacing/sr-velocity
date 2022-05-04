@@ -27,7 +27,7 @@ export const UserModal: React.FC<UserModalProps> = (props: UserModalProps) => {
 
   const onSubmit = () => {
     let updatedUser = { ...props.user, role: role };
-    setLoading(false);
+    setLoading(true);
     changeUserRole(updatedUser)
       .then((_: any) => {
         setLoading(false);

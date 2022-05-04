@@ -82,7 +82,7 @@ export const UserCard: React.FC<UserCardProps> = (props: UserCardProps) => {
                 top: user?.role === "Lead" || props.onlyAdmin ? "5px" : "45px",
               }}
               img={<Edit />}
-              onClick={() => setShowConfirmationModal(true)}
+              onClick={() => setShowUserModal(true)}
             />
           </>
         )}

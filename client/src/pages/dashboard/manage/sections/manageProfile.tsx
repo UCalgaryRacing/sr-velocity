@@ -54,9 +54,9 @@ export const ManageProfile: React.FC = () => {
     setSignOutLoading(true);
     signUserOut()
       .then((_: any) => {
+        window.location.href = "/";
         setSignOutLoading(false);
         dispatch({ type: "RESET" });
-        window.location.href = "/";
       })
       .catch((_: any) => {
         alert(true, "Please try again...");

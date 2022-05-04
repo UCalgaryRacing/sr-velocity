@@ -47,6 +47,7 @@ const SignUp: React.FC = () => {
     } else if (values.password !== values.passwordConfirm) {
       alert("Passwords do not match, please try again.");
     } else {
+      console.log("here");
       setLoading(true);
       let credentials = { ...values };
       credentials.organizationId = organization;
@@ -72,7 +73,7 @@ const SignUp: React.FC = () => {
         {!signedUp ? (
           <>
             <InputField
-              name="displayName"
+              name="name"
               type="name"
               title="Display Name"
               value={values.name}
@@ -82,7 +83,7 @@ const SignUp: React.FC = () => {
             <DropDown
               placeholder="Select Organization..."
               options={organizations}
-              onChange={(value: any) => setOrganization(value._id)}
+              onChange={(value: any) => setOrganization(value.value)}
               isSearchable
             />
             <InputField
