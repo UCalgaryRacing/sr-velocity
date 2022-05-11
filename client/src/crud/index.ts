@@ -9,4 +9,5 @@ export * from "./user";
 export * from "./organization";
 export * from "./runs";
 export * from "./things";
+export * from "./rawDataPresets";
 export * from "./chartPresets";

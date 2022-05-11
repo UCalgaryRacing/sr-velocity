@@ -126,8 +126,8 @@ export const ManageOperators: React.FC = () => {
       );
       setOperators(updatedOperators);
       setNoOperators(false);
-      if (updated) alert("The operator was updated.");
-      else alert("The operator was created.");
+      if (updated) alert("The Operator was updated.");
+      else alert("The Operator was created.");
     }
     setShowOperatorModal(false);
   };

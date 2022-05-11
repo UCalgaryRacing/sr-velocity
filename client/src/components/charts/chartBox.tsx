@@ -4,20 +4,22 @@
 import React, { useState } from "react";
 import { IconButton, ToolTip, RangeSlider } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
+import { Sensor } from "state";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import "./_styling/chartBox.css";
 
 export enum ChartType {
-  HEATMAP = "heatmap",
-  LINE = "line",
-  RADIAL = "radial",
-  SCATTER = "scatter",
+  HEATMAP = "Heat Map",
+  LINE = "Line",
+  RADIAL = "Radial",
+  SCATTER = "Scatter",
 }
 
 interface ChartBoxProps {
   title: string;
   type: ChartType;
   realtime: boolean;
+  sensors: Sensor[];
 }
 
 export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {

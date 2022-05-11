@@ -1,17 +1,23 @@
 .raw-box {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   transition: 0.3s;
-  border-radius: 5px;
-  width: 200px;
-  height: 200px;
-  display: inline-flex;
-  margin-left: 20px;
-  margin-top: 15px;
-  justify-content: center;
+  border-radius: var(--border-radius);
+  padding: 5px;
   text-align: center;
+  font-weight: bold;
+  font-size: var(--fz-lg);
+  height: 100px;
   color: var(--black);
+  position: relative;
 }
 
-.raw-box:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+.raw-box .raw-box-title {
+  position: absolute;
+  top: 5px;
+  width: calc(100% - 10px);
+}
+
+.raw-box .raw-box-value {
+  position: absolute;
+  bottom: 5px;
+  width: calc(100% - 10px);
 }

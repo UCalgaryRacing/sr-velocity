@@ -1,56 +1,65 @@
-import React, { useState, useEffect } from "react";
-import "./rawBox.css";
+// Copyright Schulich Racing, FSAE
+// Written by Justin Tijunelis
 
-var rn = require("random-number");
+import React, { useState, useEffect } from "react";
+import { Sensor } from "state";
+import "./_styling/rawBox.css";
 
 interface RawBoxProps {
-  sensor: any;
+  sensor: Sensor;
+  onDelete: (sensorId: string) => void;
 }
 
 const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
-  var optionsLow = {
-    min: 0,
-    max: 25,
-    integer: true,
-  };
-
-  var optionsHigh = {
-    min: 70,
-    max: 100,
-    integer: true,
-  };
-
-  var upperBound = rn(optionsHigh);
-  var lowerBound = rn(optionsLow);
-
-  var optionsValue = {
-    min: lowerBound,
-    max: upperBound,
-    integer: true,
-  };
-
-  const [rvalue, setValue] = useState(0);
-  const pvalue = (rvalue - lowerBound) / (upperBound - lowerBound);
+  const [value, setValue] = useState<number>(0);
+  const [color, setColor] = useState<string>();
 
   useEffect(() => {
-    var intervalId = window.setInterval(function () {
-      setValue(rn(optionsValue));
-    }, 1000);
+    // TODO: Subscribe to the event stream
 
     return () => {
-      clearInterval(intervalId);
+      // TODO: Unsubscribe from the event stream
     };
   }, []);
 
+  useEffect(() => {
+    // Handle lower danger
+    const lowerDanger = props.sensor.lowerDanger;
+    if (lowerDanger && value <= lowerDanger) {
+      setColor("#ba1833");
+      return;
+    }
+
+    // Handle lower warning
+    const lowerWarning = props.sensor.lowerWarning;
+    if (lowerWarning && value <= lowerWarning) {
+      setColor("#baad18");
+      return;
+    }
+
+    // Handle upper warning
+    const upperWarning = props.sensor.upperWarning;
+    if (upperWarning && value >= upperWarning) {
+      setColor("#baad18");
+      return;
+    }
+
+    // Handle upper danger
+    const upperDanger = props.sensor.upperDanger;
+    if (upperDanger && value >= upperDanger) {
+      setColor("#ba1833");
+      return;
+    }
+
+    setColor("#33ba18");
+  }, [value]);
+
   return (
-    <div
-      className="raw-box"
-      style={{ backgroundColor: pvalue < 0.66 ? "green" : "red" }}
-    >
-      {props.sensor.name}
-      <br />
-      <br />
-      {rvalue}
+    <div className="raw-box" style={{ background: color }}>
+      <div className="raw-box-title">{props.sensor.name}</div>
+      <div className="raw-box-value">
+        {value + (props.sensor.unit ? " " + props.sensor.unit : "")}
+      </div>
     </div>
   );
 };

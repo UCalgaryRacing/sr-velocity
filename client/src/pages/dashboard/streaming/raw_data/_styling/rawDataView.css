@@ -3,6 +3,8 @@ Copyright Schulich Racing, FSAE
 Written by Justin Tijunelis
 */
 
-#raw-data-view {
-  position: relative;
+#raw-data-boxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
 }
