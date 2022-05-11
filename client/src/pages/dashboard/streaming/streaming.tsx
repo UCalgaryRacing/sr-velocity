@@ -53,7 +53,6 @@ const Streaming: React.FC = () => {
           );
           setSensors(sensors);
           setFetchingSensors(false);
-          // TODO: Tell user if there are no sensors for this thing
         })
         .catch((_: any) => {
           setFetchingSensorsError(true);
@@ -62,7 +61,7 @@ const Streaming: React.FC = () => {
     }
   }, [thing]);
 
-  if (!thing) {
+  if (!thing || fetchingSensors) {
     return (
       <div id="dashboard-loading">
         <div id="dashboard-loading-content">
@@ -112,6 +111,30 @@ const Streaming: React.FC = () => {
               );
             }
           })()}
+        </div>
+      </div>
+    );
+  } else if (sensors.length === 0) {
+    return (
+      <div id="dashboard-loading">
+        <div id="dashboard-loading-content">
+          <b>
+            The Thing has no sensors. Select a different Thing or create sensors
+            through the manage page.
+          </b>
+          <br />
+          <br />
+          <DropDown
+            placeholder="Select Thing..."
+            options={things.map((thing) => {
+              return { value: thing._id, label: thing.name };
+            })}
+            onChange={(value: any) => {
+              for (const thing of things)
+                if (thing._id === value.value) setThing(thing);
+            }}
+            isSearchable
+          />
         </div>
       </div>
     );
