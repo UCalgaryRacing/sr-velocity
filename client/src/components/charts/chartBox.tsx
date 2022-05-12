@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { IconButton, ToolTip, RangeSlider } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
-import { Sensor } from "state";
+import { Sensor, Chart } from "state";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import "./_styling/chartBox.css";
 
@@ -16,16 +16,16 @@ export enum ChartType {
 }
 
 interface ChartBoxProps {
-  title: string;
-  type: ChartType;
-  realtime: boolean;
+  chart: Chart;
   sensors: Sensor[];
+  onDelete?: (chartId: string) => void;
+  onUpdate?: (chart: Chart) => void;
 }
 
 export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
   return (
     <div className="chart-box">
-      <div className="chart-title">{props.title}</div>
+      <div className="chart-title">{props.chart.name}</div>
       <div className="chart-controls">
         <ToolTip value="Edit Chart">
           <IconButton img={<Edit />} />
@@ -36,7 +36,7 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
       </div>
       <div className="chart-area">
         {(() => {
-          switch (props.type) {
+          switch (props.chart.type) {
             case ChartType.HEATMAP:
               return <Heatmap />;
             case ChartType.LINE:

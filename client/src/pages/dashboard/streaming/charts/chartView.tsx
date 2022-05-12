@@ -2,15 +2,32 @@
 // Written by Justin Tijunelis
 
 import React, { useState, useEffect, useContext } from "react";
-import { IconButton, ToolTip, DropDown, Alert } from "components/interface";
+import {
+  IconButton,
+  ToolTip,
+  DropDown,
+  Alert,
+  TextButton,
+} from "components/interface";
 import { ChartBox, ChartType } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
-import { SaveOutlined, Add, Air, Category } from "@mui/icons-material";
-import { Sensor, Thing, Chart, ChartPreset } from "state";
-import { NewChartModal } from "./modals/newChart";
+import { SaveOutlined, Add, Air } from "@mui/icons-material";
+import {
+  Sensor,
+  Thing,
+  Chart,
+  ChartPreset,
+  useAppSelector,
+  RootState,
+  isAuthAtLeast,
+  UserRole,
+} from "state";
+import { ChartModal } from "./modals/chartModal";
 import { getChartPresets } from "crud/chartPresets";
+import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import "./_styling/chartView.css";
+import { useWindowSize } from "hooks";
 
 interface ChartViewProps {
   sensors: Sensor[];
@@ -20,39 +37,75 @@ interface ChartViewProps {
 }
 
 const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
+  const user = useAppSelector((state: RootState) => state.user);
+  const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
   const [chartPreset, setChartPreset] = useState<ChartPreset>();
   const [chartPresets, setChartPresets] = useState<ChartPreset[]>([]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertError, setAlertError] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
+  const [showChartModal, setShowChartModal] = useState<boolean>(false);
+  const [showPresetModal, setShowPresetModal] = useState<boolean>(false);
   const [charts, setCharts] = useState<Chart[]>([]);
   const [chartUI, setChartUI] = useState<any[]>([]);
   const [noCharts, setNoCharts] = useState<boolean>(false);
-  const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [alertDescription, setAlertDescription] = useState<string>("");
-  const [showNewChartModal, setShowNewChartModal] = useState<boolean>(false);
 
   useEffect(() => {
+    setFetchingPresets(true);
     getChartPresets(props.thing._id)
       .then((presets: ChartPreset[]) => {
+        presets.sort((a: ChartPreset, b: ChartPreset) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
         setChartPresets(presets);
-        // Ask to select or create new
+        setFetchingPresets(false);
+        if (presets.length === 0) alert(true, "No presets found...");
       })
       .catch((_: any) => {
-        // TODO
+        alert(true, "Could not fetch presets...");
+        setFetchingPresets(false);
       });
   }, []);
 
-  const alert = (description: string) => {
+  useEffect(() => {
+    if (chartPreset) {
+      setCharts(chartPreset.charts);
+      setNoCharts(chartPreset.charts.length === 0);
+    } else {
+      setCharts([]);
+      setNoCharts(true);
+    }
+  }, [chartPreset]);
+
+  useEffect(() => {
+    generateCharts(charts);
+  }, [charts]);
+
+  const alert = (error: boolean, description: string) => {
     setAlertDescription(description);
+    setAlertError(error);
     setShowAlert(true);
   };
 
-  const generateCharts = () => {
+  const generateCharts = (charts: Chart[]) => {
     let chartUI: any = [];
+    for (const chart of charts) {
+      chartUI.push(
+        <ChartBox
+          key={chart._id}
+          chart={chart}
+          sensors={[]}
+          onDelete={onDeleteChart}
+          onUpdate={onChartUpdate}
+        />
+      );
+    }
     setCharts(chartUI);
   };
 
   const onChartUpdate = (chart: Chart) => {
-    // TODO: Ensure the chart name is unique.
     if (chart && chart._id) {
       let updatedCharts = [...charts];
       let updated = false;
@@ -68,63 +121,170 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
       );
       setCharts(updatedCharts);
       setNoCharts(false);
-      if (updated) alert("The Chart was updated.");
-      else alert("The Chart was created");
+      if (updated) alert(false, "The Chart was updated.");
+      else alert(false, "The Chart was created");
     }
-    setShowNewChartModal(false);
+    setShowChartModal(false);
   };
 
-  const onDeleteChart = () => {
-    // TODO
+  const onDeleteChart = (chartId: string) => {
+    let updatedCharts = [];
+    for (let chart of [...charts])
+      if (chart._id !== chartId) updatedCharts.push(chart);
+    setCharts(updatedCharts);
+    setNoCharts(updatedCharts.length === 0);
+  };
+
+  const onNewPreset = (preset: ChartPreset) => {
+    if (preset && preset._id) {
+      let updatedPresets = [...chartPresets];
+      let updated = false;
+      for (let i in updatedPresets) {
+        if (updatedPresets[i]._id === preset._id) {
+          updatedPresets[i] = preset;
+          updated = true;
+        }
+      }
+      if (!updated) updatedPresets.push(preset);
+      updatedPresets.sort((a: ChartPreset, b: ChartPreset) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
+      setChartPresets(updatedPresets);
+      setChartPreset(preset);
+      if (updated) alert(false, "The Preset was updated.");
+      else alert(false, "The Preset was created.");
+    }
+    setShowPresetModal(false);
   };
 
   return (
     <>
-      <>
-        <DashNav margin={context.margin}>
-          <div className="left">
-            <ToolTip value="New Chart">
-              <IconButton
-                img={<Add />}
-                onClick={() => setShowNewChartModal(true)}
+      {fetchingPresets ? (
+        <div id="dashboard-loading">
+          <div id="dashboard-loading-content">
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Fetching presets...</b>
+            </>
+          </div>
+        </div>
+      ) : (
+        <>
+          <DashNav margin={context.margin}>
+            <div className="left">
+              {size.width >= 768.9 ? (
+                <ToolTip value="New Chart">
+                  <IconButton
+                    img={<Add />}
+                    onClick={() => setShowChartModal(true)}
+                  />
+                </ToolTip>
+              ) : (
+                <TextButton
+                  title="New Chart"
+                  onClick={() => setShowChartModal(true)}
+                />
+              )}
+              {isAuthAtLeast(user, UserRole.MEMBER) && (
+                <>
+                  {size.width >= 768.9 ? (
+                    <ToolTip value="Save Preset">
+                      <IconButton
+                        img={<SaveOutlined />}
+                        onClick={() => setShowPresetModal(true)}
+                      />
+                    </ToolTip>
+                  ) : (
+                    <TextButton
+                      title="Save Preset"
+                      onClick={() => setShowPresetModal(true)}
+                    />
+                  )}
+                </>
+              )}
+              {chartPresets.length !== 0 && (
+                <DropDown
+                  placeholder="Select Preset..."
+                  options={(() => {
+                    let options = [];
+                    if (isAuthAtLeast(user, UserRole.MEMBER)) {
+                      options.push({
+                        value: undefined,
+                        label: "New",
+                      });
+                    }
+                    options = options.concat(
+                      // @ts-ignore
+                      rawDataPresets.map((preset) => {
+                        return { value: preset, label: preset.name };
+                      })
+                    );
+                    return options;
+                  })()}
+                  onChange={(value: any) => {
+                    setChartPreset(
+                      value.label === "New" ? undefined : value.value
+                    );
+                  }}
+                  value={
+                    chartPreset
+                      ? { value: chartPreset, label: chartPreset.name }
+                      : null
+                  }
+                  isSearchable
+                />
+              )}
+            </div>
+            <div className="right">
+              <ToolTip value="Run a Test">
+                <IconButton img={<Air />} />
+              </ToolTip>
+              <DropDown
+                placeholder="Select Thing..."
+                options={props.things.map((thing) => {
+                  return { value: thing._id, label: thing.name };
+                })}
+                onChange={(value: any) => {
+                  for (const thing of props.things)
+                    if (thing._id === value.value) props.onThingChange(thing);
+                }}
+                defaultValue={{
+                  value: props.thing._id,
+                  label: props.thing.name,
+                }}
+                isSearchable
               />
-            </ToolTip>
-            <ToolTip value="Presets">
-              <IconButton img={<Category />} />
-            </ToolTip>
-            <ToolTip value="Save Configuration">
-              <IconButton img={<SaveOutlined />} />
-            </ToolTip>
-          </div>
-          <div className="right">
-            <ToolTip value="Run a Test">
-              <IconButton img={<Air />} />
-            </ToolTip>
-            <DropDown
-              placeholder="Select Thing..."
-              options={props.things.map((thing) => {
-                return { value: thing._id, label: thing.name };
-              })}
-              onChange={(value: any) => {
-                for (const thing of props.things)
-                  if (thing._id === value.value) props.onThingChange(thing);
-              }}
-              defaultValue={{ value: props.thing._id, label: props.thing.name }}
-              isSearchable
-            />
-          </div>
-        </DashNav>
-        <div id="chart-view">{charts}</div>
-      </>
-      <NewChartModal
-        show={showNewChartModal}
+            </div>
+          </DashNav>
+          <div id="chart-view">{charts}</div>
+          {noCharts && (
+            <div id="dashboard-loading">
+              <div id="dashboard-loading-content">
+                <>
+                  <b>No Sensors selected...</b>
+                  <br />
+                  <br />
+                  <TextButton
+                    title="Add Sensor(s)"
+                    onClick={() => setShowChartModal(true)}
+                  />
+                </>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      <ChartModal
+        show={showChartModal}
         toggle={onChartUpdate}
         sensors={props.sensors}
       />
       <Alert
-        title="Success!"
+        title={alertError ? "Something went wrong..." : "Success!"}
         description={alertDescription}
-        color="green"
+        color={alertError ? "red" : "green"}
         onDismiss={() => setShowAlert(false)}
         show={showAlert}
         slideOut

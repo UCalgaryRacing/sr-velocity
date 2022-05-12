@@ -14,14 +14,15 @@ import { Sensor, Chart } from "state";
 import { ChartType } from "components/charts";
 import { useForm } from "hooks";
 
-interface NewChartModalProps {
+interface ChartModalProps {
   show?: boolean;
   toggle: any;
   sensors: Sensor[];
+  chart?: Chart;
 }
 
-export const NewChartModal: React.FC<NewChartModalProps> = (
-  props: NewChartModalProps
+export const ChartModal: React.FC<ChartModalProps> = (
+  props: ChartModalProps
 ) => {
   const [selectedSensors, setSelectedSensors] = useState<any[]>([]);
   const [sensorIds, setSensorIds] = useState<string[]>([]);

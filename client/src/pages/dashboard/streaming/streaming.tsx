@@ -28,14 +28,6 @@ const Streaming: React.FC = () => {
   const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
-    if (context.section !== "Streaming") {
-      setThings([]);
-      setSensors([]);
-      setThing(undefined);
-    }
-  }, [context.section]);
-
-  useEffect(() => {
     getThings()
       .then((things: Thing[]) => {
         things.sort((a: Thing, b: Thing) =>
