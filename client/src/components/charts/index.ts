@@ -2,7 +2,6 @@
 // Written by Justin Tijunelis
 
 export * from "./chartBox";
-export * from "./chartModal";
 export * from "./lineChart";
 export * from "./heatMap";
 export * from "./radialChart";

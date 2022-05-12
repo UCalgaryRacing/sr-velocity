@@ -34,14 +34,17 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
   const onSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
+    const cleanedCharts = props.charts.map((chart) => {
+      chart._id = "";
+      return chart;
+    });
     if (props.chartPreset) {
       let preset = {
         ...values,
-        charts: props.charts, // Do we need to remove temp Ids?
+        charts: cleanedCharts,
       };
-      // TODO: We need to get the entire thing back...
       putChartPreset(preset)
-        .then((_: any) => {
+        .then((preset: ChartPreset) => {
           setLoading(false);
           props.toggle(preset);
         })
@@ -52,9 +55,14 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
           else alert("Please try again...");
         });
     } else {
+      console.log({
+        ...values,
+        charts: cleanedCharts,
+        thingId: props.thing._id,
+      });
       postChartPreset({
         ...values,
-        charts: props.charts, // Do we need to remove temp Ids?
+        charts: cleanedCharts,
         thingId: props.thing._id,
       })
         .then((preset: ChartPreset) => {

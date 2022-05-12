@@ -5,8 +5,7 @@ import React, { useState } from "react";
 import { IconButton, ToolTip } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
 import { Sensor, Chart } from "state";
-import { ChartModal } from ".";
-import { ConfirmModal } from "components/modals";
+import { ChartModal, ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import "./_styling/chartBox.css";
 
@@ -71,7 +70,9 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
         }
         show={showConfirmation}
         toggle={() => setShowConfirmation(false)}
-        onConfirm={props.onDelete}
+        onConfirm={() => {
+          if (props.onDelete) props.onDelete(props.chart._id);
+        }}
       />
     </div>
   );

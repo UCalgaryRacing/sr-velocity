@@ -98,7 +98,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
           <MultiSelect
             placeholder="Sensors"
             options={props.sensors.map((sensor) => {
-              return { key: sensor.name, _id: sensor._id };
+              return { key: sensor.name, value: sensor._id };
             })}
             selectedList={selectedSensors}
             onSelect={onSensorChange}

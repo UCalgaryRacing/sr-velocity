@@ -9,7 +9,7 @@ import {
   Alert,
   TextButton,
 } from "components/interface";
-import { ChartBox } from "components/charts/";
+import { ChartBox } from "components/charts";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add } from "@mui/icons-material";
 import {
@@ -23,7 +23,7 @@ import {
   UserRole,
 } from "state";
 import { getChartPresets } from "crud";
-import { ChartModal } from "components/charts/chartModal";
+import { ChartModal } from "components/modals";
 import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import { useWindowSize } from "hooks";
@@ -62,7 +62,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         );
         setChartPresets(presets);
         setFetchingPresets(false);
-        if (presets.length === 0) alert(true, "No presets found...");
       })
       .catch((_: any) => {
         alert(true, "Could not fetch presets...");
@@ -191,7 +190,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                   onClick={() => setShowChartModal(true)}
                 />
               )}
-              {isAuthAtLeast(user, UserRole.MEMBER) && (
+              {isAuthAtLeast(user, UserRole.MEMBER) && charts.length > 0 && (
                 <>
                   {size.width >= 768.9 ? (
                     <ToolTip value="Save Preset">
@@ -221,7 +220,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                     }
                     options = options.concat(
                       // @ts-ignore
-                      rawDataPresets.map((preset) => {
+                      chartPresets.map((preset) => {
                         return { value: preset, label: preset.name };
                       })
                     );

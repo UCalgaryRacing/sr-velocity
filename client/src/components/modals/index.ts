@@ -2,6 +2,5 @@
 // Written by Justin Tijunelis
 
 export * from "./baseModal";
+export * from "./chartModal";
 export * from "./confirmModal";
-export * from "./selectThingModal";
-export * from "./settingsModal";

@@ -21,9 +21,9 @@ export const postChartPreset = (chartPreset: ChartPreset) => {
 };
 
 export const putChartPreset = (chartPreset: ChartPreset) => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<ChartPreset>((resolve, reject) => {
     request("PUT", "/database/chartPreset", chartPreset)
-      .then((_: any) => resolve())
+      .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
 };

@@ -61,7 +61,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         );
         setRawDataPresets(presets);
         setFetchingPresets(false);
-        if (presets.length === 0) alert(true, "No presets found...");
       })
       .catch((_: any) => {
         alert(true, "Could not fetch presets...");
@@ -183,7 +182,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                   onClick={() => setShowRawBoxModal(true)}
                 />
               )}
-              {isAuthAtLeast(user, UserRole.MEMBER) && (
+              {isAuthAtLeast(user, UserRole.MEMBER) && sensors.length > 0 && (
                 <>
                   {size.width >= 768.9 ? (
                     <ToolTip value="Save Preset">
