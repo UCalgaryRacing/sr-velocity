@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
           })}
         </Menu>
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <Menu>
           <SubMenu
             key="Settings"
@@ -164,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
             }}
           />
         </Menu>
-      </SidebarFooter>
+      </SidebarFooter> */}
     </ProSidebar>
   );
 };
