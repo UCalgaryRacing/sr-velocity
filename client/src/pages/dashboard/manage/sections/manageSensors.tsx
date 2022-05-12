@@ -328,7 +328,13 @@ export const ManageSensors: React.FC = () => {
           )}
         </div>
       )}
-      <SensorModal show={showSensorModal} toggle={onNewSensor} thing={thing!} />
+      {showSensorModal && (
+        <SensorModal
+          show={showSensorModal}
+          toggle={onNewSensor}
+          thing={thing!}
+        />
+      )}
       <Alert
         title="Success!"
         description={alertDescription}

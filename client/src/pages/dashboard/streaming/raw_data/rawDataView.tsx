@@ -189,21 +189,23 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
               <ToolTip value="Run a Test">
                 <IconButton img={<Air />} />
               </ToolTip>
-              <DropDown
-                placeholder="Select Thing..."
-                options={props.things.map((thing) => {
-                  return { value: thing._id, label: thing.name };
-                })}
-                onChange={(value: any) => {
-                  for (const thing of props.things)
-                    if (thing._id === value.value) props.onThingChange(thing);
-                }}
-                defaultValue={{
-                  value: props.thing._id,
-                  label: props.thing.name,
-                }}
-                isSearchable
-              />
+              {props.things.length > 1 && (
+                <DropDown
+                  placeholder="Select Thing..."
+                  options={props.things.map((thing) => {
+                    return { value: thing._id, label: thing.name };
+                  })}
+                  onChange={(value: any) => {
+                    for (const thing of props.things)
+                      if (thing._id === value.value) props.onThingChange(thing);
+                  }}
+                  defaultValue={{
+                    value: props.thing._id,
+                    label: props.thing.name,
+                  }}
+                  isSearchable
+                />
+              )}
             </div>
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>
@@ -240,14 +242,12 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         show={showRawDataPresetModal}
         toggle={onNewPreset}
         rawDataPreset={(() => {
-          if (rawDataPreset) {
+          if (rawDataPreset)
             return {
               ...rawDataPreset,
               sensorIds: sensors.map((sensor) => sensor._id),
             };
-          } else {
-            return undefined;
-          }
+          else return undefined;
         })()}
         selectedSensors={sensors}
         allSensors={props.sensors}

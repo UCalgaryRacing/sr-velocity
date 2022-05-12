@@ -61,6 +61,8 @@ const Streaming: React.FC = () => {
     }
   }, [thing]);
 
+  if (context.section !== "Streaming") return <></>;
+
   if (!thing || fetchingSensors) {
     return (
       <div id="dashboard-loading">

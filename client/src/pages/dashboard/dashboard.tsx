@@ -22,6 +22,7 @@ import "./_styling/dashboard.css";
 
 export const DashboardContext = React.createContext({
   page: "",
+  section: "",
   margin: 0,
 });
 
@@ -96,6 +97,7 @@ const Dashboard: React.FC = () => {
             <DashboardContext.Provider
               value={{
                 page: dashboard!.page,
+                section: dashboard!.section,
                 margin:
                   size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
               }}

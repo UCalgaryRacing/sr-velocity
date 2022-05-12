@@ -25,7 +25,7 @@ const initialValues = {
   name: "",
   type: "",
   category: "",
-  canId: "0x00000000",
+  canId: "0x",
   frequency: "",
   unit: "",
   lowerCalibration: "",
@@ -49,7 +49,6 @@ const numberFields = [
   "upperDanger",
 ];
 
-// TODO: Add disabled toggle
 export const SensorModal: React.FC<SensorModalProps> = (
   props: SensorModalProps
 ) => {
@@ -85,7 +84,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
       !(
         values.canId.length === 10 && !/0[xX][0-9a-fA-F]{8}/.test(values.canId)
       );
-    if (!canIdValid) {
+    if (!canIdValid || Number(values.canId) === 0) {
       alert("Please provide a valid CAN ID.");
       return;
     }
