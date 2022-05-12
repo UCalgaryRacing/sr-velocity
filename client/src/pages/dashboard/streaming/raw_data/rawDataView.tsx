@@ -12,7 +12,15 @@ import {
 import { DashboardContext } from "../../dashboard";
 import DashNav from "components/navigation/dashNav";
 import { SaveOutlined, Add, Air } from "@mui/icons-material";
-import { RawDataPreset, Sensor, Thing } from "state";
+import {
+  RawDataPreset,
+  Sensor,
+  Thing,
+  isAuthAtLeast,
+  RootState,
+  useAppSelector,
+  UserRole,
+} from "state";
 import { getRawDataPresets } from "crud";
 import { CircularProgress } from "@mui/material";
 import { NewRawBoxModal } from "./modals/newRawBoxModal";
@@ -29,6 +37,7 @@ interface RawDataViewProps {
 
 const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
   const context = useContext(DashboardContext);
+  const user = useAppSelector((state: RootState) => state.user);
   const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
   const [rawDataPreset, setRawDataPreset] = useState<RawDataPreset>();
   const [rawDataPresets, setRawDataPresets] = useState<RawDataPreset[]>([]);
@@ -67,8 +76,10 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         if (sensor.length === 1) sensors.push(sensor[0]);
       }
       setSensors(sensors);
+      setNoBoxes(false);
     } else {
       setSensors([]);
+      setNoBoxes(true);
     }
   }, [rawDataPreset]);
 
@@ -117,7 +128,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
       if (sensor._id !== sensorId) updatedSensors.push(sensor);
     setSensors(updatedSensors);
     setNoBoxes(updatedSensors.length === 0);
-    alert(false, "The box was deleted.");
   };
 
   const onNewPreset = (preset: RawDataPreset) => {
@@ -165,22 +175,25 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                   onClick={() => setShowNewRawBoxModal(true)}
                 />
               </ToolTip>
-              <ToolTip value="Save Preset">
-                <IconButton
-                  img={<SaveOutlined />}
-                  onClick={() => setShowRawDataPresetModal(true)}
-                />
-              </ToolTip>
+              {isAuthAtLeast(user, UserRole.MEMBER) && (
+                <ToolTip value="Save Preset">
+                  <IconButton
+                    img={<SaveOutlined />}
+                    onClick={() => setShowRawDataPresetModal(true)}
+                  />
+                </ToolTip>
+              )}
               {rawDataPresets.length !== 0 && (
                 <DropDown
                   placeholder="Select Preset..."
                   options={(() => {
-                    let options = [
-                      {
+                    let options = [];
+                    if (isAuthAtLeast(user, UserRole.MEMBER)) {
+                      options.push({
                         value: undefined,
                         label: "New",
-                      },
-                    ];
+                      });
+                    }
                     options = options.concat(
                       // @ts-ignore
                       rawDataPresets.map((preset) => {

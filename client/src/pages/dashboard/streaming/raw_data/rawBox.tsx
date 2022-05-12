@@ -2,6 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { useState, useEffect } from "react";
+import { CloseOutlined } from "@mui/icons-material";
 import { Sensor } from "state";
 import "./_styling/rawBox.css";
 
@@ -59,6 +60,12 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
       <div className="raw-box-title">{props.sensor.name}</div>
       <div className="raw-box-value">
         {value + (props.sensor.unit ? " " + props.sensor.unit : "")}
+      </div>
+      <div
+        className="raw-box-close"
+        onClick={() => props.onDelete(props.sensor._id)}
+      >
+        <CloseOutlined />
       </div>
     </div>
   );
