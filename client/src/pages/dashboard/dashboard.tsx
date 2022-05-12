@@ -102,8 +102,8 @@ const Dashboard: React.FC = () => {
                   size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
               }}
             >
-              <Streaming />
-              <Historical />
+              {dashboard.section === "Streaming" && <Streaming />}
+              {dashboard.section === "Historical" && <Historical />}
               <Manage />
             </DashboardContext.Provider>
           </div>

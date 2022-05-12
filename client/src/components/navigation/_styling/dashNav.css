@@ -87,4 +87,8 @@ Written by Justin Tijunelis and Joey Van Lierop
     margin-right: 0px;
     margin-bottom: 10px;
   }
+
+  #dash-nav .left > *:last-child {
+    margin-bottom: 0px;
+  }
 }
