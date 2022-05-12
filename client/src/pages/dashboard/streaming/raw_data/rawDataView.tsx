@@ -67,6 +67,8 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         if (sensor.length === 1) sensors.push(sensor[0]);
       }
       setSensors(sensors);
+    } else {
+      setSensors([]);
     }
   }, [rawDataPreset]);
 
@@ -172,11 +174,27 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
               {rawDataPresets.length !== 0 && (
                 <DropDown
                   placeholder="Select Preset..."
-                  options={rawDataPresets.map((preset) => {
-                    return { value: preset, label: preset.name };
-                  })}
-                  onChange={(value: any) => setRawDataPreset(value.value)}
-                  defaultValue={
+                  options={(() => {
+                    let options = [
+                      {
+                        value: undefined,
+                        label: "New",
+                      },
+                    ];
+                    options = options.concat(
+                      // @ts-ignore
+                      rawDataPresets.map((preset) => {
+                        return { value: preset, label: preset.name };
+                      })
+                    );
+                    return options;
+                  })()}
+                  onChange={(value: any) => {
+                    setRawDataPreset(
+                      value.label === "New" ? undefined : value.value
+                    );
+                  }}
+                  value={
                     rawDataPreset
                       ? { value: rawDataPreset, label: rawDataPreset.name }
                       : null
@@ -186,9 +204,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
               )}
             </div>
             <div className="right">
-              <ToolTip value="Run a Test">
-                <IconButton img={<Air />} />
-              </ToolTip>
               {props.things.length > 1 && (
                 <DropDown
                   placeholder="Select Thing..."
@@ -206,6 +221,9 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                   isSearchable
                 />
               )}
+              <ToolTip value="Run a Test">
+                <IconButton img={<Air />} />
+              </ToolTip>
             </div>
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>
@@ -238,21 +256,23 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
           return unselected;
         })()}
       />
-      <RawDataPresetModal
-        show={showRawDataPresetModal}
-        toggle={onNewPreset}
-        rawDataPreset={(() => {
-          if (rawDataPreset)
-            return {
-              ...rawDataPreset,
-              sensorIds: sensors.map((sensor) => sensor._id),
-            };
-          else return undefined;
-        })()}
-        selectedSensors={sensors}
-        allSensors={props.sensors}
-        thing={props.thing}
-      />
+      {showRawDataPresetModal && (
+        <RawDataPresetModal
+          show={showRawDataPresetModal}
+          toggle={onNewPreset}
+          rawDataPreset={(() => {
+            if (rawDataPreset)
+              return {
+                ...rawDataPreset,
+                sensorIds: sensors.map((sensor) => sensor._id),
+              };
+            else return undefined;
+          })()}
+          selectedSensors={sensors}
+          allSensors={props.sensors}
+          thing={props.thing}
+        />
+      )}
       <Alert
         title={alertError ? "Something went wrong..." : "Success!"}
         description={alertDescription}
