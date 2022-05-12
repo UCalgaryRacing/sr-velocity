@@ -13,7 +13,7 @@ export const getChartPresets = (thingId: string) => {
 };
 
 export const postChartPreset = (chartPreset: ChartPreset) => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<ChartPreset>((resolve, reject) => {
     request("POST", "/database/chartPreset", chartPreset)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));

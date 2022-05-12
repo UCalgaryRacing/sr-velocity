@@ -11,7 +11,7 @@ import {
 } from "components/interface";
 import { ChartBox } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
-import { SaveOutlined, Add, Air } from "@mui/icons-material";
+import { SaveOutlined, Add } from "@mui/icons-material";
 import {
   Sensor,
   Thing,
@@ -22,13 +22,13 @@ import {
   isAuthAtLeast,
   UserRole,
 } from "state";
-import { ChartModal } from "./modals/chartModal";
-import { getChartPresets } from "crud/chartPresets";
+import { getChartPresets } from "crud";
+import { ChartModal } from "components/charts/chartModal";
 import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
-import "./_styling/chartView.css";
 import { useWindowSize } from "hooks";
 import { ChartPresetModal } from "./modals/chartPresetModal";
+import "./_styling/chartView.css";
 
 interface ChartViewProps {
   sensors: Sensor[];
@@ -97,7 +97,10 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         <ChartBox
           key={chart._id}
           chart={chart}
-          sensors={[]}
+          allSensors={props.sensors}
+          sensors={props.sensors.filter((sensor) =>
+            chart.sensorIds.includes(sensor._id)
+          )}
           onDelete={onDeleteChart}
           onUpdate={onChartUpdate}
         />
@@ -239,9 +242,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
               )}
             </div>
             <div className="right">
-              <ToolTip value="Run a Test">
-                <IconButton img={<Air />} />
-              </ToolTip>
               <DropDown
                 placeholder="Select Thing..."
                 options={props.things.map((thing) => {
@@ -264,11 +264,16 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
             <div id="dashboard-loading">
               <div id="dashboard-loading-content">
                 <>
-                  <b>No Sensors selected...</b>
+                  <b>
+                    No Charts yet.
+                    {chartPresets.length > 0
+                      ? " Create one or select a preset."
+                      : ""}
+                  </b>
                   <br />
                   <br />
                   <TextButton
-                    title="Add Sensor(s)"
+                    title="Add Chart"
                     onClick={() => setShowChartModal(true)}
                   />
                 </>

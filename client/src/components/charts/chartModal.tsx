@@ -12,6 +12,7 @@ import {
 } from "components/interface";
 import { Sensor, Chart } from "state";
 import { ChartType } from "components/charts";
+import { v4 as uuidv4 } from "uuid";
 import { useForm } from "hooks";
 
 interface ChartModalProps {
@@ -39,7 +40,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
   const onSubmit = (e: any) => {
     e.preventDefault();
     let newChart: Chart = {
-      _id: "",
+      _id: uuidv4(),
       name: values.name,
       type: chartType as string,
       sensorIds: sensorIds,

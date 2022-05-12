@@ -2,9 +2,11 @@
 // Written by Justin Tijunelis
 
 import React, { useState } from "react";
-import { IconButton, ToolTip, RangeSlider } from "components/interface";
+import { IconButton, ToolTip } from "components/interface";
 import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
 import { Sensor, Chart } from "state";
+import { ChartModal } from ".";
+import { ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import "./_styling/chartBox.css";
 
@@ -17,23 +19,31 @@ export enum ChartType {
 
 interface ChartBoxProps {
   chart: Chart;
+  allSensors: Sensor[];
   sensors: Sensor[];
   onDelete?: (chartId: string) => void;
   onUpdate?: (chart: Chart) => void;
 }
 
 export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
+  const [showChartModal, setShowChartModal] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+
   return (
     <div className="chart-box">
       <div className="chart-title">{props.chart.name}</div>
       <div className="chart-controls">
         <ToolTip value="Edit Chart">
-          <IconButton img={<Edit />} />
+          <IconButton img={<Edit />} onClick={() => setShowChartModal(true)} />
         </ToolTip>
         <ToolTip value="Close">
-          <IconButton img={<CloseOutlined />} />
+          <IconButton
+            img={<CloseOutlined />}
+            onClick={() => setShowConfirmation(true)}
+          />
         </ToolTip>
       </div>
+      <div className="chart-legend"></div>
       <div className="chart-area">
         {(() => {
           switch (props.chart.type) {
@@ -50,6 +60,19 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
           }
         })()}
       </div>
+      <ChartModal
+        show={showChartModal}
+        toggle={props.onUpdate}
+        sensors={props.sensors}
+      />
+      <ConfirmModal
+        title={
+          "Are you sure you want to delete Chart '" + props.chart.name + "'?"
+        }
+        show={showConfirmation}
+        toggle={() => setShowConfirmation(false)}
+        onConfirm={props.onDelete}
+      />
     </div>
   );
 };
