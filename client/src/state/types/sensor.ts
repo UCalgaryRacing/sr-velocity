@@ -20,6 +20,7 @@ export type Sensor = {
   lowerWarning?: number;
   upperDanger?: number;
   lowerDanger?: number;
+  // FUTURE: Add protocol
 };
 
 export const sensorTypes = {

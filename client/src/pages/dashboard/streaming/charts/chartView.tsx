@@ -9,7 +9,7 @@ import {
   Alert,
   TextButton,
 } from "components/interface";
-import { ChartBox, ChartType } from "components/charts/";
+import { ChartBox } from "components/charts/";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add, Air } from "@mui/icons-material";
 import {
@@ -28,6 +28,7 @@ import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import "./_styling/chartView.css";
 import { useWindowSize } from "hooks";
+import { ChartPresetModal } from "./modals/chartPresetModal";
 
 interface ChartViewProps {
   sensors: Sensor[];
@@ -102,7 +103,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         />
       );
     }
-    setCharts(chartUI);
+    setChartUI(chartUI);
   };
 
   const onChartUpdate = (chart: Chart) => {
@@ -258,7 +259,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
               />
             </div>
           </DashNav>
-          <div id="chart-view">{charts}</div>
+          <div id="chart-view">{chartUI}</div>
           {noCharts && (
             <div id="dashboard-loading">
               <div id="dashboard-loading-content">
@@ -281,6 +282,15 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         toggle={onChartUpdate}
         sensors={props.sensors}
       />
+      {showPresetModal && (
+        <ChartPresetModal
+          show={showPresetModal}
+          toggle={onNewPreset}
+          chartPreset={chartPreset}
+          charts={charts}
+          thing={props.thing}
+        />
+      )}
       <Alert
         title={alertError ? "Something went wrong..." : "Success!"}
         description={alertDescription}
