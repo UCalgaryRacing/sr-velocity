@@ -26,6 +26,7 @@ import { CircularProgress } from "@mui/material";
 import { NewRawBoxModal } from "./modals/newRawBoxModal";
 import { RawDataPresetModal } from "./modals/rawDataPresetModal";
 import RawBox from "./rawBox";
+import { useWindowSize } from "hooks";
 import "./_styling/rawDataView.css";
 
 interface RawDataViewProps {
@@ -36,6 +37,7 @@ interface RawDataViewProps {
 }
 
 const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
   const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
@@ -169,19 +171,35 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         <>
           <DashNav margin={context.margin}>
             <div className="left">
-              <ToolTip value="New Card">
-                <IconButton
-                  img={<Add />}
-                  onClick={() => setShowNewRawBoxModal(true)}
-                />
-              </ToolTip>
-              {isAuthAtLeast(user, UserRole.MEMBER) && (
-                <ToolTip value="Save Preset">
+              {size.width >= 768.9 ? (
+                <ToolTip value="New Box">
                   <IconButton
-                    img={<SaveOutlined />}
-                    onClick={() => setShowRawDataPresetModal(true)}
+                    img={<Add />}
+                    onClick={() => setShowNewRawBoxModal(true)}
                   />
                 </ToolTip>
+              ) : (
+                <TextButton
+                  title="New Box"
+                  onClick={() => setShowNewRawBoxModal(true)}
+                />
+              )}
+              {isAuthAtLeast(user, UserRole.MEMBER) && (
+                <>
+                  {size.width >= 768.9 ? (
+                    <ToolTip value="Save Preset">
+                      <IconButton
+                        img={<SaveOutlined />}
+                        onClick={() => setShowRawDataPresetModal(true)}
+                      />
+                    </ToolTip>
+                  ) : (
+                    <TextButton
+                      title="Save Preset"
+                      onClick={() => setShowRawDataPresetModal(true)}
+                    />
+                  )}
+                </>
               )}
               {rawDataPresets.length !== 0 && (
                 <DropDown
@@ -234,9 +252,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                   isSearchable
                 />
               )}
-              <ToolTip value="Run a Test">
-                <IconButton img={<Air />} />
-              </ToolTip>
             </div>
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>
