@@ -2,11 +2,11 @@
 // Written by Justin Tijunelis
 
 import React, { useState } from "react";
-import { BaseModal } from "components/modals";
+import { BaseModal, ConfirmModal } from "components/modals";
 import { InputField, TextButton, Alert } from "components/interface";
 import { Chart, ChartPreset, Thing } from "state";
 import { useForm } from "hooks";
-import { postChartPreset, putChartPreset } from "crud";
+import { postChartPreset, putChartPreset, deleteChartPreset } from "crud";
 
 interface ChartPresetModalProps {
   show: boolean;
@@ -14,14 +14,17 @@ interface ChartPresetModalProps {
   chartPreset?: ChartPreset;
   charts: Chart[];
   thing: Thing;
+  onDelete: (chartPresetId: string) => void;
 }
 
 export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
   props: ChartPresetModalProps
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [values, handleChange] = useForm(
     props.chartPreset ? props.chartPreset : { name: "" }
   );
@@ -55,11 +58,6 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
           else alert("Please try again...");
         });
     } else {
-      console.log({
-        ...values,
-        charts: cleanedCharts,
-        thingId: props.thing._id,
-      });
       postChartPreset({
         ...values,
         charts: cleanedCharts,
@@ -76,6 +74,20 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
           else alert("Please try again...");
         });
     }
+  };
+
+  const onDelete = () => {
+    setDeleteLoading(true);
+    deleteChartPreset(props.chartPreset!._id)
+      .then((_: any) => {
+        setDeleteLoading(false);
+        if (props.onDelete) props.onDelete(props.chartPreset!._id);
+        props.toggle();
+      })
+      .catch((_: any) => {
+        setDeleteLoading(false);
+        alert("Please try again...");
+      });
   };
 
   return (
@@ -96,7 +108,27 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
           required
         />
         <TextButton title="Save" loading={loading} />
+        {props.chartPreset && (
+          <TextButton
+            type="button"
+            title="Delete"
+            onClick={() => setShowConfirmation(true)}
+          />
+        )}
       </BaseModal>
+      {props.chartPreset && (
+        <ConfirmModal
+          title={
+            "Are you sure you want to delete Preset '" +
+            props.chartPreset.name +
+            "'?"
+          }
+          show={showConfirmation}
+          toggle={() => setShowConfirmation(false)}
+          onConfirm={onDelete}
+          loading={deleteLoading}
+        />
+      )}
       <Alert
         title="Something went wrong..."
         description={alertDescription}

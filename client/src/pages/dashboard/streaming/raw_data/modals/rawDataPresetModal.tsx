@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { useEffect, useState } from "react";
-import { BaseModal } from "components/modals";
+import { BaseModal, ConfirmModal } from "components/modals";
 import {
   InputField,
   TextButton,
@@ -10,7 +10,7 @@ import {
   MultiSelect,
 } from "components/interface";
 import { RawDataPreset, Sensor, Thing } from "state";
-import { postRawDataPreset, putRawDataPreset } from "crud";
+import { postRawDataPreset, putRawDataPreset, deleteRawDataPreset } from "crud";
 import { useForm } from "hooks";
 
 interface RawDataPresetModalProps {
@@ -20,6 +20,7 @@ interface RawDataPresetModalProps {
   selectedSensors?: Sensor[];
   allSensors: Sensor[];
   thing: Thing;
+  onDelete: (rawDataPresetId: string) => void;
 }
 
 export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
@@ -28,8 +29,10 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
   const [sensorOptions, setSensorOptions] = useState<any[]>([]);
   const [selectedSensors, setSelectedSensors] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [values, handleChange] = useForm(
     props.rawDataPreset ? props.rawDataPreset : { name: "" }
   );
@@ -92,6 +95,20 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
     }
   };
 
+  const onDelete = () => {
+    setDeleteLoading(true);
+    deleteRawDataPreset(props.rawDataPreset!._id)
+      .then((_: any) => {
+        setDeleteLoading(false);
+        if (props.onDelete) props.onDelete(props.rawDataPreset!._id);
+        props.toggle();
+      })
+      .catch((_: any) => {
+        setDeleteLoading(false);
+        alert("Please try again...");
+      });
+  };
+
   const onSensorChange = (selectedList: any[], _: any[]) => {
     setSelectedSensors(selectedList);
   };
@@ -123,7 +140,27 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
           onRemove={onSensorChange}
         />
         <TextButton title="Save" loading={loading} />
+        {props.rawDataPreset && (
+          <TextButton
+            type="button"
+            title="Delete"
+            onClick={() => setShowConfirmation(true)}
+          />
+        )}
       </BaseModal>
+      {props.rawDataPreset && (
+        <ConfirmModal
+          title={
+            "Are you sure you want to delete Preset '" +
+            props.rawDataPreset.name +
+            "'?"
+          }
+          show={showConfirmation}
+          toggle={() => setShowConfirmation(false)}
+          onConfirm={onDelete}
+          loading={deleteLoading}
+        />
+      )}
       <Alert
         title="Something went wrong..."
         description={alertDescription}

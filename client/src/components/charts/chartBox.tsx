@@ -59,11 +59,17 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
           }
         })()}
       </div>
-      <ChartModal
-        show={showChartModal}
-        toggle={props.onUpdate}
-        sensors={props.sensors}
-      />
+      {showChartModal && (
+        <ChartModal
+          show={showChartModal}
+          toggle={(chart: Chart) => {
+            if (props.onUpdate) props.onUpdate(chart);
+            setShowChartModal(false);
+          }}
+          sensors={props.sensors}
+          chart={props.chart}
+        />
+      )}
       <ConfirmModal
         title={
           "Are you sure you want to delete Chart '" + props.chart.name + "'?"

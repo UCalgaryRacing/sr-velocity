@@ -50,7 +50,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
   const [showPresetModal, setShowPresetModal] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<any[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  const [noBoxes, setNoBoxes] = useState<boolean>(false);
 
   useEffect(() => {
     setFetchingPresets(true);
@@ -76,10 +75,8 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         if (sensor.length === 1) sensors.push(sensor[0]);
       }
       setSensors(sensors);
-      setNoBoxes(sensors.length === 0);
     } else {
       setSensors([]);
-      setNoBoxes(true);
     }
   }, [rawDataPreset]);
 
@@ -111,7 +108,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
       setSensors(updatedSensors);
-      setNoBoxes(false);
       alert(
         false,
         newSensors.length > 1
@@ -127,7 +123,6 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
     for (let sensor of [...sensors])
       if (sensor._id !== sensorId) updatedSensors.push(sensor);
     setSensors(updatedSensors);
-    setNoBoxes(updatedSensors.length === 0);
   };
 
   const onNewPreset = (preset: RawDataPreset) => {
@@ -150,6 +145,15 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
       else alert(false, "The Preset was created.");
     }
     setShowPresetModal(false);
+  };
+
+  const onPresetDelete = (presetId: string) => {
+    let updatedPresets = [];
+    for (const preset of rawDataPresets)
+      if (preset._id !== presetId) updatedPresets.push(preset);
+    setRawDataPresets(updatedPresets);
+    setRawDataPreset(undefined);
+    alert(false, "The Preset was deleted.");
   };
 
   return (
@@ -207,7 +211,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                     if (isAuthAtLeast(user, UserRole.MEMBER)) {
                       options.push({
                         value: undefined,
-                        label: "New",
+                        label: "New Preset",
                       });
                     }
                     options = options.concat(
@@ -220,13 +224,13 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
                   })()}
                   onChange={(value: any) => {
                     setRawDataPreset(
-                      value.label === "New" ? undefined : value.value
+                      value.label === "New Preset" ? undefined : value.value
                     );
                   }}
                   value={
                     rawDataPreset
                       ? { value: rawDataPreset, label: rawDataPreset.name }
-                      : null
+                      : { value: undefined, label: "New Preset" }
                   }
                   isSearchable
                 />
@@ -253,7 +257,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
             </div>
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>
-          {noBoxes && (
+          {boxes.length === 0 && (
             <div id="dashboard-loading">
               <div id="dashboard-loading-content">
                 <>
@@ -270,18 +274,20 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
           )}
         </>
       )}
-      <NewRawBoxModal
-        show={showRawBoxModal}
-        toggle={onNew}
-        sensors={(() => {
-          let selectedSensorsIds = sensors.map((sensor) => sensor._id);
-          let unselected = [];
-          for (const sensor of props.sensors)
-            if (!selectedSensorsIds.includes(sensor._id))
-              unselected.push(sensor);
-          return unselected;
-        })()}
-      />
+      {showRawBoxModal && (
+        <NewRawBoxModal
+          show={showRawBoxModal}
+          toggle={onNew}
+          sensors={(() => {
+            let selectedSensorsIds = sensors.map((sensor) => sensor._id);
+            let unselected = [];
+            for (const sensor of props.sensors)
+              if (!selectedSensorsIds.includes(sensor._id))
+                unselected.push(sensor);
+            return unselected;
+          })()}
+        />
+      )}
       {showPresetModal && (
         <RawDataPresetModal
           show={showPresetModal}
@@ -297,6 +303,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
           selectedSensors={sensors}
           allSensors={props.sensors}
           thing={props.thing}
+          onDelete={onPresetDelete}
         />
       )}
       <Alert

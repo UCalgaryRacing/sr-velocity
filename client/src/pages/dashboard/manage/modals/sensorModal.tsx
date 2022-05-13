@@ -121,6 +121,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         thingId: props.thing._id,
         disabled: disabled,
       });
+      console.log(sensor);
       postSensor(sensor)
         .then((sensor: Sensor) => {
           setLoading(false);

@@ -133,7 +133,7 @@ export const SensorCard: React.FC<SensorCardProps> = (
           "Are you sure you want to delete Sensor '" + props.sensor.name + "'?"
         }
         show={showConfirmationModal}
-        toggle={() => setShowConfirmationModal(true)}
+        toggle={() => setShowConfirmationModal(false)}
         onConfirm={onDelete}
         loading={loading}
       />

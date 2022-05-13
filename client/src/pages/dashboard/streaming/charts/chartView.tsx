@@ -51,7 +51,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   const [showPresetModal, setShowPresetModal] = useState<boolean>(false);
   const [charts, setCharts] = useState<Chart[]>([]);
   const [chartUI, setChartUI] = useState<any[]>([]);
-  const [noCharts, setNoCharts] = useState<boolean>(false);
 
   useEffect(() => {
     setFetchingPresets(true);
@@ -72,10 +71,8 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   useEffect(() => {
     if (chartPreset) {
       setCharts(chartPreset.charts);
-      setNoCharts(chartPreset.charts.length === 0);
     } else {
       setCharts([]);
-      setNoCharts(true);
     }
   }, [chartPreset]);
 
@@ -123,9 +120,8 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
       setCharts(updatedCharts);
-      setNoCharts(false);
       if (updated) alert(false, "The Chart was updated.");
-      else alert(false, "The Chart was created");
+      else alert(false, "The Chart was created.");
     }
     setShowChartModal(false);
   };
@@ -135,7 +131,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     for (let chart of [...charts])
       if (chart._id !== chartId) updatedCharts.push(chart);
     setCharts(updatedCharts);
-    setNoCharts(updatedCharts.length === 0);
   };
 
   const onNewPreset = (preset: ChartPreset) => {
@@ -155,9 +150,18 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
       setChartPresets(updatedPresets);
       setChartPreset(preset);
       if (updated) alert(false, "The Preset was updated.");
-      else alert(false, "The Preset was created.");
+      else alert(false, "The Preset was saved.");
     }
     setShowPresetModal(false);
+  };
+
+  const onDeletePreset = (presetId: string) => {
+    let updatedPresets = [];
+    for (const preset of chartPresets)
+      if (preset._id !== presetId) updatedPresets.push(preset);
+    setChartPresets(updatedPresets);
+    setChartPreset(undefined);
+    alert(false, "The Preset was deleted.");
   };
 
   return (
@@ -215,7 +219,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                     if (isAuthAtLeast(user, UserRole.MEMBER)) {
                       options.push({
                         value: undefined,
-                        label: "New",
+                        label: "New Preset",
                       });
                     }
                     options = options.concat(
@@ -228,13 +232,18 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                   })()}
                   onChange={(value: any) => {
                     setChartPreset(
-                      value.label === "New" ? undefined : value.value
+                      value.label === "New Preset" ? undefined : value.value
                     );
                   }}
                   value={
                     chartPreset
-                      ? { value: chartPreset, label: chartPreset.name }
-                      : null
+                      ? {
+                          value: chartPresets.filter(
+                            (p) => p._id === chartPreset._id
+                          )[0],
+                          label: chartPreset.name,
+                        }
+                      : { value: undefined, label: "New Preset" }
                   }
                   isSearchable
                 />
@@ -259,7 +268,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
             </div>
           </DashNav>
           <div id="chart-view">{chartUI}</div>
-          {noCharts && (
+          {charts.length === 0 && (
             <div id="dashboard-loading">
               <div id="dashboard-loading-content">
                 <>
@@ -281,11 +290,13 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           )}
         </>
       )}
-      <ChartModal
-        show={showChartModal}
-        toggle={onChartUpdate}
-        sensors={props.sensors}
-      />
+      {showChartModal && (
+        <ChartModal
+          show={showChartModal}
+          toggle={onChartUpdate}
+          sensors={props.sensors}
+        />
+      )}
       {showPresetModal && (
         <ChartPresetModal
           show={showPresetModal}
@@ -293,6 +304,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           chartPreset={chartPreset}
           charts={charts}
           thing={props.thing}
+          onDelete={onDeletePreset}
         />
       )}
       <Alert
