@@ -55,11 +55,13 @@ const io = require("socket.io")(protocol, {
 // Socket authentication
 const { isTokenValid, isApiKeyValid } = require("./middleware/auth");
 io.use((socket, next) => {
-  const token = socket.request.headers.cookie.idToken;
+  let token = "";
+  if (socket.request.headers.cookie)
+    token = socket.request.headers.cookie.idToken;
   if (token && isTokenValid(token)) {
     next();
   } else {
-    const apiKey = socket.request.headers.apiKey;
+    const apiKey = socket.request.headers.key;
     if (apiKey && isApiKeyValid(apiKey)) {
       next();
     } else {
@@ -68,8 +70,6 @@ io.use((socket, next) => {
       next(err);
     }
   }
-});
-
-io.on("connection", (socket) => {
+}).on("connection", (socket) => {
   initializeSocketRoutes(io, socket);
 });
