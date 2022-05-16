@@ -4,10 +4,12 @@
 import React, { useState, useEffect } from "react";
 import { CloseOutlined } from "@mui/icons-material";
 import { Sensor } from "state";
+import { Stream } from "stream/stream";
 import "./_styling/rawBox.css";
 
 interface RawBoxProps {
   sensor: Sensor;
+  stream: Stream;
   onDelete: (sensorId: string) => void;
 }
 
@@ -16,10 +18,9 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   const [color, setColor] = useState<string>();
 
   useEffect(() => {
-    // TODO: Subscribe to the event stream
-
+    props.stream.subscribeToSensor(onDatum, props.sensor.smallId);
     return () => {
-      // TODO: Unsubscribe from the event stream
+      props.stream.unsubscribeFromSensor(onDatum);
     };
   }, []);
 
@@ -54,6 +55,10 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
 
     setColor("#33ba18");
   }, [value]);
+
+  const onDatum = (data: number, _: number) => {
+    setValue(data);
+  };
 
   return (
     <div className="raw-box" style={{ background: color }}>

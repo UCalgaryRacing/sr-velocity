@@ -54,9 +54,10 @@ const handleSocketSession = (io, socket) => {
     const room = currentConnection.room;
     if (room && roomCollection[room].creatorId === socket.id) {
       socket.to(room).emit("room deleted");
-      if (io.sockets.adapter.rooms.get(room)) {
-        io.sockets.adapter.rooms.get(room).forEach((s) => s.leave(room));
-      }
+      // TODO: FIX, this doesn't work!
+      // if (io.sockets.adapter.rooms.get(room)) {
+      //   io.sockets.adapter.rooms.get(room).forEach((s) => s.leave(room));
+      // }
       delete roomCollection[currentConnection.room];
       currentConnection.room = undefined;
     }

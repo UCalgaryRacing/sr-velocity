@@ -29,11 +29,13 @@ import DashNav from "components/navigation/dashNav";
 import { useWindowSize } from "hooks";
 import { ChartPresetModal } from "./modals/chartPresetModal";
 import "./_styling/chartView.css";
+import { Stream } from "stream/stream";
 
 interface ChartViewProps {
   sensors: Sensor[];
   things: Thing[];
   thing: Thing;
+  stream: Stream;
   onThingChange: (thing: Thing) => void;
 }
 

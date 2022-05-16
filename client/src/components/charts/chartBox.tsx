@@ -46,6 +46,7 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
       <div className="chart-area">
         {(() => {
           switch (props.chart.type) {
+            // TODO: Pass stream to these objects
             case ChartType.HEATMAP:
               return <Heatmap />;
             case ChartType.LINE:

@@ -44,11 +44,11 @@ protocol.listen(process.env.GATEWAY_PORT, () =>
 );
 
 // Server and client sockets for socket-io data proxy
-const handleSocketSession = require("./streaming/socket-io-routes");
 const io = require("socket.io")(protocol, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000", // CHANGE WHEN DEPLOYING
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -57,8 +57,16 @@ const io = require("socket.io")(protocol, {
 const { isTokenValid, isApiKeyValid } = require("./middleware/auth");
 io.use((socket, next) => {
   let token = "";
-  if (socket.request.headers.cookie)
-    token = socket.request.headers.cookie.idToken;
+  const parseCookie = (str) =>
+    str
+      .split(";")
+      .map((v) => v.split("="))
+      .reduce((acc, v) => {
+        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+        return acc;
+      }, {});
+  if (socket.handshake.headers.cookie)
+    token = parseCookie(socket.handshake.headers.cookie)["Authorization"];
   if (token && isTokenValid(token)) {
     next();
   } else {
@@ -72,5 +80,7 @@ io.use((socket, next) => {
     }
   }
 }).on("connection", (socket) => {
+  console.log("yeet");
+  const handleSocketSession = require("./streaming/socket-io-routes");
   handleSocketSession(io, socket);
 });

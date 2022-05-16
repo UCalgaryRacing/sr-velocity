@@ -9,6 +9,7 @@ import { DropDown } from "components/interface";
 import { getThings, getSensors } from "crud";
 import { CircularProgress } from "@mui/material";
 import { Thing, Sensor } from "state";
+import { Stream } from "stream/stream";
 
 enum StreamingSection {
   CHARTS = "Real-Time Charts",
@@ -17,6 +18,7 @@ enum StreamingSection {
 
 const Streaming: React.FC = () => {
   const context = useContext(DashboardContext);
+  const [stream, setStream] = useState<Stream>(new Stream());
   const [fetchingThings, setFetchingThings] = useState<boolean>(true);
   const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
   const [fetchingThingsError, setFetchingThingsError] =
@@ -45,6 +47,7 @@ const Streaming: React.FC = () => {
 
   useEffect(() => {
     if (thing) {
+      // Fetch the sensors
       setFetchingSensors(true);
       getSensors(thing?._id)
         .then((sensors: Sensor[]) => {
@@ -58,8 +61,22 @@ const Streaming: React.FC = () => {
           setFetchingSensorsError(true);
           setFetchingSensors(false);
         });
+
+      // Reopen the stream with the new thing id
+      stream.close();
+      stream.connect(thing._id);
+      stream.subscribeToConnection(onConnection);
+      stream.subscribeToDisconnection(onDisconnection);
     }
   }, [thing]);
+
+  const onConnection = () => {
+    // TODO: Show something
+  };
+
+  const onDisconnection = () => {
+    // TODO: Show something
+  };
 
   if (context.section !== "Streaming") return <></>;
 
@@ -148,6 +165,7 @@ const Streaming: React.FC = () => {
             sensors={sensors}
             things={things}
             thing={thing}
+            stream={stream}
             onThingChange={(thing: Thing) => setThing(thing)}
           />
         );
@@ -157,6 +175,7 @@ const Streaming: React.FC = () => {
             sensors={sensors}
             things={things}
             thing={thing}
+            stream={stream}
             onThingChange={(thing: Thing) => setThing(thing)}
           />
         );

@@ -27,15 +27,18 @@ import { NewRawBoxModal } from "./modals/newRawBoxModal";
 import { RawDataPresetModal } from "./modals/rawDataPresetModal";
 import RawBox from "./rawBox";
 import { useWindowSize } from "hooks";
+import { Stream } from "stream/stream";
 import "./_styling/rawDataView.css";
 
 interface RawDataViewProps {
   sensors: Sensor[];
   things: Thing[];
   thing: Thing;
+  stream: Stream;
   onThingChange: (thing: Thing) => void;
 }
 
+// TODO: Show how long the telemetry has been running
 const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
@@ -94,7 +97,12 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
     let boxes: any[] = [];
     for (const sensor of sensors) {
       boxes.push(
-        <RawBox key={sensor._id} sensor={sensor} onDelete={onRawBoxDelete} />
+        <RawBox
+          key={sensor._id}
+          sensor={sensor}
+          onDelete={onRawBoxDelete}
+          stream={props.stream}
+        />
       );
     }
     setBoxes(boxes);
