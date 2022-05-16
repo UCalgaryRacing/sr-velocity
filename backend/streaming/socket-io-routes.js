@@ -1,10 +1,11 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
+const { isNewRoomSecretValid } = require("../middleware/auth");
+
 let roomCollection = {};
 let queuedUsers = {};
 
-// TODO: Implement security
 const initializeSocketRoutes = (io, socket) => {
   let currentConnection = { room: undefined };
 
@@ -12,29 +13,34 @@ const initializeSocketRoutes = (io, socket) => {
    * Emitted by the streaming service. Blocked by any other emissions.
    * When the room is created, all queued users will be notified.
    */
-  socket.on("new room", (thing_id) => {
-    roomCollection[thing_id] = { creatorId: socket.id };
-    currentConnection.room = thing_id;
-    socket.join(thing_id);
-    if (queuedUsers[thing_id]) {
-      for (const queuedUser of queuedUsers[thing_id]) {
-        queuedUser.socket.join(thing_id);
-        queuedUser.socket.emit("joined room");
+  socket.on("new room", (credentials) => {
+    if (isNewRoomSecretValid(credentials.secret)) {
+      roomCollection[credentials.thingId] = { creatorId: socket.id };
+      currentConnection.room = credentials.thingId;
+      socket.join(credentials.thingId);
+      if (queuedUsers[credentials.thingId]) {
+        for (const queuedUser of queuedUsers[credentials.thingId]) {
+          queuedUser.socket.join(credentials.thingId);
+          queuedUser.socket.emit("joined room");
+        }
+        delete queuedUsers[credentials.thingId];
       }
-      delete queuedUsers[thing_id];
+      socket.emit("room created");
+    } else {
+      socket.emit("room creation error");
     }
   });
 
-  /*
+  /**
    * Only emitted by clients. If the room exists, they will join it,
    * otherwise, they are added to a queue.
    */
-  socket.on("join room", (thing_id) => {
-    if (roomCollection[thing_id]) {
-      socket.join(thing_id);
+  socket.on("join room", (thingId) => {
+    if (roomCollection[thingId]) {
+      socket.join(thingId);
     } else {
-      if (!queuedUsers[thing_id]) queuedUsers[thing_id] = [];
-      queuedUsers[thing_id].push({ socket });
+      if (!queuedUsers[thingId]) queuedUsers[thingId] = [];
+      queuedUsers[thingId].push({ socket });
     }
   });
 

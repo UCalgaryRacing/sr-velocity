@@ -18,4 +18,23 @@ const withMinimumAuth = (permission, jwtRequired = false) => {
   };
 };
 
-module.exports = { withMinimumAuth };
+const isTokenValid = (token) => {
+  // TODO
+  return true;
+};
+
+const isApiKeyValid = (apiKey) => {
+  // TODO
+  return true;
+};
+
+const isNewRoomSecretValid = (secret) => {
+  return secret === process.env.NEW_ROOM_SECRET;
+};
+
+module.exports = {
+  withMinimumAuth,
+  isTokenValid,
+  isApiKeyValid,
+  isNewRoomSecretValid,
+};

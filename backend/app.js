@@ -1,8 +1,7 @@
 // Copyright Schulich Racing, FSAE
+// Written By Justin Tijunelis
 
-"use strict";
-
-// Set up env
+// Set up environment
 require("dotenv").config();
 
 // Library imports
@@ -33,12 +32,9 @@ app.all("*", (req, res, next) => {
 });
 
 // Setup routes
-const database = require("./routes/database");
-const data = require("./routes/data");
-const iot = require("./routes/iot");
-app.use("/api/database", database);
-app.use("/api/data", data);
-app.use("/api/iot", iot);
+app.use("/api/database", require("./routes/database"));
+app.use("/api/data", require("./routes/data"));
+app.use("/api/iot", require("./routes/iot"));
 app.use("/api/auth", require("./routes/auth"));
 
 // Begin Server
@@ -54,6 +50,24 @@ const io = require("socket.io")(protocol, {
     origin: "*",
     methods: ["GET", "POST"],
   },
+});
+
+// Socket authentication
+const { isTokenValid, isApiKeyValid } = require("./middleware/auth");
+io.use((socket, next) => {
+  const token = socket.request.headers.cookie.idToken;
+  if (token && isTokenValid(token)) {
+    next();
+  } else {
+    const apiKey = socket.request.headers.apiKey;
+    if (apiKey && isApiKeyValid(apiKey)) {
+      next();
+    } else {
+      const err = new Error("Not authorized.");
+      err.status = 401;
+      next(err);
+    }
+  }
 });
 
 io.on("connection", (socket) => {
