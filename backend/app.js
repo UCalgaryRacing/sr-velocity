@@ -10,7 +10,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const path = require("path");
-const socketIOClient = require("socket.io-client");
+const http = require("http");
 
 // Express configuration
 app.use(
@@ -41,19 +41,21 @@ app.use("/api/data", data);
 app.use("/api/iot", iot);
 app.use("/api/auth", require("./routes/auth"));
 
-// // Server and client sockets for socket-io data proxy
-// const io = require("socket.io")(process.env.CLIENT_SOCKET_PORT);
-// const socket = socketIOClient(process.env.DATA_API_SOCKET_ROUTE, {
-//   reconnection: true,
-// });
-
-// // Forward incoming data to appropriate clients
-// socket.on("new data", (data) => {
-//   // TODO: Read key and only emit to "rooms" that are associated with the incoming data
-//   io.emit(data);
-// });
-
 // Begin Server
-app.listen(process.env.GATEWAY_PORT, () =>
+const protocol = http.createServer(app);
+protocol.listen(process.env.GATEWAY_PORT, () =>
   console.log(`Listening on port ${process.env.GATEWAY_PORT}`)
 );
+
+// Server and client sockets for socket-io data proxy
+const initializeSocketRoutes = require("./streaming/socket-io-routes");
+const io = require("socket.io")(protocol, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  initializeSocketRoutes(io, socket);
+});
