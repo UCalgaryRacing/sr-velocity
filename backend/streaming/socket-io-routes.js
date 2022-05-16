@@ -6,7 +6,7 @@ const { isNewRoomSecretValid } = require("../middleware/auth");
 let roomCollection = {};
 let queuedUsers = {};
 
-const initializeSocketRoutes = (io, socket) => {
+const handleSocketSession = (io, socket) => {
   let currentConnection = { room: undefined };
 
   /**
@@ -38,6 +38,7 @@ const initializeSocketRoutes = (io, socket) => {
   socket.on("join room", (thingId) => {
     if (roomCollection[thingId]) {
       socket.join(thingId);
+      currentConnection.room = thingId;
     } else {
       if (!queuedUsers[thingId]) queuedUsers[thingId] = [];
       queuedUsers[thingId].push({ socket });
@@ -50,19 +51,14 @@ const initializeSocketRoutes = (io, socket) => {
    * notified. If the socket belongs to a client, they will leave automatically.
    */
   socket.on("disconnect", () => {
-    if (currentConnection.room) {
-      if (roomCollection[currentConnection.room].creatorId === socket.id) {
-        if (io.sockets.adapter.rooms.get(currentConnection.room)) {
-          io.sockets.adapter.rooms.get(currentConnection.room).forEach((s) => {
-            if (s.id !== socket.id) {
-              s.emit("room deleted");
-              s.leave(room);
-            }
-          });
-        }
-        delete roomCollection[currentConnection.room];
-        currentConnection.room = undefined;
+    const room = currentConnection.room;
+    if (room && roomCollection[room].creatorId === socket.id) {
+      socket.to(room).emit("room deleted");
+      if (io.sockets.adapter.rooms.get(room)) {
+        io.sockets.adapter.rooms.get(room).forEach((s) => s.leave(room));
       }
+      delete roomCollection[currentConnection.room];
+      currentConnection.room = undefined;
     }
   });
 
@@ -72,12 +68,9 @@ const initializeSocketRoutes = (io, socket) => {
    */
   socket.on("data", (data) => {
     if (currentConnection.room && roomCollection[currentConnection.room]) {
-      io.sockets.adapter.rooms.get(currentConnection.room).forEach((s) => {
-        if (s.id !== roomCollection[currentConnection.room].creator_id)
-          s.emit("data", data);
-      });
+      socket.to(currentConnection.room).emit("data", data);
     }
   });
 };
 
-module.exports = initializeSocketRoutes;
+module.exports = handleSocketSession;

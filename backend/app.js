@@ -44,7 +44,7 @@ protocol.listen(process.env.GATEWAY_PORT, () =>
 );
 
 // Server and client sockets for socket-io data proxy
-const initializeSocketRoutes = require("./streaming/socket-io-routes");
+const handleSocketSession = require("./streaming/socket-io-routes");
 const io = require("socket.io")(protocol, {
   cors: {
     origin: "*",
@@ -52,7 +52,8 @@ const io = require("socket.io")(protocol, {
   },
 });
 
-// Socket authentication
+// Socket authentication and handler
+// TODO: Handle reconnection
 const { isTokenValid, isApiKeyValid } = require("./middleware/auth");
 io.use((socket, next) => {
   let token = "";
@@ -71,5 +72,5 @@ io.use((socket, next) => {
     }
   }
 }).on("connection", (socket) => {
-  initializeSocketRoutes(io, socket);
+  handleSocketSession(io, socket);
 });
