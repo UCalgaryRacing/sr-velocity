@@ -6,9 +6,8 @@ let queuedUsers = {};
 
 // TODO: Implement security
 const initializeSocketRoutes = (io, socket) => {
-  let currentConnection = {
-    room: undefined,
-  };
+  let currentConnection = { room: undefined };
+
   /**
    * Emitted by the streaming service. Blocked by any other emissions.
    * When the room is created, all queued users will be notified.
@@ -67,7 +66,6 @@ const initializeSocketRoutes = (io, socket) => {
    */
   socket.on("data", (data) => {
     if (currentConnection.room && roomCollection[currentConnection.room]) {
-      console.log(data);
       io.sockets.adapter.rooms.get(currentConnection.room).forEach((s) => {
         if (s.id !== roomCollection[currentConnection.room].creator_id)
           s.emit("data", data);
