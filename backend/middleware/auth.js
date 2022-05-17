@@ -9,22 +9,36 @@ const permissionValues = {
   Pending: 0,
 };
 
-const withMinimumAuth = (permission, jwtRequired = false) => {
+const call = require("../utilities/call");
+
+const withMinimumAuth = (permission) => {
   return (req, res, next) => {
-    next();
-    // Read the current token and determine the permission level
-    // Make request directly to db service to determine the permission role
-    // Use the response to go to next or reject
+    call(process.env.DATABASE_MS_ROUTE + "/auth/validate", "GET", {
+      headers: req.headers,
+    }).then(async (response) => {
+      if (response.statusCode === 200 && response.body) {
+        if (
+          permissionValues[response.body.data.role] >=
+          permissionValues[permission]
+        ) {
+          next();
+        } else {
+          res.status(401).json({ data: null, message: "Unauthorized." }).end();
+        }
+      } else {
+        res.status(401).json({ data: null, message: "Unauthorized." }).end();
+      }
+    });
   };
 };
 
 const isTokenValid = (token) => {
-  // TODO
+  // TODO - Add to cookies when making request
   return true;
 };
 
 const isApiKeyValid = (apiKey) => {
-  // TODO
+  // TODO - Add to headers when making request
   return true;
 };
 

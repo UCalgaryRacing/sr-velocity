@@ -32,10 +32,9 @@ app.all("*", (req, res, next) => {
 });
 
 // Setup routes
-app.use("/api/database", require("./routes/database"));
-app.use("/api/data", require("./routes/data"));
-app.use("/api/iot", require("./routes/iot"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/database", require("./routes/database")); // TODO: Rename to data
+app.use("/api/iot", require("./routes/iot")); // TODO: Rename to streaming
 
 // Begin Server
 const protocol = http.createServer(app);

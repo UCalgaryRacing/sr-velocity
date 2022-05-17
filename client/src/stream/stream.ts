@@ -51,7 +51,6 @@ class Stream {
 
     // When the thing stops streaming
     this.socket.on("room deleted", () => {
-      console.log("here");
       for (const [_, func] of Object.entries(this.stopSubscribers)) func();
       this.socket.emit("join room", thingId);
     });
