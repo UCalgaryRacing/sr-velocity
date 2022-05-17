@@ -18,7 +18,7 @@ enum StreamingSection {
 
 const Streaming: React.FC = () => {
   const context = useContext(DashboardContext);
-  const [stream, setStream] = useState<Stream>(new Stream());
+  const [stream, _] = useState<Stream>(new Stream());
   const [fetchingThings, setFetchingThings] = useState<boolean>(true);
   const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
   const [fetchingThingsError, setFetchingThingsError] =

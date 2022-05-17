@@ -50,14 +50,12 @@ const handleSocketSession = (io, socket) => {
    * streaming service, the room will be deleted and all clients will be
    * notified. If the socket belongs to a client, they will leave automatically.
    */
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     const room = currentConnection.room;
     if (room && roomCollection[room].creatorId === socket.id) {
       socket.to(room).emit("room deleted");
-      // TODO: FIX, this doesn't work!
-      // if (io.sockets.adapter.rooms.get(room)) {
-      //   io.sockets.adapter.rooms.get(room).forEach((s) => s.leave(room));
-      // }
+      const sockets = await io.in(room).fetchSockets();
+      if (sockets) sockets.forEach((s) => s.leave(room));
       delete roomCollection[currentConnection.room];
       currentConnection.room = undefined;
     }

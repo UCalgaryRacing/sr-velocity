@@ -80,7 +80,6 @@ io.use((socket, next) => {
     }
   }
 }).on("connection", (socket) => {
-  console.log("yeet");
   const handleSocketSession = require("./streaming/socket-io-routes");
   handleSocketSession(io, socket);
 });

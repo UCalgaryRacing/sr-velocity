@@ -18,9 +18,12 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   const [color, setColor] = useState<string>();
 
   useEffect(() => {
-    props.stream.subscribeToSensor(onDatum, props.sensor.smallId);
+    const functionId: string = props.stream.subscribeToSensor(
+      onDatum,
+      props.sensor.smallId
+    );
     return () => {
-      props.stream.unsubscribeFromSensor(onDatum);
+      props.stream.unsubscribeFromSensor(functionId);
     };
   }, []);
 
