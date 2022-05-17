@@ -15,31 +15,61 @@ const withMinimumAuth = (permission) => {
   return (req, res, next) => {
     call(process.env.DATABASE_MS_ROUTE + "/auth/validate", "GET", {
       headers: req.headers,
-    }).then(async (response) => {
-      if (response.statusCode === 200 && response.body) {
-        if (
-          permissionValues[response.body.data.role] >=
-          permissionValues[permission]
-        ) {
-          next();
+    })
+      .then(async (response) => {
+        if (response.statusCode === 200 && response.body) {
+          if (
+            permissionValues[response.body.data.role] >=
+            permissionValues[permission]
+          ) {
+            next();
+          } else {
+            res
+              .status(401)
+              .json({ data: null, message: "Unauthorized." })
+              .end();
+          }
         } else {
           res.status(401).json({ data: null, message: "Unauthorized." }).end();
         }
-      } else {
+      })
+      .catch((_) => {
         res.status(401).json({ data: null, message: "Unauthorized." }).end();
-      }
-    });
+      });
   };
 };
 
-const isTokenValid = (token) => {
-  // TODO - Add to cookies when making request
-  return true;
+const isCookieValid = async (cookie) => {
+  const response = await call(
+    process.env.DATABASE_MS_ROUTE + "/auth/validate",
+    "GET",
+    {
+      headers: {
+        cookie: cookie,
+      },
+    }
+  );
+  if (response.statusCode === 200 && response.body) {
+    return (
+      permissionValues[response.body.data.role] >= permissionValues["Guest"]
+    );
+  }
+  return false;
 };
 
-const isApiKeyValid = (apiKey) => {
-  // TODO - Add to headers when making request
-  return true;
+const isApiKeyValid = async (apiKey) => {
+  const response = await call(
+    process.env.DATABASE_MS_ROUTE + "/auth/validate",
+    "GET",
+    {
+      headers: {
+        apiKey: apiKey,
+      },
+    }
+  );
+  if (response.statusCode === 200 && response.body)
+    return response.body.data.role === "Admin";
+  return false;
 };
 
 const isNewRoomSecretValid = (secret) => {
@@ -48,7 +78,7 @@ const isNewRoomSecretValid = (secret) => {
 
 module.exports = {
   withMinimumAuth,
-  isTokenValid,
+  isCookieValid,
   isApiKeyValid,
   isNewRoomSecretValid,
 };

@@ -53,24 +53,16 @@ const io = require("socket.io")(protocol, {
 
 // Socket authentication and handler
 // TODO: Handle reconnection
-const { isTokenValid, isApiKeyValid } = require("./middleware/auth");
-io.use((socket, next) => {
-  let token = "";
-  const parseCookie = (str) =>
-    str
-      .split(";")
-      .map((v) => v.split("="))
-      .reduce((acc, v) => {
-        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-        return acc;
-      }, {});
-  if (socket.handshake.headers.cookie)
-    token = parseCookie(socket.handshake.headers.cookie)["Authorization"];
-  if (token && isTokenValid(token)) {
+const { isCookieValid, isApiKeyValid } = require("./middleware/auth");
+io.use(async (socket, next) => {
+  const cookieValid = await isCookieValid(socket.handshake.headers.cookie);
+  if (cookieValid) {
+    console.log("here");
     next();
   } else {
-    const apiKey = socket.request.headers.key;
-    if (apiKey && isApiKeyValid(apiKey)) {
+    const keyValid = await isApiKeyValid(socket.request.headers.key);
+    if (keyValid) {
+      console.log("here");
       next();
     } else {
       const err = new Error("Not authorized.");
