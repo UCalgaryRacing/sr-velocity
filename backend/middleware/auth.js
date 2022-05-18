@@ -1,7 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Arham Humayun, Justin Tijunelis
 
-const permissionValues = {
+const roles = {
   Admin: 4,
   Lead: 3,
   Member: 2,
@@ -18,10 +18,7 @@ const withMinimumAuth = (permission) => {
     })
       .then(async (response) => {
         if (response.statusCode === 200 && response.body) {
-          if (
-            permissionValues[response.body.data.role] >=
-            permissionValues[permission]
-          ) {
+          if (roles[response.body.data.role] >= roles[permission]) {
             next();
           } else {
             res
@@ -43,16 +40,10 @@ const isCookieValid = async (cookie) => {
   const response = await call(
     process.env.DATABASE_MS_ROUTE + "/auth/validate",
     "GET",
-    {
-      headers: {
-        cookie: cookie,
-      },
-    }
+    { headers: { cookie: cookie } }
   );
   if (response.statusCode === 200 && response.body) {
-    return (
-      permissionValues[response.body.data.role] >= permissionValues["Guest"]
-    );
+    return roles[response.body.data.role] >= roles["Guest"];
   }
   return false;
 };
@@ -61,11 +52,7 @@ const isApiKeyValid = async (apiKey) => {
   const response = await call(
     process.env.DATABASE_MS_ROUTE + "/auth/validate",
     "GET",
-    {
-      headers: {
-        apiKey: apiKey,
-      },
-    }
+    { headers: { apiKey: apiKey } }
   );
   if (response.statusCode === 200 && response.body)
     return response.body.data.role === "Admin";

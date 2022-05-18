@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 // All routes except those starting with /api/ should serve web pages
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 app.all("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) {
+  if (req.path.startsWith("/api/")) {
     next();
   } else {
     res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
@@ -57,12 +57,10 @@ const { isCookieValid, isApiKeyValid } = require("./middleware/auth");
 io.use(async (socket, next) => {
   const cookieValid = await isCookieValid(socket.handshake.headers.cookie);
   if (cookieValid) {
-    console.log("here");
     next();
   } else {
     const keyValid = await isApiKeyValid(socket.request.headers.key);
     if (keyValid) {
-      console.log("here");
       next();
     } else {
       const err = new Error("Not authorized.");

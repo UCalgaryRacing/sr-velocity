@@ -1,3 +1,6 @@
+// Copyright Schulich Racing, FSAE
+// Written by Justin Tijunelis
+
 "use strict";
 
 const express = require("express");
