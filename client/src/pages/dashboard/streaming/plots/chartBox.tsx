@@ -45,11 +45,7 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
               return <Heatmap />;
             case ChartType.LINE:
               return (
-                <LineChart
-                  sensors={props.sensors}
-                  stream={props.stream}
-                  interval={30 * 1000}
-                />
+                <LineChart sensors={props.sensors} stream={props.stream} />
               );
             case ChartType.RADIAL:
               return <RadialChart />;

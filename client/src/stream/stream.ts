@@ -5,7 +5,10 @@ import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 class Stream {
-  socket: any; // TODO: Find type
+  socket: any;
+  historicalData: any = [];
+
+  // Subscribers
   dataSubscribers: {
     [key: string]: {
       smallSensorId: number;
@@ -24,6 +27,7 @@ class Stream {
 
   constructor() {
     this.socket = undefined;
+    this.historicalData = [];
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
     this.connectionSubscribers = {};
@@ -52,6 +56,7 @@ class Stream {
     // When the thing stops streaming
     this.socket.on("room deleted", () => {
       for (const [_, func] of Object.entries(this.stopSubscribers)) func();
+      // Queue up to rejoin the room for another stream
       this.socket.emit("join room", thingId);
     });
 
@@ -78,18 +83,33 @@ class Stream {
         }
         pair.func(message, data["ts"]);
       }
+      this.historicalData.push(data);
     });
   };
 
   // Unsubscribes all messages
   close = () => {
     if (this.socket) this.socket.close();
+    this.historicalData = [];
     this.socket = undefined;
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
     this.connectionSubscribers = {};
     this.stopSubscribers = {};
     this.disconnectionSubscribers = {};
+  };
+
+  getHistoricalData = () => {
+    return this.historicalData;
+  };
+
+  historicalDataFitsInInterval = (interval: number) => {
+    if (this.historicalData.length === 0) return true;
+    let startTimestamp = this.historicalData[0]["ts"];
+    let endTimestamp =
+      this.historicalData[this.historicalData.length - 1]["ts"];
+    let totalTime = endTimestamp - startTimestamp;
+    return totalTime < interval;
   };
 
   subscribeToConnection = (func: () => void) => {

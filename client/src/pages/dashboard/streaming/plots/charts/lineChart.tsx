@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Stream } from "stream/stream";
-import { Sensor } from "state";
+import { Sensor, sensorDeleted } from "state";
 import {
   lightningChart,
   DataPatterns,
@@ -15,7 +15,10 @@ import {
   emptyLine,
   AxisTickStrategies,
   NumericTickStrategy,
-  emptyTick,
+  UIBackground,
+  UIEmptyBackground,
+  Mutator,
+  UIBackgrounds,
 } from "@arction/lcjs";
 
 const theme = {
@@ -40,12 +43,30 @@ interface LineChartProps {
 
 export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
+  const [interval, setInterval] = useState<number>(30 * 1000);
+  const [smoothingFactor, setSmoothingFactor] = useState<number>(0.03);
   let chart: any = undefined;
-  let lineSeries: any = [];
+  let lineSeries: any = {};
 
   useEffect(() => {
+    // Configure the chart and lines
     chart = getChart(chartId);
     lineSeries = getLineSeries(chart, props.sensors);
+    chart.getDefaultAxisX().setInterval(0, interval);
+
+    // Push the pre-existing sensor data
+    for (const datum of props.stream.getHistoricalData()) {
+      for (const sensor of props.sensors) {
+        if (datum[sensor.smallId]) {
+          lineSeries[sensor.smallId].add({
+            x: datum["ts"],
+            y: datum[sensor.smallId],
+          });
+        }
+      }
+    }
+
+    // Bind the data subscribers
     const smallSensorsIds = props.sensors.map((s) => s.smallId);
     const functionId = props.stream.subscribeToSensors(onData, smallSensorsIds);
     return () => {
@@ -54,26 +75,32 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (chart) chart.getDefaultAxisX().setInterval(0, interval);
+  }, [interval]);
+
   const onData = (data: any, timestamp: number) => {
     if (chart) {
-      let index = 0;
       for (const sensor of props.sensors) {
         if (data[sensor.smallId]) {
-          lineSeries[index].add({ x: timestamp, y: data[sensor.smallId] });
+          lineSeries[sensor.smallId].add({
+            x: timestamp,
+            y: data[sensor.smallId],
+          });
         }
-        index++;
       }
     }
   };
 
   return (
     <div>
-      <div className="legend"></div>
+      <div className="line-legend"></div>
       <div
         id={chartId.toString()}
         style={{ height: "320px" }}
         className="fill"
       ></div>
+      <div className="line-controls"></div>
     </div>
   );
 };
@@ -89,7 +116,7 @@ const getChart = (chartId: number) => {
     .setMouseInteractions(true)
     .setMouseInteractionWheelZoom(false)
     .setMouseInteractionPan(false)
-    .setMouseInteractionRectangleFit(true)
+    .setMouseInteractionRectangleFit(false)
     .setMouseInteractionRectangleZoom(false)
     .setMouseInteractionsWhileScrolling(false)
     .setMouseInteractionsWhileZooming(false);
@@ -105,7 +132,8 @@ const getChart = (chartId: number) => {
   autoCursor.setGridStrokeYStyle(
     new SolidLine({ thickness: 1, fillStyle: theme.redFill })
   );
-  //autoCursor.getPointMarker().setSize(0);
+  // @ts-ignore
+  autoCursor.getPointMarker().setSize(0);
   autoCursor.disposeTickMarkerX();
   autoCursor.disposeTickMarkerY();
   var font = new FontSettings({});
@@ -113,7 +141,9 @@ const getChart = (chartId: number) => {
   font = font.setWeight("bold");
   autoCursor.getResultTable().setTextFont(font);
   autoCursor.getResultTable().setTextFillStyle(theme.whiteFill);
-  // autoCursor.getResultTable().setBackground(theme.redFill);
+  autoCursor
+    .getResultTable()
+    .setBackground((background) => background.setFillStyle(theme.redFill));
 
   // Configure the axes
   chart
@@ -122,10 +152,17 @@ const getChart = (chartId: number) => {
     .setScrollStrategy(AxisScrollStrategies.progressive)
     .setTickStrategy("Empty")
     .setMouseInteractions(false)
-    .setInterval(0, 1000 * 30) // Is this right?
     .setStrokeStyle(
       new SolidLine({ thickness: 1, fillStyle: theme.lightGrayFill })
     );
+  const tickStyling = (tickStyle: any) =>
+    tickStyle
+      .setGridStrokeStyle(emptyLine)
+      .setLabelFont((font: FontSettings) =>
+        font.setFamily("helvetica").setStyle("italic").setSize(8)
+      )
+      .setLabelFillStyle(theme.darkFill)
+      .setLabelPadding(-15);
   chart
     .getDefaultAxisY()
     .setTitle("")
@@ -134,31 +171,15 @@ const getChart = (chartId: number) => {
     .setMouseInteractions(false)
     .setStrokeStyle(
       new SolidLine({ thickness: 1, fillStyle: theme.lightGrayFill })
+    )
+    .setTickStrategy(
+      AxisTickStrategies.Numeric,
+      (strategy: NumericTickStrategy) =>
+        strategy
+          .setMajorTickStyle(tickStyling)
+          .setMinorTickStyle(tickStyling)
+          .setExtremeTickStyle(tickStyling)
     );
-  var axis = chart.getDefaultAxisY();
-  var font = new FontSettings({});
-  font = font.setFamily("helvetica");
-  font = font.setStyle("italic");
-  font = font.setSize(8);
-  axis.setTickStrategy(
-    AxisTickStrategies.Numeric,
-    (strategy: NumericTickStrategy) =>
-      strategy
-        .setMajorTickStyle((tickStyle: any) =>
-          tickStyle
-            .setGridStrokeStyle(emptyLine)
-            .setLabelFont(font)
-            .setLabelFillStyle(theme.darkFill)
-            .setLabelPadding(-15)
-        )
-        .setMinorTickStyle((tickStyle: any) =>
-          tickStyle
-            .setGridStrokeStyle(emptyLine)
-            .setLabelFont(font)
-            .setLabelFillStyle(theme.darkFill)
-            .setLabelPadding(-15)
-        )
-  );
 
   // Allow scrolling while hovering over chart
   chart.engine.container.onwheel = null;
@@ -166,8 +187,8 @@ const getChart = (chartId: number) => {
 };
 
 const getLineSeries = (chart: any, sensors: Sensor[]) => {
-  let lineSeries: any = [];
-  let index = 0;
+  let lineSeries: any = {};
+  let i = 0;
   for (const sensor of sensors) {
     let series: any = chart
       .addLineSeries({ dataPattern: DataPatterns.horizontalProgressive })
@@ -176,19 +197,17 @@ const getLineSeries = (chart: any, sensors: Sensor[]) => {
       .setStrokeStyle(
         new SolidLine({
           thickness: 2,
-          fillStyle: new SolidFill({ color: ColorHEX(colours[index]) }),
+          fillStyle: new SolidFill({ color: ColorHEX(colours[i]) }),
         })
       )
-      .setMouseInteractions(false)
-      .setCursorResultTableFormatter(
-        (builder: any, series: any, _: any, yValue: any) => {
-          builder
-            .addRow(series.name + ":")
-            .addRow(yValue.toFixed(2) + " " + sensor.unit);
-        }
-      );
-    lineSeries.push(series);
-    index++;
+      .setCursorResultTableFormatter((builder: any, s: any, _: any, y: any) => {
+        builder
+          .addRow(sensor.name + ":")
+          .addRow(y.toFixed(2) + " " + sensor.unit);
+        return builder;
+      });
+    lineSeries[sensor.smallId] = series;
+    i++;
   }
   return lineSeries;
 };
