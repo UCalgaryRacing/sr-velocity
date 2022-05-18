@@ -3,7 +3,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "../dashboard";
-import ChartView from "./charts/chartView";
+import ChartView from "./plots/chartView";
 import RawDataView from "./raw_data/rawDataView";
 import { DropDown } from "components/interface";
 import { getThings, getSensors } from "crud";

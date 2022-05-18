@@ -3,23 +3,18 @@
 
 import React, { useState } from "react";
 import { IconButton, ToolTip } from "components/interface";
-import { Heatmap, LineChart, RadialChart, ScatterChart } from "./";
-import { Sensor, Chart } from "state";
+import { Heatmap, LineChart, RadialChart, ScatterChart } from "./charts";
+import { Sensor, Chart, ChartType } from "state";
 import { ChartModal, ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";
+import { Stream } from "stream/stream";
 import "./_styling/chartBox.css";
-
-export enum ChartType {
-  HEATMAP = "Heat Map",
-  LINE = "Line",
-  RADIAL = "Radial",
-  SCATTER = "Scatter",
-}
 
 interface ChartBoxProps {
   chart: Chart;
   allSensors: Sensor[];
   sensors: Sensor[];
+  stream: Stream;
   onDelete?: (chartId: string) => void;
   onUpdate?: (chart: Chart) => void;
 }
@@ -46,17 +41,22 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
       <div className="chart-area">
         {(() => {
           switch (props.chart.type) {
-            // TODO: Pass stream to these objects
             case ChartType.HEATMAP:
               return <Heatmap />;
             case ChartType.LINE:
-              return <LineChart />;
+              return (
+                <LineChart
+                  sensors={props.sensors}
+                  stream={props.stream}
+                  interval={30 * 1000}
+                />
+              );
             case ChartType.RADIAL:
               return <RadialChart />;
             case ChartType.SCATTER:
               return <ScatterChart />;
             default:
-              return <LineChart />;
+              return <></>; // Show error
           }
         })()}
       </div>

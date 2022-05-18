@@ -9,7 +9,7 @@ import {
   Alert,
   TextButton,
 } from "components/interface";
-import { ChartBox } from "components/charts";
+import { ChartBox } from "./chartBox";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add } from "@mui/icons-material";
 import {
@@ -72,6 +72,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
 
   useEffect(() => {
     if (chartPreset) {
+      console.log(chartPreset);
       setCharts(chartPreset.charts);
     } else {
       setCharts([]);
@@ -99,6 +100,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           sensors={props.sensors.filter((sensor) =>
             chart.sensorIds.includes(sensor._id)
           )}
+          stream={props.stream}
           onDelete={onDeleteChart}
           onUpdate={onChartUpdate}
         />
