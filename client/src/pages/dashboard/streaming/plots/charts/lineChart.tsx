@@ -97,6 +97,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
     // Clean up
     return () => {
+      // This fails when refreshing from react
       chart.dispose();
       props.stream.unsubscribeFromSensors(dataSubscriptionId);
     };
@@ -180,7 +181,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           colors[sensorIndex] + "10"
         );
         dxdts[sensor.smallId].add(
-          getDerivate(
+          getDerivative(
             props.stream.getHistoricalSensorData(sensor.smallId),
             window
           )
@@ -192,7 +193,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   );
 
   const onData = (data: any, timestamp: number) => {
-    let last = { ...lastValues }; // Remove this somehow
+    let last = { ...lastValues };
     for (const sensor of props.sensors) {
       // Push data into the respective line series
       if (data[sensor.smallId] && lineSeries[sensor.smallId]) {
@@ -205,7 +206,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       // TODO: Update the derivate every 0.5 seconds
       if (derivatives[sensor.smallId]) {
         derivatives[sensor.smallId].clear();
-        let derivative = getDerivate(
+        // There is something wrong with this calculation
+        let derivative = getDerivative(
           props.stream.getHistoricalSensorData(sensor.smallId),
           window
         );
@@ -373,8 +375,9 @@ const createSeries = (
   return series;
 };
 
-const getDerivate = (data: any[], window: number) => {
-  let derivate: any = [];
+const getDerivative = (data: any[], window: number) => {
+  let derivative: any = [];
+  // TODO: Calculate derivate manually!
   if (data.length > 1) {
     let values: any = [];
     for (let i = 0; i < data.length; i++) values.push(data[i].value);
@@ -386,11 +389,11 @@ const getDerivate = (data: any[], window: number) => {
       padValue: "replicate",
     };
     // @ts-ignore
-    let smoothed = savitzkyGolay(values, 0.1, options);
+    let smoothed = savitzkyGolay(values, 0.1, options); // Find the optimal h value
     for (let i = 0; i < smoothed.length; i++)
-      derivate.push({ x: data[i]["ts"], y: smoothed[i] });
+      derivative.push({ x: data[i]["ts"], y: smoothed[i] });
   }
-  return derivate;
+  return derivative;
 };
 
 const getDataRate = (sensors: Sensor[]) => {
