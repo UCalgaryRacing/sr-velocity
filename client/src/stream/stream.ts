@@ -57,6 +57,7 @@ class Stream {
 
     // When the thing stops streaming
     this.socket.on("room deleted", () => {
+      this.historicalData = [];
       for (const [_, func] of Object.entries(this.stopSubscribers)) func();
       // Queue up to rejoin the room for another stream
       this.socket.emit("join room", thingId);

@@ -112,7 +112,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   const generateLegend = useCallback(() => {
     if (!lastValues || lastValues === {}) return;
-    console.log(lastValues);
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
       <div>{name + ": " + value + " " + unit}</div>
