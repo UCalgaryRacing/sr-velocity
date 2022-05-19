@@ -160,7 +160,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       i++;
     }
     return legendElements;
-  }, [lastValues, lineSeries, derivatives]);
+  }, [chart, lastValues, lineSeries, derivatives]);
 
   const toggleDerivative = useCallback(
     (sensor: Sensor) => {
@@ -188,7 +188,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       }
       setDerivatives(dxdts);
     },
-    [derivatives]
+    [chart, derivatives]
   );
 
   const onData = (data: any, timestamp: number) => {
@@ -209,7 +209,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           props.stream.getHistoricalSensorData(sensor.smallId),
           window
         );
-        last[sensor.smallId]["derivative"] = derivative[derivative.length - 1];
+        last[sensor.smallId]["derivative"] =
+          derivative[derivative.length - 1].y;
         derivatives[sensor.smallId].add(derivative);
       }
     }
