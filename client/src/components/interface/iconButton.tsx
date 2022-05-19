@@ -8,17 +8,20 @@ import "./_styling/iconButton.css";
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   src?: string;
   img?: any; // Check for JSX
+  text?: string;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
   src,
   img,
+  text,
   ...props
 }) => {
   return (
     <button className="icon-button" {...props}>
-      {src && <img src={src} />}
-      {img}
+      {!text && src && <img src={src} />}
+      {!text && img}
+      {!img && !src && <div className="text">{text}</div>}
     </button>
   );
 };

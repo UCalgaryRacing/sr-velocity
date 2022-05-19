@@ -103,13 +103,12 @@ class Stream {
     return this.historicalData;
   };
 
-  historicalDataFitsInInterval = (interval: number) => {
-    if (this.historicalData.length === 0) return true;
-    let startTimestamp = this.historicalData[0]["ts"];
-    let endTimestamp =
-      this.historicalData[this.historicalData.length - 1]["ts"];
-    let totalTime = endTimestamp - startTimestamp;
-    return totalTime < interval;
+  getHistoricalSensorData = (sensorSmallId: number) => {
+    let data: any = [];
+    for (const datum of this.historicalData)
+      if (datum[sensorSmallId])
+        data.push({ ts: datum["ts"], value: datum[sensorSmallId] });
+    return data;
   };
 
   subscribeToConnection = (func: () => void) => {

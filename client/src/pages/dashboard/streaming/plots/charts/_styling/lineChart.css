@@ -1,34 +1,33 @@
-#marginBottom-20{
-    margin-bottom: 20px;
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.line-legend {
+  text-align: center;
+  font-size: 10px;
+  display: grid;
+  position: relative;
+  margin-top: 10px;
+  line-height: 25px;
 }
 
-#return-1-div #return-1-p{
-    text-align: center;
-    font-size: 1.2rem;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 10px;
-    margin-bottom: 0px;
+.line-legend .sensor {
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  height: 25px !important;
 }
 
-#return-1-div .fill{
-    height: 500px;
+.line-legend button {
+  margin-left: 5px;
+  color: var(--white);
+  height: 25px;
+  width: 25px;
+  line-height: 1.4;
 }
 
-#chart-text {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
-
-@media only screen and (max-width: 1000px) {
-    #lineChart article {
-        -webkit-columns: 1 100px !important;
-        -moz-columns: 1 100px !important;
-             columns: 1 100px !important;
-    }
+.line-controls {
+  padding-left: 15px;
+  padding-right: 15px;
 }

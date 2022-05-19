@@ -1,0 +1,31 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.range-slider .slider-title {
+  font-size: var(--fz-xs);
+  text-align: center;
+}
+
+.rc-slider-handle:focus-visible {
+  box-shadow: 0 0 0 3px var(--red);
+}
+
+.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+  box-shadow: 0 0 0 3px var(--red);
+}
+
+.rc-slider-dot-active {
+  border-color: var(--red);
+  top: -1.5px;
+}
+
+.rc-slider-mark-text-active {
+  color: var(--black);
+  top: -10px;
+}
+
+.rc-slider-mark-text {
+  top: -10px;
+}

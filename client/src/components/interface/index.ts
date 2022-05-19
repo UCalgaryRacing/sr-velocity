@@ -8,6 +8,6 @@ export * from "./segmentedControl";
 export * from "./dropdown";
 export * from "./textArea";
 export * from "./tooltip";
-export * from "./slider";
+export * from "./rangeSlider";
 export * from "./alert";
 export * from "./multiSelect";

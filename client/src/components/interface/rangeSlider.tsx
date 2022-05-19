@@ -2,10 +2,10 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import TooltipSlider from "rc-slider";
-import { isMobile } from "react-device-detect";
+import Slider from "rc-slider";
+import { useWindowSize } from "hooks";
 import "rc-slider/assets/index.css";
-import "./_styling/slider.css";
+import "./_styling/rangeSlider.css";
 
 interface SliderProps {
   onChange: (value: number[]) => void;
@@ -19,30 +19,34 @@ interface SliderProps {
 }
 
 export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
+  const size = useWindowSize();
+
   return (
     <div className="range-slider">
       <div className="slider-title">{props.title}</div>
-      <TooltipSlider
+      <Slider
         range
         min={props.min}
         max={props.max}
         defaultValue={[props.lowerValue, props.upperValue]}
-        // @ts-ignore
-        tipFormatter={(value: number) => `${value}${props.unit}`}
+        // tipFormatter={(value: number) => `${value}${props.unit}`}
+        marks={{ 0: 0, 15: 15, 30: 30 }}
         onChange={(v: number | number[]) => props.onChange(v as number[])}
         handleStyle={{
-          height: isMobile ? 25 : 18,
-          width: isMobile ? 25 : 18,
+          height: size.width <= 768.9 ? 15 : 10,
+          width: size.width <= 768.9 ? 15 : 10,
           backgroundColor: "#ba1833",
           color: "#ba1833",
           border: 0,
-          marginTop: isMobile ? "-10px" : "-6px",
+          opacity: 1,
+          marginTop: size.width <= 768.9 ? "-5px" : "-2.5px",
         }}
         trackStyle={{
           backgroundColor: "#ba1833",
           height: 5,
           marginTop: "0px",
         }}
+        allowCross={false}
       />
     </div>
   );
