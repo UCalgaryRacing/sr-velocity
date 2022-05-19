@@ -18,7 +18,7 @@ class Stream {
   sensorsDataSubscribers: {
     [key: string]: {
       smallSensorIds: number[];
-      func: (data: any, timestamp: number) => void; // Make timestamp optional
+      func: any; // Make timestamp optional
     };
   };
   connectionSubscribers: { [key: string]: () => void };
@@ -83,7 +83,7 @@ class Stream {
             message[smallSensorId] = data[smallSensorId];
           }
         }
-        pair.func(message, data["ts"]);
+        pair.func.current(message, data["ts"]);
       }
       this.historicalData.push(data);
     });
@@ -138,10 +138,8 @@ class Stream {
       delete this.dataSubscribers[functionId];
   };
 
-  subscribeToSensors = (
-    func: (data: any, timestamp: number) => void,
-    smallSensorIds: number[]
-  ) => {
+  // func type is React ref
+  subscribeToSensors = (func: any, smallSensorIds: number[]) => {
     let functionId: string = uuidv4();
     this.sensorsDataSubscribers[functionId] = { smallSensorIds, func };
     return functionId;

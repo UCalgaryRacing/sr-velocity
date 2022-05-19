@@ -3,7 +3,7 @@
 
 // Try to work with useCallback
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IconButton, RangeSlider, ToolTip } from "components/interface";
 import { Stream } from "stream/stream";
 import { Sensor } from "state";
@@ -41,17 +41,29 @@ interface LineChartProps {
 // Optimize for performance and limit certain functions if there is a lot of data
 export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const size = useWindowSize();
-  const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
+  const dataCallbackRef = useRef(null);
   const [interval, setInterval] = useState<number[]>([0, 1]);
   const [window, setWindow] = useState<number>(5);
   const [dataRate, setDataRate] = useState<number>(getDataRate(props.sensors));
-  const [legend, setLegend] = useState<any>();
+  const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
   const [lineSeries, setLineSeries] = useState<any>({});
   const [derivatives, setDerivatives] = useState<any>({});
   const [lastValues, setLastValues] = useState<{
     [key: number]: { [k1: string]: number };
-  }>();
+  }>(
+    (() => {
+      let last: any = {};
+      for (const sensor of props.sensors)
+        last[sensor.smallId] = { value: 0, derivative: 0 };
+      return last;
+    })()
+  );
+
+  useEffect(() => {
+    // @ts-ignore
+    dataCallbackRef.current = onData;
+  });
 
   useEffect(() => {
     let chart = getChart(chartId);
@@ -61,12 +73,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   useEffect(() => {
     if (!chart) return;
-
-    // Set the last value
-    let last: any = {};
-    for (const sensor of props.sensors)
-      last[sensor.smallId] = { value: 0, derivative: 0 };
-    setLastValues(last);
 
     // Configure the line series
     let lineSeries = generateLineSeries(chart, props.sensors);
@@ -82,62 +88,31 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       }
     }
 
-    // Destroy the chart
-    return () => chart.dispose(); // TODO: Something is going wrong here
-  }, [chart]);
-
-  // Bind and cleanup subscriptions on derivate and line updates
-  useEffect(() => {
-    // TODO: On a new sensor, get it's data and add to the series
+    // Bind the data listener
     const smallSensorsIds = props.sensors.map((s) => s.smallId);
     const dataSubscriptionId = props.stream.subscribeToSensors(
-      onData,
+      dataCallbackRef,
       smallSensorsIds
     );
-    // TODO: Subscribe to connect, on connection, clear the current data
+
+    // Clean up
     return () => {
+      chart.dispose();
       props.stream.unsubscribeFromSensors(dataSubscriptionId);
     };
-  }, [lineSeries, derivatives, props.sensors, lastValues]);
+  }, [chart]);
 
   useEffect(() => {
     if (!chart) return;
-    chart
-      .getDefaultAxisX()
-      .setInterval(interval[0] * 60 * 1000, interval[1] * 60 * 1000);
+    const C = 60 * 1000;
+    chart.getDefaultAxisX().setInterval(interval[0] * C, interval[1] * C);
   }, [interval]);
 
-  useEffect(() => generateLegend(), [lastValues, derivatives, lineSeries]);
   useEffect(() => setDataRate(getDataRate(props.sensors)), [props.sensors]);
 
-  const toggleDerivate = (sensor: Sensor) => {
-    let dxdts = { ...derivatives };
-    if (dxdts[sensor.smallId]) {
-      dxdts[sensor.smallId].dispose();
-      delete dxdts[sensor.smallId];
-    } else {
-      let sensorIndex = 0;
-      for (const i in props.sensors)
-        if (props.sensors[i].smallId === sensor.smallId)
-          sensorIndex = Number(i);
-      dxdts[sensor.smallId] = createSeries(
-        chart,
-        sensor.name,
-        sensor.unit,
-        colors[sensorIndex] + "10"
-      );
-      dxdts[sensor.smallId].add(
-        getDerivate(
-          props.stream.getHistoricalSensorData(sensor.smallId),
-          window
-        )
-      );
-    }
-    setDerivatives(dxdts);
-  };
-
-  const generateLegend = () => {
-    if (!lastValues) return;
+  const generateLegend = useCallback(() => {
+    if (!lastValues || lastValues === {}) return;
+    console.log(lastValues);
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
       <div>{name + ": " + value + " " + unit}</div>
@@ -158,7 +133,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           <ToolTip value="Show Derivative (NOTE: This will degrade performance)">
             <IconButton
               text={"∂"}
-              onClick={() => toggleDerivate(sensor)}
+              onClick={() => toggleDerivative(sensor)}
               style={{
                 textDecoration: derivatives[sensor.smallId]
                   ? "line-through"
@@ -185,11 +160,39 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       }
       i++;
     }
-    setLegend(legendElements);
-  };
+    return legendElements;
+  }, [lastValues, lineSeries, derivatives]);
+
+  const toggleDerivative = useCallback(
+    (sensor: Sensor) => {
+      let dxdts = { ...derivatives };
+      if (dxdts[sensor.smallId]) {
+        dxdts[sensor.smallId].dispose();
+        delete dxdts[sensor.smallId];
+      } else {
+        let sensorIndex = 0;
+        for (const i in props.sensors)
+          if (props.sensors[i].smallId === sensor.smallId)
+            sensorIndex = Number(i);
+        dxdts[sensor.smallId] = createSeries(
+          chart,
+          sensor.name,
+          sensor.unit,
+          colors[sensorIndex] + "10"
+        );
+        dxdts[sensor.smallId].add(
+          getDerivate(
+            props.stream.getHistoricalSensorData(sensor.smallId),
+            window
+          )
+        );
+      }
+      setDerivatives(dxdts);
+    },
+    [derivatives]
+  );
 
   const onData = (data: any, timestamp: number) => {
-    if (!chart) return;
     let last = { ...lastValues }; // Remove this somehow
     for (const sensor of props.sensors) {
       // Push data into the respective line series
@@ -220,14 +223,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         className="line-legend"
         style={{
           gridTemplateColumns: (() => {
-            let template = "";
+            let template = "1fr 1fr";
             // TODO: Change based on size, max of 4 per row
-            for (const _ in legend) template += "1fr ";
+            // for (const _ in legend) template += "1fr ";
             return template;
           })(),
         }}
       >
-        {legend}
+        {generateLegend()}
       </div>
       <div
         id={chartId.toString()}
