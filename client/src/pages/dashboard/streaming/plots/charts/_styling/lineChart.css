@@ -19,6 +19,10 @@ Written by Justin Tijunelis
   height: 25px !important;
 }
 
+.line-legend .derivative {
+  font-style: italic;
+}
+
 .line-legend button {
   margin-left: 5px;
   color: var(--white);

@@ -48,7 +48,9 @@ class Stream {
     });
 
     // When the room is joined, let the connection subscribers know
+    // Streaming is about to begin, so we clear the previous historical data
     this.socket.on("joined room", () => {
+      this.historicalData = [];
       for (const [_, func] of Object.entries(this.connectionSubscribers))
         func();
     });
