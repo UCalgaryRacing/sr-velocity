@@ -6,7 +6,7 @@ Written by Justin Tijunelis
 .chart-box {
   border-radius: var(--border-radius);
   border: 1px solid var(--red);
-  height: calc(100vh * 0.5 - 48px);
+  /* height: calc(100vh * 0.5 - 48px); */
   position: relative;
   padding: 5px;
   display: flex;
@@ -43,6 +43,7 @@ Written by Justin Tijunelis
 .chart-box .chart-area {
   flex-grow: 1;
   width: 100%;
+  padding-bottom: 20px;
 }
 
 @media only screen and (max-width: 768.9px) {

@@ -48,8 +48,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   // Control state
   const [interval, setInterval] = useState<number[]>();
-  const [window, setWindow] = useState<number>(11);
-  const [dataRate, setDataRate] = useState<number>();
+  const [window, setWindow] = useState<number>(511);
+  const [dataRate, setDataRate] = useState<number>(getDataRate(props.sensors));
   const [updateTimer, setUpdateTimer] = useState<number>(
     SLOPE_COMPUTE_INTERVAL
   );
@@ -70,12 +70,12 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     })()
   );
 
-  useEffect(() => setChart(getChart(chartId)), []);
+  useEffect(() => {
+    setChart(getChart(chartId, [0, 7500]));
+  }, []);
 
   useEffect(() => {
     if (!chart) return;
-    const offset = props.stream.getFirstTimeStamp() / (60 * 1000);
-    setInterval([offset, 1 + offset]);
     initializeLineSeries();
     const smallIds = props.sensors.map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
@@ -85,6 +85,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setConnectionSubId(
       props.stream.subscribeToConnection(connectionCallbackRef)
     );
+    const offset = props.stream.getFirstTimeStamp() / (60 * 1000);
     return () => {
       try {
         chart && chart.dispose();
@@ -120,7 +121,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     const offset = props.stream.getFirstTimeStamp();
     chart
       .getDefaultAxisX()
-      .setInterval(interval[0] * C + offset, interval[1] * C + offset);
+      .setInterval(interval[0] * C + offset, interval[1] * C + offset, false);
   }, [interval]);
 
   useEffect(() => {
@@ -135,7 +136,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     // @ts-ignore
     dataCallbackRef.current = onData; // @ts-ignore
     connectionCallbackRef.current = onConnection; // @ts-ignore
-    missingDataCallbackRef.current = onMissingData;
+    missingDataCallbackRef.current = onUpdatedData;
   }, [lineSeries, lastValues, updateTimer, lineSeries, slopes, interval]);
 
   const initializeLineSeries = () => {
@@ -171,6 +172,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
               text={"∂"}
               onClick={() => toggleSlope(sensor)}
               style={{
+                backgroundColor: colors[i],
                 textDecoration: slopes[sensor.smallId]
                   ? "line-through"
                   : "none",
@@ -262,7 +264,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setLastValues(last);
   };
 
-  const onMissingData = () => {
+  const onUpdatedData = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
     for (const [_, series] of Object.entries(slopes)) series.clear();
     for (const datum of props.stream.getHistoricalData()) {
@@ -318,19 +320,22 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         <RangeSlider
           title="Interval (minutes)"
           min={0}
-          max={30} // TODO: What if there are more than 30 minutes of data?
+          max={120} // TODO: What if there are more than 30 minutes of data?
           step={1}
           lowerValue={0}
           upperValue={1}
-          unit="seconds"
-          onChange={(interval: number[]) => setInterval(interval)}
+          unit="minutes"
+          onChange={(interval: number[]) => {
+            // @ts-ignore
+            setInterval(interval.map((x) => x / 8));
+          }}
         />
       </div>
     </div>
   );
 };
 
-const getChart = (chartId: number) => {
+const getChart = (chartId: number, interval: number[]) => {
   // Configure the base chart
   let chart = lightningChart()
     .ChartXY({
@@ -372,6 +377,7 @@ const getChart = (chartId: number) => {
     .getDefaultAxisX()
     .setTitle("")
     .setScrollStrategy(AxisScrollStrategies.progressive)
+    .setInterval(interval[0], interval[1])
     .setTickStrategy("Empty")
     .setMouseInteractions(false)
     .setStrokeStyle(
@@ -452,23 +458,24 @@ const createSeries = (
 const getSlope = (data: any[], window: number, sensor: Sensor) => {
   let slope: any = [];
   if (data.length > 1) {
-    let values: any = [];
-    for (let i = 0; i < data.length; i++) values.push(data[i].value);
-    let dxdt: any = [];
-    let time = Math.ceil(1 / sensor.frequency);
-    for (let i = 1; i < values.length; i++) {
-      let diff = values[i] - values[i - 1];
-      dxdt.push(diff / time);
-    }
-    let options = {
+    let golayOptions = {
       derivative: 0,
       windowSize: window,
       polynomial: 2,
-      pad: "pre",
+      pad: "none",
       padValue: "replicate",
     };
+
+    let values: any = [];
+    for (let i = 0; i < data.length; i++) values.push(data[i].value);
+    let dxdt: any = [];
+    let time = 1 / sensor.frequency;
+    for (let i = 1; i < values.length; i++) {
+      let diff = values[i - 1] - values[i];
+      dxdt.push(diff / time);
+    }
     // @ts-ignore
-    let smoothed = savitzkyGolay(dxdt, 10000, options); // TODO: Find the optimal h value
+    let smoothed = savitzkyGolay(dxdt, 0.1, golayOptions); // TODO: Find the optimal h value
     for (let i = 0; i < smoothed.length; i++)
       slope.push({ x: data[i + 1]["ts"], y: smoothed[i] });
   }

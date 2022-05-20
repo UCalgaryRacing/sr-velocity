@@ -14,7 +14,7 @@
 }
 
 .icon-button:hover {
-  background-color: var(--black);
+  background-color: var(--black) !important;
 }
 
 .icon-button .text {
