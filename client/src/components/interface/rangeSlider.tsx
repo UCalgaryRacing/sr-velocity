@@ -29,6 +29,7 @@ export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
         min={props.min}
         max={props.max}
         defaultValue={[props.lowerValue, props.upperValue]}
+        marks={{ 0: 0, 60: 15, 120: 30 }}
         // tipFormatter={(value: number) => `${value}${props.unit}`}
         onChange={(v: number | number[]) => props.onChange(v as number[])}
         handleStyle={{

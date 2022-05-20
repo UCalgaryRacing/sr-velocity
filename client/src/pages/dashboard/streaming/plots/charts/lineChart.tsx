@@ -48,7 +48,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   // Control state
   const [interval, setInterval] = useState<number[]>();
-  const [window, setWindow] = useState<number>(511);
+  const [window, setWindow] = useState<number>(111);
   const [dataRate, setDataRate] = useState<number>(getDataRate(props.sensors));
   const [updateTimer, setUpdateTimer] = useState<number>(
     SLOPE_COMPUTE_INTERVAL
@@ -219,11 +219,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           colors[sensorIndex] + "10"
         );
         dxdts[sensor.smallId].add(
-          getSlope(
-            props.stream.getHistoricalSensorData(sensor.smallId),
-            window,
-            sensor
-          )
+          getSlope(props.stream.getHistoricalSensorData(sensor.smallId), window)
         );
       }
       setSlopes(dxdts);
@@ -253,8 +249,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         slopes[sensor.smallId].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window,
-          sensor
+          window
         );
         last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
         slopes[sensor.smallId].add(slope);
@@ -282,8 +277,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       if (slopes[sensor.smallId]) {
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window,
-          sensor
+          window
         );
         slopes[sensor.smallId].add(slope);
       }
@@ -320,14 +314,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         <RangeSlider
           title="Interval (minutes)"
           min={0}
-          max={120} // TODO: What if there are more than 30 minutes of data?
+          max={120}
           step={1}
           lowerValue={0}
           upperValue={1}
           unit="minutes"
           onChange={(interval: number[]) => {
             // @ts-ignore
-            setInterval(interval.map((x) => x / 8));
+            setInterval(interval.map((x) => x / 4));
           }}
         />
       </div>
@@ -455,7 +449,7 @@ const createSeries = (
   return series;
 };
 
-const getSlope = (data: any[], window: number, sensor: Sensor) => {
+const getSlope = (data: any[], window: number) => {
   let slope: any = [];
   if (data.length > 1) {
     let golayOptions = {
@@ -465,19 +459,19 @@ const getSlope = (data: any[], window: number, sensor: Sensor) => {
       pad: "none",
       padValue: "replicate",
     };
-
     let values: any = [];
     for (let i = 0; i < data.length; i++) values.push(data[i].value);
     let dxdt: any = [];
-    let time = 1 / sensor.frequency;
     for (let i = 1; i < values.length; i++) {
       let diff = values[i - 1] - values[i];
-      dxdt.push(diff / time);
+      let timeDiff = (data[i - 1].ts - data[i].ts) / 1000;
+      dxdt.push(diff / timeDiff);
     }
     // @ts-ignore
-    let smoothed = savitzkyGolay(dxdt, 0.1, golayOptions); // TODO: Find the optimal h value
-    for (let i = 0; i < smoothed.length; i++)
+    let smoothed = savitzkyGolay(dxdt, 1, golayOptions); // TODO: Find the optimal h value
+    for (let i = 0; i < smoothed.length; i++) {
       slope.push({ x: data[i + 1]["ts"], y: smoothed[i] });
+    }
   }
   return slope;
 };
