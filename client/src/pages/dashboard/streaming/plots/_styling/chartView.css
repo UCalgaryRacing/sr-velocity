@@ -15,4 +15,8 @@ Written by Justin Tijunelis
     grid-template-columns: 1fr;
     grid-gap: 4px;
   }
+
+  #chart-view .chart-box {
+    margin-bottom: 10px;
+  }
 }

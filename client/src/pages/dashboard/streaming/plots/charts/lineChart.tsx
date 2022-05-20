@@ -214,7 +214,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
             sensorIndex = Number(i);
         dxdts[sensor.smallId] = createSeries(
           chart,
-          sensor.name,
+          sensor.name + "'",
           sensor.unit,
           colors[sensorIndex] + "10"
         );
