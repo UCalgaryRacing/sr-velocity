@@ -52,7 +52,11 @@ const handleSocketSession = (io, socket) => {
    */
   socket.on("disconnect", async () => {
     const room = currentConnection.room;
-    if (room && roomCollection[room].creatorId === socket.id) {
+    if (
+      room &&
+      roomCollection[room] &&
+      roomCollection[room].creatorId === socket.id
+    ) {
       socket.to(room).emit("room deleted");
       const sockets = await io.in(room).fetchSockets();
       if (sockets) sockets.forEach((s) => s.leave(room));

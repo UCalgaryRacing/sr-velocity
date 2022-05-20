@@ -1,7 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   RootState,
   useAppSelector,
@@ -35,6 +35,10 @@ export const ManageOrganization: React.FC = () => {
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
   const [updateKeyLoading, setUpdateKeyLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    // TODO: Fetch the organization again.
+  }, []);
 
   const alert = (error: boolean, description: string) => {
     if (error) setAlertTitle("Something went wrong...");

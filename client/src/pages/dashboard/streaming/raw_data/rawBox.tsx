@@ -1,7 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CloseOutlined } from "@mui/icons-material";
 import { Sensor } from "state";
 import { Stream } from "stream/stream";
@@ -15,12 +15,16 @@ interface RawBoxProps {
 
 // TODO: Have a moving average of the last second?
 const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
+  const onDatumCallback = useRef<() => void>(null);
   const [value, setValue] = useState<number>(0);
   const [color, setColor] = useState<string>();
 
+  // @ts-ignore
+  useEffect(() => (onDatumCallback.current = onDatum));
+
   useEffect(() => {
     const functionId: string = props.stream.subscribeToSensor(
-      onDatum,
+      onDatumCallback,
       props.sensor.smallId
     );
     return () => {

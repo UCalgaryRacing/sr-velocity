@@ -27,7 +27,7 @@ export const DashboardContext = React.createContext({
 });
 
 const Dashboard: React.FC = () => {
-  const dashboard = useAppSelector((state: RootState) => state.dashboard);
+  const state = useAppSelector((state: RootState) => state);
   const setOrganization = bindActionCreators(
     organizationFetched,
     useAppDispatch()
@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
 
   const [sideBarToggled, setSideBarToggled] = useState<boolean>(false);
   const [sideBarCollapsed, setSideBarCollapsed] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [setupError, setSetupError] = useState<boolean>(false);
 
   const gestures = useSwipeable({
@@ -46,16 +46,18 @@ const Dashboard: React.FC = () => {
   const size = useWindowSize();
 
   useEffect(() => {
-    setLoading(true);
-    getOrganization()
-      .then((organization: Organization) => {
-        setOrganization(organization);
-        setLoading(false);
-      })
-      .catch((_: any) => {
-        setLoading(false);
-        setSetupError(true);
-      });
+    if (!state.organization) {
+      setLoading(true);
+      getOrganization()
+        .then((organization: Organization) => {
+          setOrganization(organization);
+          setLoading(false);
+        })
+        .catch((_: any) => {
+          setLoading(false);
+          setSetupError(true);
+        });
+    }
   }, []);
 
   useEffect(() => {
@@ -96,14 +98,14 @@ const Dashboard: React.FC = () => {
           >
             <DashboardContext.Provider
               value={{
-                page: dashboard!.page,
-                section: dashboard!.section,
+                page: state.dashboard!.page,
+                section: state.dashboard!.section,
                 margin:
                   size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
               }}
             >
-              {dashboard.section === "Streaming" && <Streaming />}
-              {dashboard.section === "Historical" && <Historical />}
+              {state.dashboard.section === "Streaming" && <Streaming />}
+              {state.dashboard.section === "Historical" && <Historical />}
               <Manage />
             </DashboardContext.Provider>
           </div>

@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { DashboardContext } from "../dashboard";
 import ChartView from "./plots/chartView";
 import RawDataView from "./raw_data/rawDataView";
@@ -18,7 +18,9 @@ enum StreamingSection {
 
 const Streaming: React.FC = () => {
   const context = useContext(DashboardContext);
-  const [stream, _] = useState<Stream>(new Stream());
+  const onConnectionCallback = useRef<() => void | null>(null);
+  const onDisconnectionCallback = useRef<() => void>(null);
+  const [stream] = useState<Stream>(new Stream());
   const [fetchingThings, setFetchingThings] = useState<boolean>(true);
   const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
   const [fetchingThingsError, setFetchingThingsError] =
@@ -28,6 +30,13 @@ const Streaming: React.FC = () => {
   const [thing, setThing] = useState<Thing>();
   const [things, setThings] = useState<Thing[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
+
+  useEffect(() => {
+    // @ts-ignore
+    onConnectionCallback.current = onConnection;
+    // @ts-ignore
+    onDisconnectionCallback.current = onDisconnection;
+  });
 
   useEffect(() => {
     getThings()
@@ -65,10 +74,10 @@ const Streaming: React.FC = () => {
       // Reopen the stream with the new thing id
       stream.close();
       stream.connect(thing._id);
-      stream.subscribeToConnection(onConnection);
-      stream.subscribeToDisconnection(onDisconnection);
+      stream.subscribeToConnection(onConnectionCallback);
+      stream.subscribeToDisconnection(onDisconnectionCallback);
     }
-  }, [thing]);
+  }, [thing, stream]);
 
   const onConnection = () => {
     // TODO: Show something

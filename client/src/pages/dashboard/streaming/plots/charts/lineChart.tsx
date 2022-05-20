@@ -1,15 +1,12 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis, Abod Abbas
 
-// Try to work with useCallback
-
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IconButton, RangeSlider, ToolTip } from "components/interface";
 import { Stream } from "stream/stream";
 import { Sensor } from "state";
 import {
   lightningChart,
-  DataPatterns,
   AxisScrollStrategies,
   SolidLine,
   SolidFill,
@@ -18,11 +15,14 @@ import {
   emptyLine,
   AxisTickStrategies,
   NumericTickStrategy,
+  LineSeries,
 } from "@arction/lcjs";
 import savitzkyGolay from "ml-savitzky-golay";
 import { useWindowSize } from "hooks";
 import "./_styling/lineChart.css";
 
+const SLOPE_COMPUTE_INTERVAL = 500; // milliseconds
+const colors: string[] = ["#C22D2D", "#0071B2", "#009E73", "#E69D00"];
 const theme = {
   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
   lightGrayFill: new SolidFill({ color: ColorHEX("#777777") }),
@@ -30,56 +30,72 @@ const theme = {
   redFill: new SolidFill({ color: ColorHEX("#C22D2D") }),
 };
 
-const colors: string[] = ["#C22D2D", "#0071B2", "#009E73", "#E69D00"];
-
 interface LineChartProps {
   sensors: Sensor[];
   stream: Stream;
 }
 
-// TODO: Handle large amounts of data!
-// Optimize for performance and limit certain functions if there is a lot of data
 export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const size = useWindowSize();
-  const dataCallbackRef = useRef(null);
-  const [interval, setInterval] = useState<number[]>([0, 1]);
-  const [window, setWindow] = useState<number>(5);
-  const [dataRate, setDataRate] = useState<number>(getDataRate(props.sensors));
+
+  // Stream subscriptions
+  const [dataSubId, setDataSubId] = useState<string>("");
+  const dataCallbackRef = useRef<(data: any, timestamp: number) => void>(null);
+  const [connectionSubId, setConnectionSubId] = useState<string>("");
+  const connectionCallbackRef = useRef<() => void>(null);
+  const [dataUpdateSubId, setDataUpdateSubId] = useState<string>("");
+  const missingDataCallbackRef = useRef<() => void>(null);
+
+  // Control state
+  const [interval, setInterval] = useState<number[]>();
+  const [window, setWindow] = useState<number>(11);
+  const [dataRate, setDataRate] = useState<number>();
+  const [updateTimer, setUpdateTimer] = useState<number>(
+    SLOPE_COMPUTE_INTERVAL
+  );
+
+  // Chart state
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
-  const [lineSeries, setLineSeries] = useState<any>({});
-  const [derivatives, setDerivatives] = useState<any>({});
+  const [lineSeries, setLineSeries] = useState<{ [k: string]: LineSeries }>({});
+  const [slopes, setSlopes] = useState<{ [k: string]: LineSeries }>({});
   const [lastValues, setLastValues] = useState<{
     [key: number]: { [k1: string]: number };
   }>(
     (() => {
       let last: any = {};
       for (const sensor of props.sensors)
-        last[sensor.smallId] = { value: 0, derivative: 0 };
+        last[sensor.smallId] = { value: 0, slope: 0 };
       return last;
     })()
   );
 
-  useEffect(() => {
-    // @ts-ignore
-    dataCallbackRef.current = onData;
-  });
-
-  useEffect(() => {
-    let chart = getChart(chartId);
-    chart.getDefaultAxisX().setInterval(0, 60 * 1000);
-    setChart(chart);
-  }, []);
+  useEffect(() => setChart(getChart(chartId)), []);
 
   useEffect(() => {
     if (!chart) return;
+    const offset = props.stream.getFirstTimeStamp() / (60 * 1000);
+    setInterval([offset, 1 + offset]);
+    initializeLineSeries();
+    const smallIds = props.sensors.map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    setDataUpdateSubId(
+      props.stream.subscribeToDataUpdate(missingDataCallbackRef)
+    );
+    setConnectionSubId(
+      props.stream.subscribeToConnection(connectionCallbackRef)
+    );
+    return () => {
+      try {
+        chart && chart.dispose();
+      } catch (e) {}
+    };
+  }, [chart]);
 
-    // Configure the line series
-    let lineSeries = generateLineSeries(chart, props.sensors);
-    setLineSeries(lineSeries);
+  useEffect(() => {
     for (const datum of props.stream.getHistoricalData()) {
       for (const sensor of props.sensors) {
-        if (datum[sensor.smallId]) {
+        if (datum[sensor.smallId] && lineSeries[sensor.smallId]) {
           lineSeries[sensor.smallId].add({
             x: datum["ts"],
             y: datum[sensor.smallId],
@@ -87,35 +103,55 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         }
       }
     }
-
-    // Bind the data listener
-    const smallSensorsIds = props.sensors.map((s) => s.smallId);
-    const dataSubscriptionId = props.stream.subscribeToSensors(
-      dataCallbackRef,
-      smallSensorsIds
-    );
-
-    // Clean up
-    return () => {
-      // This fails when refreshing from react
-      chart.dispose();
-      props.stream.unsubscribeFromSensors(dataSubscriptionId);
-    };
-  }, [chart]);
+  }, [lineSeries]);
 
   useEffect(() => {
     if (!chart) return;
+    setDataRate(getDataRate(props.sensors));
+    props.stream.unsubscribeFromSensors(dataSubId);
+    initializeLineSeries();
+    const smallIds = props.sensors.map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+  }, [props.sensors]);
+
+  useEffect(() => {
+    if (!chart || !interval) return;
     const C = 60 * 1000;
-    chart.getDefaultAxisX().setInterval(interval[0] * C, interval[1] * C);
+    const offset = props.stream.getFirstTimeStamp();
+    chart
+      .getDefaultAxisX()
+      .setInterval(interval[0] * C + offset, interval[1] * C + offset);
   }, [interval]);
 
-  useEffect(() => setDataRate(getDataRate(props.sensors)), [props.sensors]);
+  useEffect(() => {
+    return () => {
+      props.stream.unsubscribeFromConnection(connectionSubId);
+      props.stream.unsubscribeFromSensors(dataSubId);
+      props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
+    };
+  }, [dataSubId, dataUpdateSubId]);
+
+  useEffect(() => {
+    // @ts-ignore
+    dataCallbackRef.current = onData; // @ts-ignore
+    connectionCallbackRef.current = onConnection; // @ts-ignore
+    missingDataCallbackRef.current = onMissingData;
+  }, [lineSeries, lastValues, updateTimer, lineSeries, slopes, interval]);
+
+  const initializeLineSeries = () => {
+    for (const [_, series] of Object.entries(lineSeries)) series.dispose();
+    for (const [_, series] of Object.entries(slopes)) series.dispose();
+    setLineSeries(generateLineSeries(chart, props.sensors));
+    setSlopes({});
+  };
 
   const generateLegend = useCallback(() => {
     if (!lastValues || lastValues === {}) return;
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
-      <div>{name + ": " + value + " " + unit}</div>
+      <div>
+        {name + ": " + value.toFixed(2).replace(/[.,]00$/, "") + " " + unit}
+      </div>
     );
     let i = 0;
     for (const sensor of props.sensors) {
@@ -133,9 +169,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           <ToolTip value="Show Derivative (NOTE: This will degrade performance)">
             <IconButton
               text={"∂"}
-              onClick={() => toggleDerivative(sensor)}
+              onClick={() => toggleSlope(sensor)}
               style={{
-                textDecoration: derivatives[sensor.smallId]
+                textDecoration: slopes[sensor.smallId]
                   ? "line-through"
                   : "none",
               }}
@@ -143,16 +179,16 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           </ToolTip>
         </div>
       );
-      if (derivatives[sensor.smallId]) {
+      if (slopes[sensor.smallId]) {
         legendElements.push(
           <div
-            className="sensor derivative"
+            className="sensor slope"
             style={{ color: colors[i] + "80" }}
             key={sensor._id}
           >
             {generateSensor(
               sensor.name + "'",
-              lastValues[sensor.smallId]["derivative"],
+              lastValues[sensor.smallId]["slope"],
               sensor.unit + (sensor.unit ? "/s" : "")
             )}
           </div>
@@ -161,11 +197,11 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       i++;
     }
     return legendElements;
-  }, [chart, lastValues, lineSeries, derivatives]);
+  }, [chart, lastValues, lineSeries, slopes]);
 
-  const toggleDerivative = useCallback(
+  const toggleSlope = useCallback(
     (sensor: Sensor) => {
-      let dxdts = { ...derivatives };
+      let dxdts = { ...slopes };
       if (dxdts[sensor.smallId]) {
         dxdts[sensor.smallId].dispose();
         delete dxdts[sensor.smallId];
@@ -181,21 +217,29 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           colors[sensorIndex] + "10"
         );
         dxdts[sensor.smallId].add(
-          getDerivative(
+          getSlope(
             props.stream.getHistoricalSensorData(sensor.smallId),
-            window
+            window,
+            sensor
           )
         );
       }
-      setDerivatives(dxdts);
+      setSlopes(dxdts);
     },
-    [chart, derivatives]
+    [chart, slopes]
   );
 
-  const onData = (data: any, timestamp: number) => {
+  const onConnection = () => {
+    for (const [_, series] of Object.entries(lineSeries)) series.clear();
+    for (const [_, series] of Object.entries(slopes)) series.clear();
+    // TODO: Set last values?
+  };
+
+  const onData = (data: { [key: string]: number }, timestamp: number) => {
+    if (!data) return;
     let last = { ...lastValues };
+    let updateTime = updateTimer - (dataRate ? dataRate : 0);
     for (const sensor of props.sensors) {
-      // Push data into the respective line series
       if (data[sensor.smallId] && lineSeries[sensor.smallId]) {
         lineSeries[sensor.smallId].add({
           x: timestamp,
@@ -203,20 +247,47 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         });
         last[sensor.smallId]["value"] = data[sensor.smallId];
       }
-      // TODO: Update the derivate every 0.5 seconds
-      if (derivatives[sensor.smallId]) {
-        derivatives[sensor.smallId].clear();
-        // There is something wrong with this calculation
-        let derivative = getDerivative(
+      if (slopes[sensor.smallId] && updateTime <= 0) {
+        slopes[sensor.smallId].clear();
+        let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window
+          window,
+          sensor
         );
-        last[sensor.smallId]["derivative"] =
-          derivative[derivative.length - 1].y;
-        derivatives[sensor.smallId].add(derivative);
+        last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
+        slopes[sensor.smallId].add(slope);
       }
     }
+    setUpdateTimer(updateTime <= 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
     setLastValues(last);
+  };
+
+  const onMissingData = () => {
+    for (const [_, series] of Object.entries(lineSeries)) series.clear();
+    for (const [_, series] of Object.entries(slopes)) series.clear();
+    for (const datum of props.stream.getHistoricalData()) {
+      for (const sensor of props.sensors) {
+        if (datum[sensor.smallId]) {
+          if (lineSeries[sensor.smallId])
+            lineSeries[sensor.smallId].add({
+              x: datum["ts"],
+              y: datum[sensor.smallId],
+            });
+        }
+      }
+    }
+    for (const sensor of props.sensors) {
+      if (slopes[sensor.smallId]) {
+        let slope = getSlope(
+          props.stream.getHistoricalSensorData(sensor.smallId),
+          window,
+          sensor
+        );
+        slopes[sensor.smallId].add(slope);
+      }
+    }
+    // TODO: Set last values?
+    setInterval(interval);
   };
 
   return (
@@ -226,8 +297,12 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         style={{
           gridTemplateColumns: (() => {
             let template = "1fr 1fr";
-            // TODO: Change based on size, max of 4 per row
-            // for (const _ in legend) template += "1fr ";
+            let legendCount =
+              Object.keys(lineSeries).length + Object.keys(slopes).length;
+            if (size.width >= 1000 && legendCount >= 4)
+              template = "1fr 1fr 1fr 1fr";
+            if (size.width >= 1000 && legendCount % 3 === 0)
+              template = "1fr 1fr 1fr";
             return template;
           })(),
         }}
@@ -243,7 +318,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         <RangeSlider
           title="Interval (minutes)"
           min={0}
-          max={30} // What if there are more than 30 minutes of data?
+          max={30} // TODO: What if there are more than 30 minutes of data?
           step={1}
           lowerValue={0}
           upperValue={1}
@@ -280,8 +355,7 @@ const getChart = (chartId: number) => {
   autoCursor.setGridStrokeYStyle(
     new SolidLine({ thickness: 1, fillStyle: theme.redFill })
   );
-  // @ts-ignore
-  autoCursor.getPointMarker().setSize(0);
+  autoCursor.getPointMarker().setSize({ x: 0, y: 0 });
   autoCursor.disposeTickMarkerX();
   autoCursor.disposeTickMarkerY();
   var font = new FontSettings({});
@@ -355,8 +429,8 @@ const createSeries = (
   unit: string | undefined,
   color: string
 ) => {
-  let series: any = chart
-    .addLineSeries({ dataPattern: DataPatterns.horizontalProgressive })
+  let series: LineSeries = chart
+    .addLineSeries({ dataPattern: { pattern: "ProgressiveX" } })
     .setName(name)
     .setStrokeStyle(
       new SolidLine({
@@ -375,25 +449,30 @@ const createSeries = (
   return series;
 };
 
-const getDerivative = (data: any[], window: number) => {
-  let derivative: any = [];
-  // TODO: Calculate derivate manually!
+const getSlope = (data: any[], window: number, sensor: Sensor) => {
+  let slope: any = [];
   if (data.length > 1) {
     let values: any = [];
     for (let i = 0; i < data.length; i++) values.push(data[i].value);
+    let dxdt: any = [];
+    let time = Math.ceil(1 / sensor.frequency);
+    for (let i = 1; i < values.length; i++) {
+      let diff = values[i] - values[i - 1];
+      dxdt.push(diff / time);
+    }
     let options = {
-      derivative: 1,
+      derivative: 0,
       windowSize: window,
       polynomial: 2,
       pad: "pre",
       padValue: "replicate",
     };
     // @ts-ignore
-    let smoothed = savitzkyGolay(values, 0.1, options); // Find the optimal h value
+    let smoothed = savitzkyGolay(dxdt, 10000, options); // TODO: Find the optimal h value
     for (let i = 0; i < smoothed.length; i++)
-      derivative.push({ x: data[i]["ts"], y: smoothed[i] });
+      slope.push({ x: data[i + 1]["ts"], y: smoothed[i] });
   }
-  return derivative;
+  return slope;
 };
 
 const getDataRate = (sensors: Sensor[]) => {

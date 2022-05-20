@@ -81,7 +81,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
     } else {
       setSensors([]);
     }
-  }, [rawDataPreset]);
+  }, [rawDataPreset, props.sensors]);
 
   useEffect(() => {
     generateBoxes(sensors);

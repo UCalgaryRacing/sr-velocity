@@ -11,3 +11,4 @@ export * from "./runs";
 export * from "./things";
 export * from "./chartPresets";
 export * from "./rawDataPresets";
+export * from "./iot";

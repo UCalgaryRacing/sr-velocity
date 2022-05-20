@@ -1,6 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
+import React from "react";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -10,26 +11,30 @@ class Stream {
 
   // Subscribers
   dataSubscribers: {
-    [key: string]: {
+    [functionId: string]: {
       smallSensorId: number;
-      func: (datum: number, timestamp: number) => void; // Make timestamp optional
+      func: React.RefObject<(datum: number, timestamp: number) => void>;
     };
   };
   sensorsDataSubscribers: {
-    [key: string]: {
+    [functionId: string]: {
       smallSensorIds: number[];
-      func: any; // Make timestamp optional
+      func: React.RefObject<(data: any, timestamp: number) => void>;
     };
   };
-  connectionSubscribers: { [key: string]: () => void };
-  stopSubscribers: { [key: string]: () => void };
-  disconnectionSubscribers: { [key: string]: () => void };
+  dataUpdateSubscribers: {
+    [key: string]: React.RefObject<() => void>;
+  };
+  connectionSubscribers: { [key: string]: React.RefObject<() => void> };
+  stopSubscribers: { [key: string]: React.RefObject<() => void> };
+  disconnectionSubscribers: { [key: string]: React.RefObject<() => void> };
 
   constructor() {
     this.socket = undefined;
     this.historicalData = [];
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
+    this.dataUpdateSubscribers = {};
     this.connectionSubscribers = {};
     this.stopSubscribers = {};
     this.disconnectionSubscribers = {};
@@ -51,40 +56,42 @@ class Stream {
     // Streaming is about to begin, so we clear the previous historical data
     this.socket.on("joined room", () => {
       this.historicalData = [];
-      for (const [_, func] of Object.entries(this.connectionSubscribers))
-        func();
+      for (const [, func] of Object.entries(this.connectionSubscribers))
+        func.current && func.current();
     });
 
     // When the thing stops streaming
     this.socket.on("room deleted", () => {
       this.historicalData = [];
-      for (const [_, func] of Object.entries(this.stopSubscribers)) func();
+      for (const [, func] of Object.entries(this.stopSubscribers))
+        func.current && func.current();
       // Queue up to rejoin the room for another stream
       this.socket.emit("join room", thingId);
     });
 
     // When there is a disconnection, let the disconnection subscribers know
     this.socket.on("disconnect", () => {
-      for (const [_, func] of Object.entries(this.disconnectionSubscribers))
-        func();
+      for (const [, func] of Object.entries(this.disconnectionSubscribers))
+        func.current && func.current();
       this.close();
     });
 
     // On a piece of data, notify the data subscribers
-    this.socket.on("data", (data: any) => {
-      for (const [_, pair] of Object.entries(this.dataSubscribers)) {
+    this.socket.on("data", (data: { [key: string]: number }) => {
+      for (const [, pair] of Object.entries(this.dataSubscribers)) {
         if (data[pair.smallSensorId]) {
-          pair.func(data[pair.smallSensorId], data["ts"]);
+          pair.func.current &&
+            pair.func.current(data[pair.smallSensorId], data["ts"]);
         }
       }
-      for (const [_, pair] of Object.entries(this.sensorsDataSubscribers)) {
+      for (const [, pair] of Object.entries(this.sensorsDataSubscribers)) {
         let message: any = {};
         for (const smallSensorId of pair.smallSensorIds) {
           if (data[smallSensorId]) {
             message[smallSensorId] = data[smallSensorId];
           }
         }
-        pair.func.current(message, data["ts"]);
+        pair.func.current && pair.func.current(message, data["ts"]);
       }
       this.historicalData.push(data);
     });
@@ -97,9 +104,17 @@ class Stream {
     this.socket = undefined;
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
+    this.dataUpdateSubscribers = {};
     this.connectionSubscribers = {};
     this.stopSubscribers = {};
     this.disconnectionSubscribers = {};
+  };
+
+  pushMissingData = (data: any[]) => {
+    // TODO: Don't allow any overlapping data!
+    this.historicalData = data.concat(this.historicalData);
+    for (const [, func] of Object.entries(this.dataUpdateSubscribers))
+      func.current && func.current();
   };
 
   getHistoricalData = () => {
@@ -114,7 +129,21 @@ class Stream {
     return data;
   };
 
-  subscribeToConnection = (func: () => void) => {
+  getFirstTimeStamp = () => {
+    if (this.historicalData.length > 0) return this.historicalData[0]["ts"];
+    else return 0;
+  };
+
+  worthGettingHistoricalData = () => {
+    if (this.historicalData.length > 0) {
+      // Only worth it if we are missing more than 30 seconds of data
+      let firstTimeStamp = this.historicalData[0]["ts"];
+      let secondsOfDataOnServer = firstTimeStamp / (60 * 1000);
+      return secondsOfDataOnServer >= 30;
+    } else return false;
+  };
+
+  subscribeToConnection = (func: React.RefObject<() => void>) => {
     let functionId: string = uuidv4();
     this.connectionSubscribers[functionId] = func;
     return functionId;
@@ -126,7 +155,7 @@ class Stream {
   };
 
   subscribeToSensor = (
-    func: (datum: number, timestamp: number) => void,
+    func: React.RefObject<(datum: number, timestamp: number) => void>,
     smallSensorId: number
   ) => {
     let functionId: string = uuidv4();
@@ -139,8 +168,10 @@ class Stream {
       delete this.dataSubscribers[functionId];
   };
 
-  // func type is React ref
-  subscribeToSensors = (func: any, smallSensorIds: number[]) => {
+  subscribeToSensors = (
+    func: React.RefObject<(data: any, timestamp: number) => void>,
+    smallSensorIds: number[]
+  ) => {
     let functionId: string = uuidv4();
     this.sensorsDataSubscribers[functionId] = { smallSensorIds, func };
     return functionId;
@@ -151,7 +182,18 @@ class Stream {
       delete this.sensorsDataSubscribers[functionId];
   };
 
-  subscribeToStop = (func: () => void) => {
+  subscribeToDataUpdate = (func: React.RefObject<() => void>) => {
+    let functionId: string = uuidv4();
+    this.dataUpdateSubscribers[functionId] = func;
+    return functionId;
+  };
+
+  unsubscribeFromDataUpdate = (functionId: string) => {
+    if (this.dataUpdateSubscribers[functionId])
+      delete this.dataSubscribers[functionId];
+  };
+
+  subscribeToStop = (func: React.RefObject<() => void>) => {
     let functionId: string = uuidv4();
     this.stopSubscribers[functionId] = func;
     return functionId;
@@ -162,7 +204,7 @@ class Stream {
       delete this.sensorsDataSubscribers[functionId];
   };
 
-  subscribeToDisconnection = (func: () => void) => {
+  subscribeToDisconnection = (func: React.RefObject<() => void>) => {
     let functionId: string = uuidv4();
     this.disconnectionSubscribers[functionId] = func;
     return functionId;

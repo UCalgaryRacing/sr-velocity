@@ -22,7 +22,7 @@ Written by Justin Tijunelis
 
 .chart-box .chart-title {
   margin: 0;
-  font-size: var(--fz-xxl);
+  font-size: var(--fz-lg);
   font-weight: bold;
   height: 35px;
 }

@@ -37,7 +37,7 @@ export const BaseModal: React.FC<ModalProps> = (props: ModalProps) => {
               if (
                 React.isValidElement(child) &&
                 // @ts-ignore
-                child["type"].name == "InputField"
+                child["type"].name === "InputField"
               ) {
                 let hc = props.handleChange;
                 return React.cloneElement(child, {

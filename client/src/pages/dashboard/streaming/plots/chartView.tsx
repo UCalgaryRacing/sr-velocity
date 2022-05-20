@@ -11,7 +11,7 @@ import {
 } from "components/interface";
 import { ChartBox } from "./chartBox";
 import { DashboardContext } from "../../dashboard";
-import { SaveOutlined, Add } from "@mui/icons-material";
+import { SaveOutlined, Add, CachedOutlined } from "@mui/icons-material";
 import {
   Sensor,
   Thing,
@@ -28,8 +28,9 @@ import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import { useWindowSize } from "hooks";
 import { ChartPresetModal } from "./modals/chartPresetModal";
-import "./_styling/chartView.css";
+import { requestMissingData } from "crud";
 import { Stream } from "stream/stream";
+import "./_styling/chartView.css";
 
 interface ChartViewProps {
   sensors: Sensor[];
@@ -43,6 +44,8 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
+  const [fetchingMissingData, setFetchingMissingData] =
+    useState<boolean>(false);
   const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
   const [chartPreset, setChartPreset] = useState<ChartPreset>();
   const [chartPresets, setChartPresets] = useState<ChartPreset[]>([]);
@@ -168,6 +171,20 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     alert(false, "The Preset was deleted.");
   };
 
+  const fetchMissingData = () => {
+    setFetchingMissingData(true);
+    requestMissingData(props.thing._id)
+      .then((data: any) => {
+        props.stream.pushMissingData(data);
+        setFetchingMissingData(false);
+        alert(false, "Missing data was merged.");
+      })
+      .catch((_: any) => {
+        setFetchingMissingData(false);
+        alert(true, "Could not fetch missing streaming data.");
+      });
+  };
+
   return (
     <>
       {fetchingPresets ? (
@@ -185,6 +202,25 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         <>
           <DashNav margin={context.margin}>
             <div className="left">
+              {props.stream.worthGettingHistoricalData() && (
+                <>
+                  {size.width >= 768.9 ? (
+                    <ToolTip value="Fetch Missing Data">
+                      <IconButton
+                        img={<CachedOutlined />}
+                        onClick={() => fetchMissingData()}
+                        loading={false}
+                      />
+                    </ToolTip>
+                  ) : (
+                    <TextButton
+                      title="Fetch Missing Data"
+                      onClick={() => fetchMissingData()}
+                      loading={fetchingMissingData}
+                    />
+                  )}
+                </>
+              )}
               {size.width >= 768.9 ? (
                 <ToolTip value="New Chart">
                   <IconButton

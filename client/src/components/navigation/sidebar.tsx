@@ -12,12 +12,7 @@ import {
   UserRole,
   isAuthAtLeast,
 } from "state";
-import {
-  History,
-  DataObject,
-  StackedLineChart,
-  Settings,
-} from "@mui/icons-material";
+import { History, DataObject, StackedLineChart } from "@mui/icons-material";
 import {
   ProSidebar,
   Menu,
@@ -25,7 +20,6 @@ import {
   SubMenu,
   SidebarHeader,
   SidebarContent,
-  SidebarFooter,
 } from "react-pro-sidebar";
 import { useWindowSize } from "hooks/index";
 import "react-pro-sidebar/dist/css/styles.css";
