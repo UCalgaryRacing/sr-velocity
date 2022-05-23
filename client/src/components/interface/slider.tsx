@@ -5,33 +5,32 @@ import React from "react";
 import Slider from "rc-slider";
 import { useWindowSize } from "hooks";
 import "rc-slider/assets/index.css";
-import "./_styling/rangeSlider.css";
+import "./_styling/slider.css";
 
 interface SliderProps {
-  onChange: (value: number[]) => void;
+  onChange: (value: number) => void;
   title: string;
   min: number;
   max: number;
   step: number;
-  lowerValue: number;
-  upperValue: number;
+  default: number;
   unit?: string;
   marks: any;
 }
 
-export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
+export const SingleSlider: React.FC<SliderProps> = (props: SliderProps) => {
   const size = useWindowSize();
 
   return (
-    <div className="range-slider">
+    <div className="slider">
       <div className="slider-title">{props.title}</div>
       <Slider
-        range
         min={props.min}
         max={props.max}
-        defaultValue={[props.lowerValue, props.upperValue]}
         marks={props.marks}
-        onChange={(v: number | number[]) => props.onChange(v as number[])}
+        defaultValue={props.default}
+        step={props.step}
+        onChange={(v: number | number[]) => props.onChange(v as number)}
         handleStyle={{
           height: size.width <= 768.9 ? 15 : 10,
           width: size.width <= 768.9 ? 15 : 10,
@@ -46,7 +45,6 @@ export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
           height: 5,
           marginTop: "0px",
         }}
-        allowCross={false}
       />
     </div>
   );

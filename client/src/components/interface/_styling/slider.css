@@ -1,0 +1,9 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.slider .slider-title {
+  font-size: var(--fz-xs);
+  text-align: center;
+}

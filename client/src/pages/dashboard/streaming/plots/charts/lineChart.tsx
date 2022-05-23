@@ -2,7 +2,12 @@
 // Written by Justin Tijunelis, Abod Abbas
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { IconButton, RangeSlider, ToolTip } from "components/interface";
+import {
+  IconButton,
+  RangeSlider,
+  ToolTip,
+  SingleSlider,
+} from "components/interface";
 import { Stream } from "stream/stream";
 import { Sensor } from "state";
 import {
@@ -21,7 +26,7 @@ import savitzkyGolay from "ml-savitzky-golay";
 import { useWindowSize } from "hooks";
 import "./_styling/lineChart.css";
 
-const SLOPE_COMPUTE_INTERVAL = 500; // milliseconds
+const SLOPE_COMPUTE_INTERVAL = 1000; // milliseconds
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73", "#E69D00"];
 const theme = {
   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
@@ -48,8 +53,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   // Control state
   const [interval, setInterval] = useState<number[]>();
-  const [window, setWindow] = useState<number>(111);
-  const [dataRate, setDataRate] = useState<number>(getDataRate(props.sensors));
+  const [window, setWindow] = useState<number>(
+    Math.ceil((500 / getDataRate(props.sensors)) * 5) | 1
+  );
   const [updateTimer, setUpdateTimer] = useState<number>(
     SLOPE_COMPUTE_INTERVAL
   );
@@ -85,7 +91,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setConnectionSubId(
       props.stream.subscribeToConnection(connectionCallbackRef)
     );
-    const offset = props.stream.getFirstTimeStamp() / (60 * 1000);
     return () => {
       try {
         chart && chart.dispose();
@@ -108,7 +113,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   useEffect(() => {
     if (!chart) return;
-    setDataRate(getDataRate(props.sensors));
     props.stream.unsubscribeFromSensors(dataSubId);
     initializeLineSeries();
     const smallIds = props.sensors.map((s) => s.smallId);
@@ -139,6 +143,19 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     missingDataCallbackRef.current = onUpdatedData;
   }, [lineSeries, lastValues, updateTimer, lineSeries, slopes, interval]);
 
+  useEffect(() => {
+    for (const sensor of props.sensors) {
+      if (slopes[sensor.smallId]) {
+        slopes[sensor.smallId].clear();
+        let slope = getSlope(
+          props.stream.getHistoricalSensorData(sensor.smallId),
+          window
+        );
+        slopes[sensor.smallId].add(slope);
+      }
+    }
+  }, [window]);
+
   const initializeLineSeries = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.dispose();
     for (const [_, series] of Object.entries(slopes)) series.dispose();
@@ -167,7 +184,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
             lastValues[sensor.smallId]["value"],
             sensor.unit ? sensor.unit : ""
           )}
-          <ToolTip value="Show Derivative (NOTE: This will degrade performance)">
+          <ToolTip value="Derivative">
             <IconButton
               text={"∂"}
               onClick={() => toggleSlope(sensor)}
@@ -236,7 +253,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const onData = (data: { [key: string]: number }, timestamp: number) => {
     if (!data) return;
     let last = { ...lastValues };
-    let updateTime = updateTimer - (dataRate ? dataRate : 0);
+    let updateTime = updateTimer - getDataRate(props.sensors);
     for (const sensor of props.sensors) {
       if (data[sensor.smallId] && lineSeries[sensor.smallId]) {
         lineSeries[sensor.smallId].add({
@@ -315,6 +332,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           title="Interval (minutes)"
           min={0}
           max={120}
+          marks={{ 0: 0, 60: 15, 120: 30 }}
           step={1}
           lowerValue={0}
           upperValue={1}
@@ -324,6 +342,25 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
             setInterval(interval.map((x) => x / 4));
           }}
         />
+        {Object.keys(slopes).length > 0 && (
+          <>
+            <br />
+            <SingleSlider
+              title="Derivative Smoothing Factor"
+              min={0}
+              max={100}
+              marks={{ 0: 0, 100: 100 }}
+              step={2}
+              default={5}
+              unit="seconds"
+              onChange={(w: number) =>
+                setWindow(
+                  Math.ceil((500 / getDataRate(props.sensors)) * (w + 5)) | 1
+                )
+              }
+            />
+          </>
+        )}
       </div>
     </div>
   );
@@ -456,7 +493,7 @@ const getSlope = (data: any[], window: number) => {
       derivative: 0,
       windowSize: window,
       polynomial: 2,
-      pad: "none",
+      pad: "pre",
       padValue: "replicate",
     };
     let values: any = [];
