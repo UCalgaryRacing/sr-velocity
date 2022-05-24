@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 class Stream {
   socket: any;
   historicalData: any = [];
+  streaming: boolean;
 
   // Subscribers
   dataSubscribers: {
@@ -32,6 +33,7 @@ class Stream {
   constructor() {
     this.socket = undefined;
     this.historicalData = [];
+    this.streaming = false;
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
     this.dataUpdateSubscribers = {};
@@ -55,6 +57,8 @@ class Stream {
     // When the room is joined, let the connection subscribers know
     // Streaming is about to begin, so we clear the previous historical data
     this.socket.on("joined room", () => {
+      this.streaming = true;
+      console.log(this.streaming);
       this.historicalData = [];
       for (const [, func] of Object.entries(this.connectionSubscribers))
         func.current && func.current();
@@ -62,6 +66,7 @@ class Stream {
 
     // When the thing stops streaming
     this.socket.on("room deleted", () => {
+      this.streaming = false;
       for (const [, func] of Object.entries(this.stopSubscribers))
         func.current && func.current();
       // Queue up to rejoin the room for another stream
@@ -103,6 +108,7 @@ class Stream {
     if (this.socket) this.socket.close();
     this.historicalData = [];
     this.socket = undefined;
+    this.streaming = false;
     this.dataSubscribers = {};
     this.sensorsDataSubscribers = {};
     this.dataUpdateSubscribers = {};
@@ -111,9 +117,20 @@ class Stream {
     this.disconnectionSubscribers = {};
   };
 
+  isStreaming = () => {
+    return this.streaming;
+  };
+
   pushMissingData = (data: any[]) => {
     // TODO: Don't allow any overlapping data!
-    this.historicalData = data.concat(this.historicalData);
+    let dirtyData = data.concat(this.historicalData);
+    let cleanData: any = [dirtyData[0]];
+    for (const datum of dirtyData) {
+      if (datum["ts"] > cleanData[cleanData.length - 1]["ts"]) {
+        cleanData.push(datum);
+      }
+    }
+    this.historicalData = cleanData;
     for (const [, func] of Object.entries(this.dataUpdateSubscribers))
       func.current && func.current();
   };
@@ -126,7 +143,7 @@ class Stream {
     let data: any = [];
     for (const datum of this.historicalData)
       if (datum[sensorSmallId])
-        data.push({ ts: datum["ts"], value: datum[sensorSmallId] });
+        data.push({ x: datum["ts"], y: datum[sensorSmallId] });
     return data;
   };
 

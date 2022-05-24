@@ -39,6 +39,7 @@ const handleSocketSession = (io, socket) => {
     if (roomCollection[thingId]) {
       socket.join(thingId);
       currentConnection.room = thingId;
+      socket.emit("joined room");
     } else {
       if (!queuedUsers[thingId]) queuedUsers[thingId] = [];
       queuedUsers[thingId].push({ socket });

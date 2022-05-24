@@ -45,7 +45,14 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
 
+  // Subscriptions
+  const connectionCallback = useRef<() => void>(null);
+  const stopCallback = useRef<() => void>(null);
+
   // State
+  const [streaming, setStreaming] = useState<boolean>(
+    props.stream.isStreaming()
+  );
   const [fetchingMissingData, setFetchingMissingData] =
     useState<boolean>(false);
   const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
@@ -73,6 +80,16 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         alert(true, "Could not fetch presets...");
         setFetchingPresets(false);
       });
+    // @ts-ignore
+    connectionCallback.current = onConnection; // @ts-ignore
+    stopCallback.current = onStop;
+    const connectionSubId =
+      props.stream.subscribeToConnection(connectionCallback);
+    const stopSubId = props.stream.subscribeToStop(stopCallback);
+    return () => {
+      props.stream.unsubscribeFromConnection(connectionSubId);
+      props.stream.unsubscribeFromStop(stopSubId);
+    };
   }, []);
 
   useEffect(() => {
@@ -183,6 +200,9 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
       });
   };
 
+  const onConnection = () => setStreaming(true);
+  const onStop = () => setStreaming(false);
+
   return (
     <>
       {fetchingPresets ? (
@@ -200,25 +220,27 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         <>
           <DashNav margin={context.margin}>
             <div className="left">
-              {props.stream.worthGettingHistoricalData() && (
-                <>
-                  {size.width >= 768.9 ? (
-                    <ToolTip value="Fetch Missing Data">
-                      <IconButton
-                        img={<CachedOutlined />}
+              {props.stream.worthGettingHistoricalData() &&
+                charts.length > 0 &&
+                streaming && (
+                  <>
+                    {size.width >= 768.9 ? (
+                      <ToolTip value="Fetch Missing Data">
+                        <IconButton
+                          img={<CachedOutlined />}
+                          onClick={() => fetchMissingData()}
+                          loading={fetchingMissingData}
+                        />
+                      </ToolTip>
+                    ) : (
+                      <TextButton
+                        title="Fetch Missing Data"
                         onClick={() => fetchMissingData()}
-                        loading={false}
+                        loading={fetchingMissingData}
                       />
-                    </ToolTip>
-                  ) : (
-                    <TextButton
-                      title="Fetch Missing Data"
-                      onClick={() => fetchMissingData()}
-                      loading={fetchingMissingData}
-                    />
-                  )}
-                </>
-              )}
+                    )}
+                  </>
+                )}
               {size.width >= 768.9 && charts.length <= 10 ? (
                 <ToolTip value="New Chart">
                   <IconButton

@@ -108,15 +108,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   }, [chart]);
 
   useEffect(() => {
-    for (const datum of props.stream.getHistoricalData()) {
-      for (const sensor of props.sensors) {
-        if (datum[sensor.smallId] && lineSeries[sensor.smallId]) {
-          lineSeries[sensor.smallId].add({
-            x: datum["ts"],
-            y: datum[sensor.smallId],
-          });
-        }
-      }
+    for (const sensor of props.sensors) {
+      let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
+      if (lineSeries[sensor.smallId])
+        lineSeries[sensor.smallId].add(sensorData);
     }
   }, [lineSeries]);
 
@@ -130,7 +125,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   useEffect(() => {
     if (!chart || !interval) return;
-    const C = 60 * 1000;
+    const C = 60 * 1000; // Minutes to milliseconds
     const offset = props.stream.getFirstTimeStamp();
     chart.getDefaultAxisX().setInterval(
       interval[0] * C + offset,
@@ -138,7 +133,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       false,
       !connected // Disable scrolling when disconnected
     );
-  }, [interval, connected]);
+  }, [interval, connected, props.stream]);
 
   useEffect(() => {
     return () => {
@@ -157,7 +152,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     connectionCallbackRef.current = onConnection; // @ts-ignore
     stopCallbackRef.current = onStop; // @ts-ignore
     disconnectCallbackRef.current = onDisconnect;
-  }, [lineSeries, lastValues, updateTimer, lineSeries, slopes, interval]);
+  });
 
   useEffect(() => {
     for (const sensor of props.sensors) {
@@ -308,16 +303,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const onUpdatedData = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
     for (const [_, series] of Object.entries(slopes)) series.clear();
-    for (const datum of props.stream.getHistoricalData()) {
-      for (const sensor of props.sensors) {
-        if (datum[sensor.smallId]) {
-          if (lineSeries[sensor.smallId])
-            lineSeries[sensor.smallId].add({
-              x: datum["ts"],
-              y: datum[sensor.smallId],
-            });
-        }
-      }
+    for (const sensor of props.sensors) {
+      let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
+      if (lineSeries[sensor.smallId])
+        lineSeries[sensor.smallId].add(sensorData);
     }
     for (const sensor of props.sensors) {
       if (slopes[sensor.smallId]) {
@@ -328,8 +317,15 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         slopes[sensor.smallId].add(slope);
       }
     }
-    // TODO: Set last values?
-    setInterval(interval);
+    if (interval) {
+      const C = 1000 * 60; // Minutes to milliseconds
+      chart.getDefaultAxisX().setInterval(
+        interval[0] * C,
+        interval[1] * C,
+        false,
+        !connected // Disable scrolling when disconnected
+      );
+    }
   };
 
   return (
@@ -528,17 +524,17 @@ const getSlope = (data: any[], window: number) => {
       padValue: "replicate",
     };
     let values: any = [];
-    for (let i = 0; i < data.length; i++) values.push(data[i].value);
+    for (let i = 0; i < data.length; i++) values.push(data[i].y);
     let dxdt: any = [];
     for (let i = 1; i < values.length; i++) {
       let diff = values[i - 1] - values[i];
-      let timeDiff = (data[i - 1].ts - data[i].ts) / 1000;
+      let timeDiff = (data[i - 1].x - data[i].x) / 1000;
       dxdt.push(diff / timeDiff);
     }
     // @ts-ignore
     let smoothed = savitzkyGolay(dxdt, 1, golayOptions); // TODO: Find the optimal h value
     for (let i = 0; i < smoothed.length; i++) {
-      slope.push({ x: data[i + 1]["ts"], y: smoothed[i] });
+      slope.push({ x: data[i + 1].x, y: smoothed[i] });
     }
   }
   return slope;
@@ -550,6 +546,14 @@ const getDataRate = (sensors: Sensor[]) => {
     if (sensor["frequency"] > highest_frequency)
       highest_frequency = sensor["frequency"];
   return Math.ceil(1000 / highest_frequency);
+};
+
+const getFrequency = (sensors: Sensor[]) => {
+  let highest_frequency = 0;
+  for (const sensor of sensors)
+    if (sensor["frequency"] > highest_frequency)
+      highest_frequency = sensor["frequency"];
+  return highest_frequency;
 };
 
 const toggleGrid = (chart: any) => {
