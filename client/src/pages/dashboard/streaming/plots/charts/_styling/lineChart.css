@@ -18,6 +18,7 @@ Written by Justin Tijunelis
   justify-content: center;
   text-align: left;
   height: 25px !important;
+  margin-bottom: 5px;
 }
 
 .line-legend .slope {

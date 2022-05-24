@@ -450,7 +450,7 @@ const getChart = (chartId: number, interval: number[]) => {
   chart
     .getDefaultAxisY()
     .setTitle("")
-    .setScrollStrategy(AxisScrollStrategies.expansion)
+    .setScrollStrategy(AxisScrollStrategies.fitting)
     .setTickStrategy("Empty")
     .setMouseInteractions(false)
     .setStrokeStyle(
@@ -545,15 +545,7 @@ const getDataRate = (sensors: Sensor[]) => {
   for (const sensor of sensors)
     if (sensor["frequency"] > highest_frequency)
       highest_frequency = sensor["frequency"];
-  return Math.ceil(1000 / highest_frequency);
-};
-
-const getFrequency = (sensors: Sensor[]) => {
-  let highest_frequency = 0;
-  for (const sensor of sensors)
-    if (sensor["frequency"] > highest_frequency)
-      highest_frequency = sensor["frequency"];
-  return highest_frequency;
+  return Math.ceil(1000 / Math.min(highest_frequency, 20));
 };
 
 const toggleGrid = (chart: any) => {
