@@ -49,6 +49,16 @@ Written by Justin Tijunelis and Joey Van Lierop
   width: 200px;
 }
 
+#dash-nav #thing-selection {
+  position: relative;
+}
+
+#dash-nav #thing-selection > span {
+  position: absolute;
+  top: 12px;
+  right: 44px;
+}
+
 #dash-nav .segmented-control {
   width: 250px !important;
 }

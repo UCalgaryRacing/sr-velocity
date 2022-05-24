@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   IconButton,
   ToolTip,
@@ -44,6 +44,17 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
   const user = useAppSelector((state: RootState) => state.user);
+
+  // Callbacks
+  const [connected, setConnected] = useState<boolean>(false);
+  const [connectionSubId, setConnectionSubId] = useState<string>("");
+  const connectionCallbackRef = useRef<() => void>(null);
+  const [disconnectSubId, setDisconnectSubId] = useState<string>("");
+  const disconnectCallbackRef = useRef<() => void>(null);
+  const [stopSubId, setStopDubId] = useState<string>("");
+  const stopCallbackRef = useRef<() => void>(null);
+
+  // State
   const [fetchingMissingData, setFetchingMissingData] =
     useState<boolean>(false);
   const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
@@ -71,15 +82,29 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         alert(true, "Could not fetch presets...");
         setFetchingPresets(false);
       });
+
+    // @ts-ignore
+    connectionCallbackRef.current = onConnection; // @ts-ignore
+    stopCallbackRef.current = onDisconnection; // @ts-ignore
+    disconnectCallbackRef.current = onDisconnection;
+
+    setConnectionSubId(
+      props.stream.subscribeToConnection(connectionCallbackRef)
+    );
+    setStopDubId(props.stream.subscribeToStop(stopCallbackRef));
+    setDisconnectSubId(
+      props.stream.subscribeToDisconnection(disconnectCallbackRef)
+    );
+    return () => {
+      props.stream.unsubscribeFromConnection(connectionSubId);
+      props.stream.unsubscribeFromStop(stopSubId);
+      props.stream.unsubscribeFromDisconnection(disconnectSubId);
+    };
   }, []);
 
   useEffect(() => {
-    if (chartPreset) {
-      console.log(chartPreset);
-      setCharts(chartPreset.charts);
-    } else {
-      setCharts([]);
-    }
+    if (chartPreset) setCharts(chartPreset.charts);
+    else setCharts([]);
   }, [chartPreset]);
 
   useEffect(() => {
@@ -183,6 +208,14 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         setFetchingMissingData(false);
         alert(true, "Could not fetch missing streaming data.");
       });
+  };
+
+  const onConnection = () => {
+    setConnected(true);
+  };
+
+  const onDisconnection = () => {
+    setConnected(false);
   };
 
   return (

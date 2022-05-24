@@ -148,7 +148,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       props.stream.unsubscribeFromSensors(dataSubId);
       props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
     };
-  }, [dataSubId, dataUpdateSubId]);
+  }, [connectionSubId, dataSubId, dataUpdateSubId, stopSubId, disconnectSubId]);
 
   useEffect(() => {
     // @ts-ignore
