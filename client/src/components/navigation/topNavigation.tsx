@@ -5,6 +5,7 @@ import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { useAppSelector, RootState } from "state";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import { useWindowSize } from "hooks/index";
 import "./_styling/topNavigation.css";
 
@@ -41,12 +42,12 @@ const TopNavigation: React.FC = () => {
           <Nav className="ml-auto">
             {window.location.pathname !== "/about" && (
               <Nav.Link href="/about">
-                {size.width >= 916 ? <InfoOutlinedIcon /> : <b>About</b>}
+                {size.width >= 768 ? <InfoOutlinedIcon /> : <b>About</b>}
               </Nav.Link>
             )}
             {window.location.pathname !== "/sign-in" && !state.user && (
               <Nav.Link href="/sign-in">
-                <b>Sign In</b>
+                {size.width >= 768 ? <PermIdentityIcon /> : <b>Sign In</b>}
               </Nav.Link>
             )}
           </Nav>

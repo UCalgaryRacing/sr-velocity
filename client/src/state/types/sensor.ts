@@ -20,6 +20,7 @@ export type Sensor = {
   lowerWarning?: number;
   upperDanger?: number;
   lowerDanger?: number;
+  // TODO: Add lower and upper bound
   // FUTURE: Add protocol
 };
 

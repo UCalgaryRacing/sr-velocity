@@ -55,7 +55,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   );
   const [fetchingMissingData, setFetchingMissingData] =
     useState<boolean>(false);
-  const [fetchingPresets, setFetchingPresets] = useState<boolean>(false);
+  const [fetchingPresets, setFetchingPresets] = useState<boolean>(true);
   const [chartPreset, setChartPreset] = useState<ChartPreset>();
   const [chartPresets, setChartPresets] = useState<ChartPreset[]>([]);
   const [showAlert, setShowAlert] = useState<boolean>(false);

@@ -74,6 +74,7 @@ class Stream {
 
     // When there is a disconnection, let the disconnection subscribers know
     this.socket.on("disconnect", () => {
+      console.log("here");
       for (const [, func] of Object.entries(this.disconnectionSubscribers))
         func.current && func.current();
       for (const [, func] of Object.entries(this.stopSubscribers))
@@ -104,7 +105,7 @@ class Stream {
 
   // Unsubscribes all messages
   close = () => {
-    if (this.socket) this.socket.close();
+    if (this.socket) this.socket.disconnect();
     this.historicalData = [];
     this.socket = undefined;
     this.streaming = false;
