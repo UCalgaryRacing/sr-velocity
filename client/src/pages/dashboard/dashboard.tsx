@@ -39,8 +39,8 @@ const Dashboard: React.FC = () => {
   const [setupError, setSetupError] = useState<boolean>(false);
 
   const gestures = useSwipeable({
-    onSwipedRight: (_) => size.width <= 768.9 && setSideBarToggled(true),
-    onSwipedLeft: (_) => size.width <= 768.9 && setSideBarToggled(false),
+    onSwipedRight: (_) => size.width <= 916 && setSideBarToggled(true),
+    onSwipedLeft: (_) => size.width <= 916 && setSideBarToggled(false),
     trackMouse: true,
   });
   const size = useWindowSize();
@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (size.width >= 768.9 && sideBarToggled) setSideBarToggled(false);
+    if (size.width >= 916 && sideBarToggled) setSideBarToggled(false);
   }, [size.width]);
 
   return (
@@ -71,8 +71,7 @@ const Dashboard: React.FC = () => {
         <div
           id="dashboard-loading"
           style={{
-            marginLeft:
-              size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+            marginLeft: size.width >= 916 ? (!sideBarCollapsed ? 76 : 220) : 0,
           }}
         >
           <div id="dashboard-loading-content">
@@ -93,15 +92,14 @@ const Dashboard: React.FC = () => {
             id="content"
             style={{
               marginLeft:
-                size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+                size.width >= 916 ? (!sideBarCollapsed ? 76 : 220) : 0,
             }}
           >
             <DashboardContext.Provider
               value={{
                 page: state.dashboard!.page,
                 section: state.dashboard!.section,
-                margin:
-                  size.width >= 768.9 ? (!sideBarCollapsed ? 76 : 220) : 0,
+                margin: size.width >= 916 ? (!sideBarCollapsed ? 76 : 220) : 0,
               }}
             >
               {state.dashboard.section === "Streaming" && <Streaming />}

@@ -33,13 +33,13 @@ export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
         marks={props.marks}
         onChange={(v: number | number[]) => props.onChange(v as number[])}
         handleStyle={{
-          height: size.width <= 768.9 ? 15 : 10,
-          width: size.width <= 768.9 ? 15 : 10,
+          height: size.width <= 916 ? 15 : 10,
+          width: size.width <= 916 ? 15 : 10,
           backgroundColor: "#ba1833",
           color: "#ba1833",
           border: 0,
           opacity: 1,
-          marginTop: size.width <= 768.9 ? "-5px" : "-2.5px",
+          marginTop: size.width <= 916 ? "-5px" : "-2.5px",
         }}
         trackStyle={{
           backgroundColor: "#ba1833",

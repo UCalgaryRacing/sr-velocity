@@ -224,7 +224,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                 charts.length > 0 &&
                 streaming && (
                   <>
-                    {size.width >= 768.9 ? (
+                    {size.width >= 916 ? (
                       <ToolTip value="Fetch Missing Data">
                         <IconButton
                           img={<CachedOutlined />}
@@ -241,7 +241,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                     )}
                   </>
                 )}
-              {size.width >= 768.9 && charts.length <= 10 ? (
+              {size.width >= 916 && charts.length <= 10 ? (
                 <ToolTip value="New Chart">
                   <IconButton
                     img={<Add />}
@@ -256,7 +256,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
               )}
               {isAuthAtLeast(user, UserRole.MEMBER) && charts.length > 0 && (
                 <>
-                  {size.width >= 768.9 ? (
+                  {size.width >= 916 ? (
                     <ToolTip value="Save Preset">
                       <IconButton
                         img={<SaveOutlined />}

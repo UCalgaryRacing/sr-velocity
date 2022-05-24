@@ -2,14 +2,14 @@
 // Written by Justin Tijunelis, Abod Abbas
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { Stream } from "stream/stream";
+import { Sensor } from "state";
 import {
   IconButton,
   RangeSlider,
   ToolTip,
   SingleSlider,
 } from "components/interface";
-import { Stream } from "stream/stream";
-import { Sensor } from "state";
 import {
   lightningChart,
   AxisScrollStrategies,
@@ -349,7 +349,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 768.9 ? "320px" : "250px" }}
+        style={{ height: size.width >= 916 ? "320px" : "250px" }}
         className="fill"
       ></div>
       <div className="line-controls">

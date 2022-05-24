@@ -181,7 +181,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
         <>
           <DashNav margin={context.margin}>
             <div className="left">
-              {size.width >= 768.9 ? (
+              {size.width >= 916 ? (
                 <ToolTip value="New Box">
                   <IconButton
                     img={<Add />}
@@ -196,7 +196,7 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
               )}
               {isAuthAtLeast(user, UserRole.MEMBER) && sensors.length > 0 && (
                 <>
-                  {size.width >= 768.9 ? (
+                  {size.width >= 916 ? (
                     <ToolTip value="Save Preset">
                       <IconButton
                         img={<SaveOutlined />}

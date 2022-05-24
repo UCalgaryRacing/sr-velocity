@@ -41,7 +41,7 @@ const TopNavigation: React.FC = () => {
           <Nav className="ml-auto">
             {window.location.pathname !== "/about" && (
               <Nav.Link href="/about">
-                {size.width >= 768.9 ? <InfoOutlinedIcon /> : <b>About</b>}
+                {size.width >= 916 ? <InfoOutlinedIcon /> : <b>About</b>}
               </Nav.Link>
             )}
             {window.location.pathname !== "/sign-in" && !state.user && (

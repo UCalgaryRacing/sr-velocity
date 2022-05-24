@@ -83,12 +83,12 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
 
   return (
     <ProSidebar
-      collapsed={!((collapsed && !props.toggled) || size.width <= 768.9)}
+      collapsed={!((collapsed && !props.toggled) || size.width <= 916)}
       toggled={props.toggled}
       breakPoint="md"
       width={220}
     >
-      {size.width >= 768.9 && (
+      {size.width >= 916 && (
         <SidebarHeader>
           <div>
             <Hamburger

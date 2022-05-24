@@ -57,7 +57,7 @@ Written by Justin Tijunelis and Joey Van Lierop
   min-width: 200px;
 }
 
-@media only screen and (max-width: 768.9px) {
+@media only screen and (max-width: 916px) {
   #dash-nav {
     position: initial;
     height: auto;

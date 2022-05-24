@@ -240,7 +240,7 @@ export const ManageSensors: React.FC = () => {
                 <div className="left">
                   {isAuthAtLeast(user, UserRole.ADMIN) && (
                     <>
-                      {size.width >= 768.9 ? (
+                      {size.width >= 916 ? (
                         <ToolTip value="New Sensor">
                           <IconButton
                             onClick={() => {

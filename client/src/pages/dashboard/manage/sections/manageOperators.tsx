@@ -190,7 +190,7 @@ export const ManageOperators: React.FC = () => {
             <div className="left">
               {isAuthAtLeast(user, UserRole.ADMIN) && (
                 <>
-                  {size.width >= 768.9 ? (
+                  {size.width >= 916 ? (
                     <ToolTip value="New Operator">
                       <IconButton
                         onClick={() => setShowOperatorModal(true)}

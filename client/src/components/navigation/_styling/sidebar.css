@@ -106,7 +106,11 @@
   fill: var(--black);
 }
 
-@media only screen and (max-width: 768.9px) {
+@media only screen and (max-width: 916px) {
+  .pro-sidebar.md {
+    position: fixed;
+    left: -270px;
+  }
   #sidebar .pro-sidebar {
     position: fixed;
   }

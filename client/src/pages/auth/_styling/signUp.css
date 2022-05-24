@@ -34,7 +34,7 @@ Written by Justin Tijunelis
   text-align: center;
 }
 
-@media (max-width: 768.9px) {
+@media (max-width: 916px) {
   #sign-up #sign-up-form {
     width: 100%;
   }

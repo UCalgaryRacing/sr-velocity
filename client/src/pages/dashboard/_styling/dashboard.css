@@ -29,7 +29,7 @@
   margin: auto;
 }
 
-@media only screen and (max-width: 768.9px) {
+@media only screen and (max-width: 916px) {
   #dashboard {
     touch-action: pan-y;
   }

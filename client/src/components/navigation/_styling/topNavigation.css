@@ -49,7 +49,7 @@
   z-index: 1044;
 }
 
-@media only screen and (max-width: 768.9px) {
+@media only screen and (max-width: 916px) {
   #top-navigation .mr-auto {
     margin-left: 0px;
   }
