@@ -24,19 +24,16 @@ export type Sensor = {
 };
 
 export const sensorTypes = {
-  c: "Character",
-  b: "Signed Byte",
-  B: "Unsigned Byte",
   "?": "Boolean",
+  c: "Signed Byte",
+  B: "Unsigned Byte",
   h: "Short",
   H: "Unsigned Short",
   i: "Integer",
   I: "Unsigned Integer",
-  l: "Long",
-  L: "Unsigned Long",
+  f: "Floating Point",
   q: "Long Long",
   Q: "Unsigned Long Long",
-  f: "Floating Point",
   d: "Double",
 };
 
