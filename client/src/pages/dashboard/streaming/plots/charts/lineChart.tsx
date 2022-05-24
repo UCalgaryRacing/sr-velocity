@@ -286,7 +286,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           x: timestamp,
           y: data[sensor.smallId],
         });
-        last[sensor.smallId]["value"] = data[sensor.smallId];
+        if (updateTime <= 0)
+          last[sensor.smallId]["value"] = data[sensor.smallId];
       }
       if (slopes[sensor.smallId] && updateTime <= 0) {
         slopes[sensor.smallId].clear();
@@ -294,8 +295,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           props.stream.getHistoricalSensorData(sensor.smallId),
           window
         );
-        last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
         slopes[sensor.smallId].add(slope);
+        if (updateTime <= 0)
+          last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
       }
     }
     setUpdateTimer(updateTime <= 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);

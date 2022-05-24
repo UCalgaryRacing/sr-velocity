@@ -7,6 +7,8 @@ import { Sensor } from "state";
 import { Stream } from "stream/stream";
 import "./_styling/rawBox.css";
 
+const UPDATE_TIMEOUT = 500;
+
 interface RawBoxProps {
   sensor: Sensor;
   stream: Stream;
@@ -18,9 +20,10 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   const onDatumCallback = useRef<() => void>(null);
   const [value, setValue] = useState<number>(0);
   const [color, setColor] = useState<string>();
+  const [updateTimeout, setUpdateTimeout] = useState<number>(0);
 
   // @ts-ignore
-  useEffect(() => (onDatumCallback.current = onDatum));
+  useEffect(() => (onDatumCallback.current = onDatum), [updateTimeout]);
 
   useEffect(() => {
     const functionId: string = props.stream.subscribeToSensor(
@@ -65,7 +68,13 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   }, [value]);
 
   const onDatum = (data: number, _: number) => {
-    setValue(data);
+    if (!data) return;
+    let timeBetweenTimestamps = 1000 / props.sensor.frequency;
+    let lastUpdate = updateTimeout - timeBetweenTimestamps;
+    if (lastUpdate <= 0) {
+      setValue(data);
+      setUpdateTimeout(UPDATE_TIMEOUT);
+    } else setUpdateTimeout(lastUpdate);
   };
 
   return (

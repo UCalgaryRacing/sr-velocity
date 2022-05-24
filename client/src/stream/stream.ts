@@ -139,7 +139,7 @@ class Stream {
     if (this.historicalData.length > 0) {
       // Only worth it if we are missing more than 30 seconds of data
       let firstTimeStamp = this.historicalData[0]["ts"];
-      let secondsOfDataOnServer = firstTimeStamp / (60 * 1000);
+      let secondsOfDataOnServer = firstTimeStamp / 1000;
       return secondsOfDataOnServer >= 30;
     } else return false;
   };

@@ -76,8 +76,6 @@ export const ChartModal: React.FC<ChartModalProps> = (
     for (let item of selectedList) sensorIds.push(item._id);
     if (sensorIds.length > 4 && chartType === ChartType.LINE) {
       alert("A Line chart can only have 4 or fewer sensors...");
-    } else if (sensorIds.length > 2) {
-      alert("A " + chartType + " can only have 2 sensors...");
     } else {
       setSelectedSensors(selectedList);
       setSensorIds(sensorIds);
