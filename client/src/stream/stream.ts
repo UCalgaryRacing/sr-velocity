@@ -72,6 +72,8 @@ class Stream {
     this.socket.on("disconnect", () => {
       for (const [, func] of Object.entries(this.disconnectionSubscribers))
         func.current && func.current();
+      for (const [, func] of Object.entries(this.stopSubscribers))
+        func.current && func.current();
       this.close();
     });
 

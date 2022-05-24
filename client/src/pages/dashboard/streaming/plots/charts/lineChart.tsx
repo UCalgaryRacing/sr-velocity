@@ -46,12 +46,17 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   // Stream subscriptions
   const [dataSubId, setDataSubId] = useState<string>("");
   const dataCallbackRef = useRef<(data: any, timestamp: number) => void>(null);
-  const [connectionSubId, setConnectionSubId] = useState<string>("");
-  const connectionCallbackRef = useRef<() => void>(null);
   const [dataUpdateSubId, setDataUpdateSubId] = useState<string>("");
   const missingDataCallbackRef = useRef<() => void>(null);
+  const [connectionSubId, setConnectionSubId] = useState<string>("");
+  const connectionCallbackRef = useRef<() => void>(null);
+  const [stopSubId, setStopSubId] = useState<string>("");
+  const stopCallbackRef = useRef<() => void>(null);
+  const [disconnectSubId, setDisconnectSubId] = useState<string>("");
+  const disconnectCallbackRef = useRef<() => void>(null);
 
   // Control state
+  const [connected, setConnected] = useState<boolean>(false);
   const [interval, setInterval] = useState<number[]>();
   const [window, setWindow] = useState<number>(
     Math.ceil((500 / getDataRate(props.sensors)) * 5) | 1
@@ -85,11 +90,15 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     initializeLineSeries();
     const smallIds = props.sensors.map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    setStopSubId(props.stream.subscribeToStop(stopCallbackRef));
     setDataUpdateSubId(
       props.stream.subscribeToDataUpdate(missingDataCallbackRef)
     );
     setConnectionSubId(
       props.stream.subscribeToConnection(connectionCallbackRef)
+    );
+    setDisconnectSubId(
+      props.stream.subscribeToDisconnection(disconnectCallbackRef)
     );
     return () => {
       try {
@@ -123,14 +132,19 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     if (!chart || !interval) return;
     const C = 60 * 1000;
     const offset = props.stream.getFirstTimeStamp();
-    chart
-      .getDefaultAxisX()
-      .setInterval(interval[0] * C + offset, interval[1] * C + offset, false);
-  }, [interval]);
+    chart.getDefaultAxisX().setInterval(
+      interval[0] * C + offset,
+      interval[1] * C + offset,
+      false,
+      !connected // Disable scrolling when disconnected
+    );
+  }, [interval, connected]);
 
   useEffect(() => {
     return () => {
       props.stream.unsubscribeFromConnection(connectionSubId);
+      props.stream.unsubscribeFromStop(stopSubId);
+      props.stream.unsubscribeFromDisconnection(disconnectSubId);
       props.stream.unsubscribeFromSensors(dataSubId);
       props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
     };
@@ -139,8 +153,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   useEffect(() => {
     // @ts-ignore
     dataCallbackRef.current = onData; // @ts-ignore
+    missingDataCallbackRef.current = onUpdatedData; // @ts-ignore
     connectionCallbackRef.current = onConnection; // @ts-ignore
-    missingDataCallbackRef.current = onUpdatedData;
+    stopCallbackRef.current = onStop; // @ts-ignore
+    disconnectCallbackRef.current = onDisconnect;
   }, [lineSeries, lastValues, updateTimer, lineSeries, slopes, interval]);
 
   useEffect(() => {
@@ -179,11 +195,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           className="sensor"
           style={{ color: colors[i] }}
         >
-          {generateSensor(
-            sensor.name,
-            lastValues[sensor.smallId]["value"],
-            sensor.unit ? sensor.unit : ""
-          )}
           <ToolTip value="Derivative">
             <IconButton
               text={"∂"}
@@ -196,6 +207,11 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
               }}
             />
           </ToolTip>
+          {generateSensor(
+            sensor.name,
+            lastValues[sensor.smallId]["value"],
+            sensor.unit ? sensor.unit : ""
+          )}
         </div>
       );
       if (slopes[sensor.smallId]) {
@@ -247,7 +263,17 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const onConnection = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
     for (const [_, series] of Object.entries(slopes)) series.clear();
-    // TODO: Set last values?
+    setConnected(true);
+  };
+
+  const onStop = () => {
+    setConnected(false);
+  };
+
+  const onDisconnect = () => {
+    for (const [_, series] of Object.entries(lineSeries)) series.clear();
+    for (const [_, series] of Object.entries(slopes)) series.clear();
+    setConnected(false);
   };
 
   const onData = (data: { [key: string]: number }, timestamp: number) => {
@@ -274,6 +300,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     }
     setUpdateTimer(updateTime <= 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
     setLastValues(last);
+    setConnected(true);
   };
 
   const onUpdatedData = () => {
@@ -467,7 +494,9 @@ const createSeries = (
   color: string
 ) => {
   let series: LineSeries = chart
-    .addLineSeries({ dataPattern: { pattern: "ProgressiveX" } })
+    .addLineSeries({
+      dataPattern: { pattern: "ProgressiveX", regularProgressiveStep: false },
+    })
     .setName(name)
     .setStrokeStyle(
       new SolidLine({

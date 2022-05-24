@@ -221,7 +221,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                   )}
                 </>
               )}
-              {size.width >= 768.9 ? (
+              {size.width >= 768.9 && charts.length <= 10 ? (
                 <ToolTip value="New Chart">
                   <IconButton
                     img={<Add />}
