@@ -88,7 +88,11 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     disconnectCallbackRef.current = onDisconnect;
   });
 
-  useEffect(() => setChart(createChart(chartId, [0, 7500])), []);
+  useEffect(() => {
+    const offset = props.stream.getFirstTimeStamp();
+    setChart(createChart(chartId, [offset, 0.25 * 60 * 1000 + offset]));
+    setInterval([0, 0.25 * 60 * 1000]);
+  }, []);
 
   useEffect(() => {
     if (!chart) return;
@@ -115,7 +119,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   useEffect(() => {
     for (const sensor of props.sensors) {
       let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
-      if (lineSeries[sensor.smallId])
+      if (lineSeries[sensor.smallId] && sensorData.length > 0)
         lineSeries[sensor.smallId].add(sensorData);
     }
   }, [lineSeries]);
@@ -130,11 +134,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   useEffect(() => {
     if (!chart || !interval) return;
-    const C = 60 * 1000; // Minutes to milliseconds
     const offset = props.stream.getFirstTimeStamp();
     chart.getDefaultAxisX().setInterval(
-      interval[0] * C + offset,
-      interval[1] * C + offset,
+      interval[0] + offset,
+      interval[1] + offset,
       false,
       !streaming // Disable scrolling when disconnected
     );
@@ -159,7 +162,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           window,
           sensor.frequency
         );
-        slopes[sensor.smallId].add(slope);
+        if (slope.length > 0) slopes[sensor.smallId].add(slope);
       }
     }
   }, [window]);
@@ -261,7 +264,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   const onConnection = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
-    for (const [_, series] of Object.entries(slopes)) series.clear();
+    for (const [_, series] of Object.entries(slopes)) series.dispose();
+    setSlopes({});
+    setInterval(interval);
     setStreaming(true);
   };
 
@@ -310,7 +315,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     for (const [_, series] of Object.entries(slopes)) series.clear();
     for (const sensor of props.sensors) {
       let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
-      if (lineSeries[sensor.smallId])
+      if (lineSeries[sensor.smallId] && sensorData.length > 0)
         lineSeries[sensor.smallId].add(sensorData);
     }
     for (const sensor of props.sensors) {
@@ -320,14 +325,13 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           window,
           sensor.frequency
         );
-        slopes[sensor.smallId].add(slope);
+        if (slope.length > 0) slopes[sensor.smallId].add(slope);
       }
     }
     if (interval) {
-      const C = 1000 * 60; // Minutes to milliseconds
       chart.getDefaultAxisX().setInterval(
-        interval[0] * C,
-        interval[1] * C,
+        interval[0],
+        interval[1],
         false,
         !streaming // Disable scrolling when disconnected
       );
@@ -369,8 +373,12 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           upperValue={1}
           unit="minutes"
           onChange={(interval: number[]) => {
-            // @ts-ignore
-            setInterval(interval.map((x) => x / 4));
+            setInterval(
+              interval.map(
+                // Milliseconds
+                (x) => (x / 4) * 60 * 1000
+              )
+            );
           }}
         />
         {Object.keys(slopes).length > 0 && (
