@@ -42,6 +42,7 @@ const isCookieValid = async (cookie) => {
     "GET",
     { headers: { cookie: cookie } }
   );
+  if (!response) return false;
   if (response.statusCode === 200 && response.body) {
     return roles[response.body.data.role] >= roles["Guest"];
   }
@@ -54,6 +55,7 @@ const isApiKeyValid = async (apiKey) => {
     "GET",
     { headers: { apiKey: apiKey } }
   );
+  if (!response) return false;
   if (response.statusCode === 200 && response.body)
     return response.body.data.role === "Admin";
   return false;

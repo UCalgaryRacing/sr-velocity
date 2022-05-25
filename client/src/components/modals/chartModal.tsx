@@ -105,7 +105,6 @@ export const ChartModal: React.FC<ChartModalProps> = (
             { value: ChartType.LINE, label: ChartType.LINE },
             { value: ChartType.SCATTER, label: ChartType.SCATTER },
             { value: ChartType.RADIAL, label: ChartType.RADIAL },
-            { value: ChartType.HEATMAP, label: ChartType.HEATMAP },
           ]}
           onChange={(value: any) => {
             setChartType(value.value);

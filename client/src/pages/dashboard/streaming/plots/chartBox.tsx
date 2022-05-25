@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { IconButton, ToolTip } from "components/interface";
-import { Heatmap, LineChart, RadialChart, ScatterChart } from "./charts";
+import { LineChart, RadialChart, ScatterChart } from "./charts";
 import { Sensor, Chart, ChartType } from "state";
 import { ChartModal, ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";
@@ -13,7 +13,7 @@ import "./_styling/chartBox.css";
 interface ChartBoxProps {
   chart: Chart;
   allSensors: Sensor[];
-  sensors: Sensor[]; // TODO: Remove this and filter via chart.sensorIds
+  sensors: Sensor[];
   stream: Stream;
   onDelete?: (chartId: string) => void;
   onUpdate?: (chart: Chart) => void;
@@ -41,8 +41,6 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
       <div className="chart-area">
         {(() => {
           switch (props.chart.type) {
-            case ChartType.HEATMAP:
-              return <Heatmap />;
             case ChartType.LINE:
               return (
                 <LineChart sensors={props.sensors} stream={props.stream} />
@@ -50,7 +48,13 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
             case ChartType.RADIAL:
               return <RadialChart />;
             case ChartType.SCATTER:
-              return <ScatterChart />;
+              return (
+                <ScatterChart
+                  allSensors={props.allSensors}
+                  sensors={props.sensors}
+                  stream={props.stream}
+                />
+              );
             default:
               return <></>; // Show error
           }

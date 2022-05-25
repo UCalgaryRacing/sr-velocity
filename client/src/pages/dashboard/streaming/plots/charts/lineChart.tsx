@@ -56,11 +56,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const disconnectCallbackRef = useRef<() => void>(null);
 
   // Control state
-  const [connected, setConnected] = useState<boolean>(false);
+  const [streaming, setStreaming] = useState<boolean>(false);
   const [interval, setInterval] = useState<number[]>();
-  const [window, setWindow] = useState<number>(
-    Math.ceil((500 / getDataRate(props.sensors)) * 5) | 1
-  );
+  const [window, setWindow] = useState<number>(5);
   const [updateTimer, setUpdateTimer] = useState<number>(
     SLOPE_COMPUTE_INTERVAL
   );
@@ -82,8 +80,15 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   );
 
   useEffect(() => {
-    setChart(getChart(chartId, [0, 7500]));
-  }, []);
+    // @ts-ignore
+    dataCallbackRef.current = onData; // @ts-ignore
+    missingDataCallbackRef.current = onUpdatedData; // @ts-ignore
+    connectionCallbackRef.current = onConnection; // @ts-ignore
+    stopCallbackRef.current = onStop; // @ts-ignore
+    disconnectCallbackRef.current = onDisconnect;
+  });
+
+  useEffect(() => setChart(createChart(chartId, [0, 7500])), []);
 
   useEffect(() => {
     if (!chart) return;
@@ -131,9 +136,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       interval[0] * C + offset,
       interval[1] * C + offset,
       false,
-      !connected // Disable scrolling when disconnected
+      !streaming // Disable scrolling when disconnected
     );
-  }, [interval, connected, props.stream]);
+  }, [interval, streaming, props.stream]);
 
   useEffect(() => {
     return () => {
@@ -146,21 +151,13 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   }, [connectionSubId, dataSubId, dataUpdateSubId, stopSubId, disconnectSubId]);
 
   useEffect(() => {
-    // @ts-ignore
-    dataCallbackRef.current = onData; // @ts-ignore
-    missingDataCallbackRef.current = onUpdatedData; // @ts-ignore
-    connectionCallbackRef.current = onConnection; // @ts-ignore
-    stopCallbackRef.current = onStop; // @ts-ignore
-    disconnectCallbackRef.current = onDisconnect;
-  });
-
-  useEffect(() => {
     for (const sensor of props.sensors) {
       if (slopes[sensor.smallId]) {
         slopes[sensor.smallId].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window
+          window,
+          sensor.frequency
         );
         slopes[sensor.smallId].add(slope);
       }
@@ -219,7 +216,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
             {generateSensor(
               sensor.name + "'",
               lastValues[sensor.smallId]["slope"],
-              sensor.unit + (sensor.unit ? "/s" : "")
+              (sensor.unit ? sensor.unit : "1") + "/s"
             )}
           </div>
         );
@@ -246,9 +243,16 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           sensor.unit,
           colors[sensorIndex] + "10"
         );
-        dxdts[sensor.smallId].add(
-          getSlope(props.stream.getHistoricalSensorData(sensor.smallId), window)
+        let slope = getSlope(
+          props.stream.getHistoricalSensorData(sensor.smallId),
+          window,
+          sensor.frequency
         );
+        if (slope.length === 0) {
+          dxdts[sensor.smallId].dispose();
+          return;
+        }
+        dxdts[sensor.smallId].add(slope);
       }
       setSlopes(dxdts);
     },
@@ -258,17 +262,17 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const onConnection = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
     for (const [_, series] of Object.entries(slopes)) series.clear();
-    setConnected(true);
+    setStreaming(true);
   };
 
   const onStop = () => {
-    setConnected(false);
+    setStreaming(false);
   };
 
   const onDisconnect = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.clear();
     for (const [_, series] of Object.entries(slopes)) series.clear();
-    setConnected(false);
+    setStreaming(false);
   };
 
   const onData = (data: { [key: string]: number }, timestamp: number) => {
@@ -288,16 +292,17 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         slopes[sensor.smallId].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window
+          window,
+          sensor.frequency
         );
         slopes[sensor.smallId].add(slope);
-        if (updateTime <= 0)
+        if (updateTime <= 0 && slope.length !== 0)
           last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
       }
     }
     setUpdateTimer(updateTime <= 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
     setLastValues(last);
-    setConnected(true);
+    setStreaming(true);
   };
 
   const onUpdatedData = () => {
@@ -312,7 +317,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       if (slopes[sensor.smallId]) {
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
-          window
+          window,
+          sensor.frequency
         );
         slopes[sensor.smallId].add(slope);
       }
@@ -323,7 +329,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         interval[0] * C,
         interval[1] * C,
         false,
-        !connected // Disable scrolling when disconnected
+        !streaming // Disable scrolling when disconnected
       );
     }
   };
@@ -378,11 +384,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
               step={2}
               default={5}
               unit="seconds"
-              onChange={(w: number) =>
-                setWindow(
-                  Math.ceil((500 / getDataRate(props.sensors)) * (w + 5)) | 1
-                )
-              }
+              onChange={(w: number) => setWindow(w + 5)}
             />
           </>
         )}
@@ -391,7 +393,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   );
 };
 
-const getChart = (chartId: number, interval: number[]) => {
+const createChart = (chartId: number, interval: number[]) => {
   // Configure the base chart
   let chart = lightningChart()
     .ChartXY({
@@ -513,14 +515,15 @@ const createSeries = (
   return series;
 };
 
-const getSlope = (data: any[], window: number) => {
+const getSlope = (data: any[], window: number, frequency: number) => {
+  frequency = Math.min(30, frequency);
   let slope: any = [];
   if (data.length > 1) {
     let golayOptions = {
       derivative: 0,
-      windowSize: window,
+      windowSize: Math.ceil(window * frequency) | 1,
       polynomial: 2,
-      pad: "pre",
+      pad: "post",
       padValue: "replicate",
     };
     let values: any = [];
@@ -531,11 +534,13 @@ const getSlope = (data: any[], window: number) => {
       let timeDiff = (data[i - 1].x - data[i].x) / 1000;
       dxdt.push(diff / timeDiff);
     }
-    // @ts-ignore
-    let smoothed = savitzkyGolay(dxdt, 1, golayOptions); // TODO: Find the optimal h value
-    for (let i = 0; i < smoothed.length; i++) {
-      slope.push({ x: data[i + 1].x, y: smoothed[i] });
-    }
+    try {
+      // @ts-ignore
+      let smoothed = savitzkyGolay(dxdt, 1, golayOptions); // TODO: Find the optimal h value
+      for (let i = 0; i < smoothed.length; i++) {
+        slope.push({ x: data[i + 1].x, y: smoothed[i] });
+      }
+    } catch {}
   }
   return slope;
 };
@@ -545,7 +550,7 @@ const getDataRate = (sensors: Sensor[]) => {
   for (const sensor of sensors)
     if (sensor["frequency"] > highest_frequency)
       highest_frequency = sensor["frequency"];
-  return Math.ceil(1000 / Math.min(highest_frequency, 20));
+  return Math.ceil(1000 / Math.min(highest_frequency, 30));
 };
 
 const toggleGrid = (chart: any) => {

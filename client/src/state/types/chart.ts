@@ -2,7 +2,6 @@
 // Written by Justin Tijunelis
 
 export enum ChartType {
-  HEATMAP = "Heat Map",
   LINE = "Line",
   RADIAL = "Radial",
   SCATTER = "Scatter",
