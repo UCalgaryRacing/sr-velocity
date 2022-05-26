@@ -142,6 +142,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 return result;
               }, [])}
               defaultValue={(() => {
+                if (sensorIds.length) return undefined;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[0]
                 )[0];
@@ -162,6 +163,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 return result;
               }, [])}
               defaultValue={(() => {
+                if (sensorIds.length) return undefined;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[1]
                 )[0];

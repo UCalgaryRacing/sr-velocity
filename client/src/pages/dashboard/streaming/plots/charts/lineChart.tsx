@@ -448,6 +448,7 @@ const createChart = (chartId: number, interval: number[]) => {
     .setStrokeStyle(
       new SolidLine({ thickness: 1, fillStyle: theme.lightGrayFill })
     );
+
   const tickStyling = (tickStyle: any) =>
     tickStyle
       .setGridStrokeStyle(emptyLine)
@@ -455,7 +456,10 @@ const createChart = (chartId: number, interval: number[]) => {
         font.setFamily("helvetica").setStyle("italic").setSize(8)
       )
       .setLabelFillStyle(theme.darkFill)
-      .setLabelPadding(-10);
+      .setLabelPadding(-14)
+      .setTickPadding(1)
+      .setTickLength(3);
+
   chart
     .getDefaultAxisY()
     .setTitle("")

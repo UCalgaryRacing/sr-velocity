@@ -114,7 +114,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   }, [pointSeries]);
 
   useEffect(() => {
-    // TODO: Create new point series
+    // TODO: Create new point series (for auto cursor)
     if (!pointSeries) return;
     onUpdatedData();
   }, [props.sensors]);
@@ -325,7 +325,9 @@ const createChart = (chartId: number) => {
         font.setFamily("helvetica").setStyle("italic").setSize(8)
       )
       .setLabelFillStyle(theme.darkFill)
-      .setLabelPadding(-10);
+      .setLabelPadding(-14)
+      .setTickPadding(1)
+      .setTickLength(3);
 
   // Format the X-Axis
   chart
