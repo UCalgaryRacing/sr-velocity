@@ -20,8 +20,6 @@ const Streaming: React.FC = () => {
   const context = useContext(DashboardContext);
 
   // Stream callbacks
-  const [connectionSubId, setConnectionSubId] = useState<string>("");
-  const onConnectionCallback = useRef<() => void | null>(null);
   const [disconnectSubId, setDisconnectSubId] = useState<string>("");
   const onDisconnectionCallback = useRef<() => void>(null);
 
@@ -33,7 +31,6 @@ const Streaming: React.FC = () => {
     useState<boolean>(false);
   const [fetchingSensorsError, setFetchingSensorsError] =
     useState<boolean>(false);
-  const [streamConnected, setStreamConnected] = useState<boolean>(true);
   const [thing, setThing] = useState<Thing>();
   const [things, setThings] = useState<Thing[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
@@ -52,10 +49,7 @@ const Streaming: React.FC = () => {
         setFetchingThingsError(true);
         setFetchingThings(false);
       });
-    return () => {
-      stream.unsubscribeFromConnection(connectionSubId);
-      stream.unsubscribeFromDisconnection(disconnectSubId);
-    };
+    return () => stream.unsubscribeFromDisconnection(disconnectSubId);
   }, []);
 
   useEffect(() => {
@@ -76,34 +70,22 @@ const Streaming: React.FC = () => {
         });
 
       // Reopen the stream with the new thing id
-      stream.unsubscribeFromConnection(connectionSubId);
       stream.unsubscribeFromDisconnection(disconnectSubId);
       stream.close();
       stream.connect(thing._id);
-      setConnectionSubId(stream.subscribeToConnection(onConnectionCallback));
       setDisconnectSubId(
         stream.subscribeToDisconnection(onDisconnectionCallback)
       );
     }
     // @ts-ignore
-    onConnectionCallback.current = onConnection; // @ts-ignore
     onDisconnectionCallback.current = onDisconnection;
   }, [thing, stream]);
 
-  const onConnection = () => setStreamConnected(true);
-  const onDisconnection = () => setStreamConnected(false);
+  const onDisconnection = () => {
+    alert("The real-time session disconnected.");
+  };
 
   if (context.section !== "Streaming") return <></>;
-
-  if (!streamConnected) {
-    return (
-      <div id="dashboard-loading">
-        <div id="dashboard-loading-content">
-          <b>The real-time stream disconnected, please refresh. </b>
-        </div>
-      </div>
-    );
-  }
 
   if (!thing || fetchingSensors) {
     return (

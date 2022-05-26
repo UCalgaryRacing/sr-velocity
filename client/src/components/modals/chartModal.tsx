@@ -142,10 +142,11 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 return result;
               }, [])}
               defaultValue={(() => {
-                if (sensorIds.length) return undefined;
+                if (sensorIds.length === 0) return undefined;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[0]
                 )[0];
+                if (!sensor) return undefined;
                 return { value: sensor._id, label: sensor.name };
               })()}
               onChange={(value: any) => {
@@ -163,10 +164,11 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 return result;
               }, [])}
               defaultValue={(() => {
-                if (sensorIds.length) return undefined;
+                if (sensorIds.length === 0) return undefined;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[1]
                 )[0];
+                if (!sensor) return undefined;
                 return { value: sensor._id, label: sensor.name };
               })()}
               onChange={(value: any) => {
@@ -176,6 +178,33 @@ export const ChartModal: React.FC<ChartModalProps> = (
               }}
               isSearchable
             />
+            {chartType === ChartType.SCATTER && (
+              <DropDown
+                placeholder="Select Heatmap Sensor..."
+                options={props.sensors.reduce(
+                  (result: any[], sensor: Sensor) => {
+                    if (!sensorIds.includes(sensor._id))
+                      result.push({ value: sensor._id, label: sensor.name });
+                    return result;
+                  },
+                  []
+                )}
+                defaultValue={(() => {
+                  if (sensorIds.length) return undefined;
+                  let sensor = props.sensors.filter(
+                    (s) => s._id === sensorIds[2]
+                  )[0];
+                  if (!sensor) return undefined;
+                  return { value: sensor._id, label: sensor.name };
+                })()}
+                onChange={(value: any) => {
+                  let ids = [...sensorIds];
+                  ids[2] = value.value;
+                  setSensorIds(ids);
+                }}
+                isSearchable
+              />
+            )}
           </>
         )}
         <TextButton title="Save" />

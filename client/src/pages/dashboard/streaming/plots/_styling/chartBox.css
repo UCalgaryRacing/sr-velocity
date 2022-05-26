@@ -43,11 +43,5 @@ Written by Justin Tijunelis
 .chart-box .chart-area {
   flex-grow: 1;
   width: 100%;
-  padding-bottom: 20px;
-}
-
-@media only screen and (max-width: 916px) {
-  /* .chart-box {
-    height: 400px;
-  } */
+  padding-bottom: 10px;
 }

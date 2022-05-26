@@ -4,7 +4,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Stream } from "stream/stream";
 import { Sensor } from "state";
-import { DropDown } from "components/interface";
 import {
   lightningChart,
   AxisScrollStrategies,
@@ -56,7 +55,6 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   // Chart state
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
-  const [heatSensor, setHeatSensor] = useState<Sensor>();
   const [pointSeries, setPointSeries] = useState<any>();
   const [updateTimer, setUpdateTimer] = useState<number>(UPDATE_INTERVAL);
   const [lastValues, setLastValues] = useState<{
@@ -116,16 +114,11 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   useEffect(() => {
     // TODO: Create new point series (for auto cursor)
     if (!pointSeries) return;
-    onUpdatedData();
-  }, [props.sensors]);
-
-  useEffect(() => {
-    if (!heatSensor) return;
     props.stream.unsubscribeFromSensors(dataSubId);
-    const smallIds = [...props.sensors, heatSensor].map((s) => s.smallId);
+    const smallIds = [...props.sensors].map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
     onUpdatedData();
-  }, [heatSensor]);
+  }, [props.sensors]);
 
   const unsubscribeFromStream = () => {
     props.stream.unsubscribeFromConnection(connectionSubId);
@@ -142,7 +135,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
     );
     let i = 0;
-    for (const sensor of [...props.sensors.reverse(), heatSensor]) {
+    for (const sensor of [...props.sensors]) {
       if (!sensor) continue;
       legendElements.push(
         <div
@@ -151,7 +144,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           style={{ color: colors[i] }}
         >
           {generateSensor(
-            sensor.name + (i === 0 ? "(Y)" : i === 1 ? "(X)" : "(Heat)"),
+            sensor.name + (i === 0 ? "(X)" : i === 1 ? "(Y)" : "(Heat)"),
             lastLegendValues[sensor.smallId]
               ? lastLegendValues[sensor.smallId]
               : 0,
@@ -178,12 +171,14 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     // Extract the data
     let xData = data[xSmallId];
     let yData = data[ySmallId];
-    let heatData = heatSensor ? data[heatSensor.smallId] : undefined;
+    let heatData =
+      props.sensors.length > 2 ? data[props.sensors[2].smallId] : undefined;
 
     // Populate last data
     if (xData) last[xSmallId] = xData;
     if (yData) last[ySmallId] = yData;
-    if (heatData && heatSensor) last[heatSensor.smallId] = heatData;
+    if (heatData && props.sensors.length > 2)
+      last[props.sensors[2].smallId] = heatData;
 
     // Populate last legend data
     let lastLegend = { ...lastLegendValues };
@@ -191,7 +186,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     if (updateTime <= 0) {
       if (xData) lastLegend[xSmallId] = xData;
       if (yData) lastLegend[ySmallId] = yData;
-      if (heatData && heatSensor) lastLegend[heatSensor.smallId] = heatData;
+      if (heatData && props.sensors.length > 2)
+        lastLegend[props.sensors[2].smallId] = heatData;
     }
 
     // Push data
@@ -214,9 +210,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     pointSeries.clear();
     let xData = props.stream.getHistoricalSensorData(props.sensors[0].smallId);
     let yData = props.stream.getHistoricalSensorData(props.sensors[1].smallId);
-    let heatData = heatSensor
-      ? props.stream.getHistoricalSensorData(heatSensor.smallId)
-      : [];
+    let heatData =
+      props.sensors.length > 2
+        ? props.stream.getHistoricalSensorData(props.sensors[2].smallId)
+        : [];
 
     // Fill X-Y data
     let points: any[] = [];
@@ -258,7 +255,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         style={{
           gridTemplateColumns: (() => {
             let template = "1fr 1fr ";
-            if (heatSensor) template += "1fr";
+            if (props.sensors.length > 2) template += "1fr";
             return template;
           })(),
         }}
@@ -267,10 +264,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 916 ? "285px" : "250px" }}
+        style={{ height: size.width >= 916 ? "330px" : "290px" }}
         className="fill"
       ></div>
-      <div className="scatter-controls">{}</div>
+      <div className="scatter-controls"></div>
     </div>
   );
 };
@@ -399,7 +396,7 @@ const fillData = (a: any[], b: any[]) => {
   for (let i = 0; i < longerData.length; i++) {
     if (j >= shorterData.length) break;
     filled.push({ x: longerData[i].x, y: shorterData[j].y });
-    if (longerData[i].x <= shorterData[j].x) j++;
+    if (longerData[i].x >= shorterData[j].x) j++;
   }
   a = a.length > b.length ? longerData : filled;
   b = a.length > b.length ? filled : longerData;

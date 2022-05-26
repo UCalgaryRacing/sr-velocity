@@ -2,12 +2,13 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import Slider from "rc-slider";
+import Slider, { SliderProps } from "rc-slider";
+import { HandleTooltip } from "./handleTooltip";
 import { useWindowSize } from "hooks";
 import "rc-slider/assets/index.css";
 import "./_styling/rangeSlider.css";
 
-interface SliderProps {
+interface RangeSliderProps {
   onChange: (value: number[]) => void;
   title: string;
   min: number;
@@ -16,11 +17,29 @@ interface SliderProps {
   lowerValue: number;
   upperValue: number;
   unit?: string;
-  marks: any;
+  marks?: any;
+  tipFormatter: any;
 }
 
-export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
+export const RangeSlider: React.FC<RangeSliderProps> = (
+  props: RangeSliderProps
+) => {
   const size = useWindowSize();
+  const tipHandleRender: SliderProps["handleRender"] = (node, handleProps) => {
+    if (handleProps.dragging) {
+      return (
+        <HandleTooltip
+          value={handleProps.value}
+          visible={handleProps.dragging}
+          tipFormatter={props.tipFormatter}
+        >
+          {node}
+        </HandleTooltip>
+      );
+    } else {
+      return <>{node}</>;
+    }
+  };
 
   return (
     <div className="range-slider">
@@ -47,6 +66,7 @@ export const RangeSlider: React.FC<SliderProps> = (props: SliderProps) => {
           marginTop: "0px",
         }}
         allowCross={false}
+        handleRender={tipHandleRender}
       />
     </div>
   );

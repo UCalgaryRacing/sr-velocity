@@ -4,7 +4,7 @@ Written by Justin Tijunelis
 */
 
 .range-slider .slider-title {
-  font-size: var(--fz-xs);
+  font-size: var(--fz-xxs);
   text-align: center;
 }
 
@@ -28,4 +28,15 @@ Written by Justin Tijunelis
 
 .rc-slider-mark-text {
   top: -7px;
+}
+
+.rc-tooltip {
+  width: 90px;
+  margin: 0px;
+  color: white;
+  background-color: var(--red);
+  border-radius: var(--border-radius);
+  padding: 2px;
+  font-size: var(--fz-xxs);
+  text-align: center;
 }

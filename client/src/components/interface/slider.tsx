@@ -2,12 +2,13 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import Slider from "rc-slider";
+import Slider, { SliderProps } from "rc-slider";
+import { HandleTooltip } from "./handleTooltip";
 import { useWindowSize } from "hooks";
 import "rc-slider/assets/index.css";
 import "./_styling/slider.css";
 
-interface SliderProps {
+interface SingleSliderProps {
   onChange: (value: number) => void;
   title: string;
   min: number;
@@ -15,11 +16,29 @@ interface SliderProps {
   step: number;
   default: number;
   unit?: string;
-  marks: any;
+  marks?: any;
+  tipFormatter: any;
 }
 
-export const SingleSlider: React.FC<SliderProps> = (props: SliderProps) => {
+export const SingleSlider: React.FC<SingleSliderProps> = (
+  props: SingleSliderProps
+) => {
   const size = useWindowSize();
+  const tipHandleRender: SliderProps["handleRender"] = (node, handleProps) => {
+    if (handleProps.dragging) {
+      return (
+        <HandleTooltip
+          value={handleProps.value}
+          visible={handleProps.dragging}
+          tipFormatter={props.tipFormatter}
+        >
+          {node}
+        </HandleTooltip>
+      );
+    } else {
+      return <>{node}</>;
+    }
+  };
 
   return (
     <div className="slider">
@@ -45,6 +64,7 @@ export const SingleSlider: React.FC<SliderProps> = (props: SliderProps) => {
           height: 5,
           marginTop: "0px",
         }}
+        handleRender={tipHandleRender}
       />
     </div>
   );

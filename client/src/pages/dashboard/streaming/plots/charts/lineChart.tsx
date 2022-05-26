@@ -363,10 +363,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       ></div>
       <div className="line-controls">
         <RangeSlider
-          title="Interval (minutes)"
+          title="Interval"
+          tipFormatter={(value: any) => `${value / 4} minutes`}
           min={0}
           max={120}
-          marks={{ 0: 0, 60: 15, 120: 30 }}
           step={1}
           lowerValue={0}
           upperValue={1}
@@ -387,7 +387,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
               title="Derivative Smoothing Factor"
               min={0}
               max={100}
-              marks={{ 0: 0, 100: 100 }}
+              tipFormatter={(value: any) => `${value}`}
               step={2}
               default={5}
               unit="seconds"
