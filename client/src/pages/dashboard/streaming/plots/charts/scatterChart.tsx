@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Stream } from "stream/stream";
-import { Sensor } from "state";
-import { ToolTip } from "components/interface";
+import { Sensor, sensorTypes } from "state";
+import { DropDown } from "components/interface";
 import {
   lightningChart,
   AxisScrollStrategies,
@@ -20,7 +20,10 @@ import {
   IndividualPointFill,
   ColorRGBA,
 } from "@arction/lcjs";
+import { useWindowSize } from "hooks";
+import "./_styling/scatterPlot.css";
 
+const UPDATE_INTERVAL = 1000; // milliseconds
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73"];
 const theme = {
   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
@@ -35,43 +38,59 @@ interface ScatterChartProps {
   stream: Stream;
 }
 
-// TODO: Just make this as a heatmap
 export const ScatterChart: React.FC<ScatterChartProps> = (
   props: ScatterChartProps
 ) => {
+  const size = useWindowSize();
+
   // Stream subscriptions
   const [dataSubId, setDataSubId] = useState<string>("");
   const dataCallbackRef = useRef<(data: any, timestamp: number) => void>(null);
   const [dataUpdateSubId, setDataUpdateSubId] = useState<string>("");
-  const missingDataCallbackRef = useRef<() => void>(null);
+  const updateDataCallbackRef = useRef<() => void>(null);
   const [connectionSubId, setConnectionSubId] = useState<string>("");
   const connectionCallbackRef = useRef<() => void>(null);
-
-  // Control state
-  const [connected, setConnected] = useState<boolean>(false);
-  const [heatSensor, setHeatSensor] = useState<Sensor>();
 
   // Chart state
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
+  const [heatSensor, setHeatSensor] = useState<Sensor>();
   const [pointSeries, setPointSeries] = useState<any>();
+  const [updateTimer, setUpdateTimer] = useState<number>(UPDATE_INTERVAL);
   const [lastValues, setLastValues] = useState<{
-    [key: number]: { [k1: string]: number };
+    [key: string]: number;
   }>(
     (() => {
       let last: any = {};
-      for (const sensor of props.sensors)
-        last[sensor.smallId] = { value: 0, slope: 0 };
+      for (const sensor of props.sensors) last[sensor.smallId] = 0;
       return last;
     })()
   );
+  // TODO: Have last values for pushing data, and another last values for the legend
 
-  useEffect(() => setChart(createChart(chartId)), []);
+  useEffect(() => {
+    // @ts-ignore
+    connectionCallbackRef.current = onConnection; // @ts-ignore
+    updateDataCallbackRef.current = onUpdatedData; // @ts-ignore
+    dataCallbackRef.current = onData;
+  });
+
+  useEffect(() => {
+    setChart(createChart(chartId));
+    return () => unsubscribeFromStream();
+  }, []);
 
   useEffect(() => {
     if (!chart) return;
-    initializePointSeries();
-    // TODO: Connect subscribers
+    setPointSeries(generatePointSeries(chart));
+    const smallIds = props.sensors.map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    setDataUpdateSubId(
+      props.stream.subscribeToDataUpdate(updateDataCallbackRef)
+    );
+    setConnectionSubId(
+      props.stream.subscribeToConnection(connectionCallbackRef)
+    );
     return () => {
       try {
         chart && chart.dispose();
@@ -80,14 +99,17 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   }, [chart]);
 
   useEffect(() => {
-    // Resubscribe with the new sensor
-    // Get all previous data for the heat sensor
-    // Clear point series and populate new data with write colors
+    if (!heatSensor) return;
+    props.stream.unsubscribeFromSensors(dataSubId);
+    const smallIds = [...props.sensors, heatSensor].map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    onUpdatedData();
   }, [heatSensor]);
 
-  const initializePointSeries = () => {
-    if (pointSeries) pointSeries.dispose();
-    setPointSeries(generatePointSeries(chart));
+  const unsubscribeFromStream = () => {
+    props.stream.unsubscribeFromConnection(connectionSubId);
+    props.stream.unsubscribeFromSensors(dataSubId);
+    props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
   };
 
   const generateLegend = () => {
@@ -109,7 +131,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         >
           {generateSensor(
             sensor.name,
-            lastValues[sensor.smallId]["value"],
+            lastValues[sensor.smallId],
             sensor.unit ? sensor.unit : ""
           )}
         </div>
@@ -121,28 +143,90 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
 
   const onConnection = () => {
     if (pointSeries) pointSeries.clear();
+    setLastValues({});
+    // Set streaming?
   };
 
-  const onData = (data: { [key: string]: number }, timestamp: number) => {
+  const onData = (data: { [key: string]: number }, _: number) => {
     if (!data) return;
-    for (const sensor of props.sensors) {
-      if (data[sensor.smallId] && pointSeries) {
-        // TODO
-      }
+    let last = { ...lastValues };
+    let xSmallId = props.sensors[0].smallId;
+    let ySmallId = props.sensors[1].smallId;
+    let xData = data[xSmallId];
+    let yData = data[ySmallId];
+    let heatData = heatSensor ? data[heatSensor.smallId] : undefined;
+    if (xData) last[xSmallId] = xData;
+    if (yData) last[ySmallId] = yData;
+    if (heatData && heatSensor) last[heatSensor.smallId] = heatData;
+    if (last[xSmallId] && last[ySmallId]) {
+      // TODO: If heat sensor, add color
+      pointSeries.add({
+        x: last[xSmallId],
+        y: last[ySmallId],
+      });
     }
+    setLastValues(last);
   };
 
   const onUpdatedData = () => {
-    // TODO
+    if (pointSeries) pointSeries.clear();
+    let xData = props.stream.getHistoricalSensorData(props.sensors[0].smallId);
+    let yData = props.stream.getHistoricalSensorData(props.sensors[1].smallId);
+    let heatData = heatSensor
+      ? props.stream.getHistoricalSensorData(heatSensor.smallId)
+      : [];
+
+    // Fill X-Y data
+    let points: any[] = [];
+    let data = fillData(xData, yData);
+    xData = data[0];
+    yData = data[1];
+
+    // Generate points
+    if (heatData.length > 0) {
+      let data = fillData(xData, heatData);
+      heatData = data[1];
+      for (let i = 0; i < xData.length; i++) {
+        // TODO, fill with heatmap data
+        points.push({ x: xData[i], y: yData[i], color: "#000" });
+      }
+    } else {
+      for (let i = 0; i < xData.length; i++)
+        points.push({ x: xData[i], y: yData[i] });
+    }
+    if (pointSeries) pointSeries.add(points);
   };
 
-  return <div></div>;
+  return (
+    <div>
+      <div
+        className="line-legend" // Make generic legend component?
+        style={{
+          gridTemplateColumns: (() => {
+            let template = "1fr 1fr ";
+            if (heatSensor) template += "1fr";
+            return template;
+          })(),
+        }}
+      >
+        {generateLegend()}
+      </div>
+      <div
+        id={chartId.toString()}
+        style={{ height: size.width >= 916 ? "320px" : "250px" }}
+        className="fill"
+      ></div>
+      <div className="scatter-controls">{}</div>
+    </div>
+  );
 };
 
 const createChart = (chartId: number) => {
   // Create the chart
   let chart = lightningChart()
-    .ChartXY()
+    .ChartXY({
+      container: document.getElementById(chartId.toString()) as HTMLDivElement,
+    })
     .setBackgroundFillStyle(theme.whiteFill)
     .setSeriesBackgroundFillStyle(theme.whiteFill)
     .setMouseInteractions(false)
@@ -240,6 +324,29 @@ const generatePointSeries = (chart: any) => {
     .setPointSize(20)
     .setPointFillStyle(individualStyle);
   return series;
+};
+
+const fillData = (a: any[], b: any[]) => {
+  let filled: any[] = [];
+  let longerData = a.length >= b.length ? a : b;
+  let shorterData = a.length >= b.length ? b : a;
+  let j = 0;
+  for (let i = 0; i < longerData.length; i++) {
+    if (j >= shorterData.length) break;
+    filled.push(shorterData[j]);
+    if (longerData[i].x === shorterData[j].x) j++;
+  }
+  a = a.length >= b.length ? longerData : filled;
+  b = a.length >= b.length ? filled : longerData;
+  return [a, b];
+};
+
+const getDataRate = (sensors: Sensor[]) => {
+  let highest_frequency = 0;
+  for (const sensor of sensors)
+    if (sensor["frequency"] > highest_frequency)
+      highest_frequency = sensor["frequency"];
+  return Math.ceil(1000 / Math.min(highest_frequency, 30));
 };
 
 // import React, { useEffect } from "react";

@@ -92,6 +92,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     const offset = props.stream.getFirstTimeStamp();
     setChart(createChart(chartId, [offset, 0.25 * 60 * 1000 + offset]));
     setInterval([0, 0.25 * 60 * 1000]);
+    return () => unsubscribeFromStream();
   }, []);
 
   useEffect(() => {
@@ -144,16 +145,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   }, [interval, streaming, props.stream]);
 
   useEffect(() => {
-    return () => {
-      props.stream.unsubscribeFromConnection(connectionSubId);
-      props.stream.unsubscribeFromStop(stopSubId);
-      props.stream.unsubscribeFromDisconnection(disconnectSubId);
-      props.stream.unsubscribeFromSensors(dataSubId);
-      props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
-    };
-  }, [connectionSubId, dataSubId, dataUpdateSubId, stopSubId, disconnectSubId]);
-
-  useEffect(() => {
     for (const sensor of props.sensors) {
       if (slopes[sensor.smallId]) {
         slopes[sensor.smallId].clear();
@@ -166,6 +157,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       }
     }
   }, [window]);
+
+  const unsubscribeFromStream = () => {
+    props.stream.unsubscribeFromConnection(connectionSubId);
+    props.stream.unsubscribeFromStop(stopSubId);
+    props.stream.unsubscribeFromDisconnection(disconnectSubId);
+    props.stream.unsubscribeFromSensors(dataSubId);
+    props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
+  };
 
   const initializeLineSeries = () => {
     for (const [_, series] of Object.entries(lineSeries)) series.dispose();

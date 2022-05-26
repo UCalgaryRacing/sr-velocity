@@ -136,11 +136,13 @@ export const ChartModal: React.FC<ChartModalProps> = (
           <>
             <DropDown
               placeholder="Select X-Axis..."
-              options={props.sensors.map((sensor: Sensor) => {
-                return { value: sensor._id, label: sensor.name };
-              })}
+              options={props.sensors.reduce((result: any[], sensor: Sensor) => {
+                if (!sensorIds.includes(sensor._id))
+                  result.push({ value: sensor._id, label: sensor.name });
+                return result;
+              }, [])}
               onChange={(value: any) => {
-                let ids = { ...sensorIds };
+                let ids = [...sensorIds];
                 ids[0] = value.value;
                 setSensorIds(ids);
               }}
@@ -148,11 +150,13 @@ export const ChartModal: React.FC<ChartModalProps> = (
             />
             <DropDown
               placeholder="Select Y-Axis..."
-              options={props.sensors.map((sensor: Sensor) => {
-                return { value: sensor._id, label: sensor.name };
-              })}
+              options={props.sensors.reduce((result: any[], sensor: Sensor) => {
+                if (!sensorIds.includes(sensor._id))
+                  result.push({ value: sensor._id, label: sensor.name });
+                return result;
+              }, [])}
               onChange={(value: any) => {
-                let ids = { ...sensorIds };
+                let ids = [...sensorIds];
                 ids[1] = value.value;
                 setSensorIds(ids);
               }}
