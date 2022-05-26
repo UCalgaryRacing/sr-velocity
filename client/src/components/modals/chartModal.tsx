@@ -68,6 +68,18 @@ export const ChartModal: React.FC<ChartModalProps> = (
       type: chartType as string,
       sensorIds: sensorIds,
     };
+    if (chartType === ChartType.SCATTER) {
+      let emptyIds = false;
+      for (const id of sensorIds) if (id === "") emptyIds = true;
+      if (emptyIds) {
+        alert("Please select an X and Y sensor.");
+        return;
+      }
+      if (sensorIds.length < 2) {
+        alert("Please select and X and Y sensor.");
+        return;
+      }
+    }
     props.toggle(newChart);
   };
 
@@ -151,7 +163,8 @@ export const ChartModal: React.FC<ChartModalProps> = (
               })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
-                ids[0] = value.value;
+                if (ids.length === 0) ids.push(value.value);
+                else ids[0] = value.value;
                 setSensorIds(ids);
               }}
               isSearchable
@@ -173,7 +186,9 @@ export const ChartModal: React.FC<ChartModalProps> = (
               })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
-                ids[1] = value.value;
+                if (ids.length === 0) ids = ["", value.value];
+                else if (ids.length === 1) ids.push(value.value);
+                else ids[1] = value.value;
                 setSensorIds(ids);
               }}
               isSearchable
@@ -190,7 +205,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
                   []
                 )}
                 defaultValue={(() => {
-                  if (sensorIds.length) return undefined;
+                  if (sensorIds.length === 0) return undefined;
                   let sensor = props.sensors.filter(
                     (s) => s._id === sensorIds[2]
                   )[0];
@@ -199,7 +214,10 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 })()}
                 onChange={(value: any) => {
                   let ids = [...sensorIds];
-                  ids[2] = value.value;
+                  if (ids.length === 0) ids = ["", "", value.value];
+                  else if (ids.length === 1) ids.concat(["", value.value]);
+                  else if (ids.length === 2) ids.push(value.value);
+                  else ids[2] = value.value;
                   setSensorIds(ids);
                 }}
                 isSearchable

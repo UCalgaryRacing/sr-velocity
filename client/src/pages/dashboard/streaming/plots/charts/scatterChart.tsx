@@ -90,7 +90,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
 
   useEffect(() => {
     if (!chart) return;
-    setPointSeries(generatePointSeries(chart));
+    setPointSeries(generatePointSeries(chart, props.sensors));
     const smallIds = props.sensors.map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
     setDataUpdateSubId(
@@ -112,12 +112,11 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   }, [pointSeries]);
 
   useEffect(() => {
-    // TODO: Create new point series (for auto cursor)
-    if (!pointSeries) return;
+    if (!pointSeries || !chart) return;
     props.stream.unsubscribeFromSensors(dataSubId);
     const smallIds = [...props.sensors].map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
-    onUpdatedData();
+    setPointSeries(generatePointSeries(chart, props.sensors));
   }, [props.sensors]);
 
   const unsubscribeFromStream = () => {
@@ -198,6 +197,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         y: last[ySmallId],
         size: pointSize,
         color: defaultColor,
+        value: last[props.sensors[2].smallId],
       });
     }
     setUpdateTimer(updateTime <= 0 ? UPDATE_INTERVAL : updateTime);
@@ -226,12 +226,13 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       let data = fillData(xData, heatData);
       heatData = data[1];
       for (let i = 0; i < xData.length; i++) {
-        if (i >= yData.length) break;
+        if (i >= yData.length || i >= heatData.length) break;
         points.push({
           x: xData[i].y,
           y: yData[i].y,
           size: pointSize,
           color: defaultColor,
+          value: heatData[i].y,
         });
       }
     } else {
@@ -368,7 +369,7 @@ const createChart = (chartId: number) => {
   return chart;
 };
 
-const generatePointSeries = (chart: any) => {
+const generatePointSeries = (chart: any, sensors: Sensor[]) => {
   let individualStyle = new IndividualPointFill();
   individualStyle.setFallbackColor(ColorRGBA(0, 0, 0, 255));
   let series: PointSeries = chart
@@ -376,7 +377,33 @@ const generatePointSeries = (chart: any) => {
       pointShape: PointShape.Circle,
     })
     .setPointSize(pointSize)
-    .setPointFillStyle(individualStyle);
+    .setPointFillStyle(individualStyle)
+    .setCursorResultTableFormatter(
+      (builder: any, s: any, x: any, y: any, dataPoint: any) => {
+        builder
+          .addRow(
+            sensors[0].name +
+              ": " +
+              x.toFixed(2) +
+              (sensors[0].unit ? " " + sensors[0].unit : "")
+          )
+          .addRow(
+            sensors[1].name +
+              ": " +
+              y.toFixed(2) +
+              (sensors[1].unit ? " " + sensors[1].unit : "")
+          );
+        if (sensors.length > 2) {
+          builder.addRow(
+            sensors[2].name +
+              ": " +
+              dataPoint.value.toFixed(2) +
+              (sensors[2].unit ? " " + sensors[2].unit : "")
+          );
+        }
+        return builder;
+      }
+    );
   return series;
 };
 

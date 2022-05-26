@@ -110,14 +110,15 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   const generateCharts = (charts: Chart[]) => {
     let chartUI: any = [];
     for (const chart of charts) {
+      let sensors: Sensor[] = [];
+      for (const id of chart.sensorIds)
+        sensors.push(props.sensors.filter((s) => s._id === id)[0]);
       chartUI.push(
         <ChartBox
           key={chart._id}
           chart={chart}
           allSensors={props.sensors}
-          sensors={props.sensors.filter((sensor) =>
-            chart.sensorIds.includes(sensor._id)
-          )}
+          sensors={sensors}
           stream={props.stream}
           onDelete={onDeleteChart}
           onUpdate={onChartUpdate}
