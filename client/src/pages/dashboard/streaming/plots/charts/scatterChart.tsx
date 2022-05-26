@@ -134,7 +134,9 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
     );
     let i = 0;
-    for (const sensor of [...props.sensors]) {
+    let sensors = [...props.sensors];
+    sensors[0] = [sensors[1], (sensors[1] = sensors[0])][0];
+    for (const sensor of sensors) {
       if (!sensor) continue;
       legendElements.push(
         <div
@@ -143,7 +145,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           style={{ color: colors[i] }}
         >
           {generateSensor(
-            sensor.name + (i === 0 ? "(X)" : i === 1 ? "(Y)" : "(Heat)"),
+            sensor.name + (i === 0 ? "(Y)" : i === 1 ? "(X)" : "(Heat)"),
             lastLegendValues[sensor.smallId]
               ? lastLegendValues[sensor.smallId]
               : 0,

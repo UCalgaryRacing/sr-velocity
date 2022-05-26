@@ -70,7 +70,8 @@ export const ChartModal: React.FC<ChartModalProps> = (
     };
     if (chartType === ChartType.SCATTER) {
       let emptyIds = false;
-      for (const id of sensorIds) if (id === "") emptyIds = true;
+      for (const id of sensorIds)
+        if (id === "" || id === undefined) emptyIds = true;
       if (emptyIds) {
         alert("Please select an X and Y sensor.");
         return;
@@ -148,18 +149,25 @@ export const ChartModal: React.FC<ChartModalProps> = (
           <>
             <DropDown
               placeholder="Select X-Axis..."
-              options={props.sensors.reduce((result: any[], sensor: Sensor) => {
-                if (!sensorIds.includes(sensor._id))
-                  result.push({ value: sensor._id, label: sensor.name });
-                return result;
-              }, [])}
-              defaultValue={(() => {
-                if (sensorIds.length === 0) return undefined;
+              options={[
+                ...props.sensors.reduce((result: any[], sensor: Sensor) => {
+                  if (!sensorIds.includes(sensor._id))
+                    result.push({
+                      value: sensor._id,
+                      label: sensor.name + " (X)",
+                    });
+                  return result;
+                }, []),
+                { value: undefined, label: "None" },
+              ]}
+              value={(() => {
+                if (sensorIds.length === 0) return null;
+                if (sensorIds[0] === undefined) return null;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[0]
                 )[0];
-                if (!sensor) return undefined;
-                return { value: sensor._id, label: sensor.name };
+                if (!sensor) return null;
+                return { value: sensor._id, label: sensor.name + " (X)" };
               })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
@@ -171,18 +179,25 @@ export const ChartModal: React.FC<ChartModalProps> = (
             />
             <DropDown
               placeholder="Select Y-Axis..."
-              options={props.sensors.reduce((result: any[], sensor: Sensor) => {
-                if (!sensorIds.includes(sensor._id))
-                  result.push({ value: sensor._id, label: sensor.name });
-                return result;
-              }, [])}
-              defaultValue={(() => {
+              options={[
+                ...props.sensors.reduce((result: any[], sensor: Sensor) => {
+                  if (!sensorIds.includes(sensor._id))
+                    result.push({
+                      value: sensor._id,
+                      label: sensor.name + " (Y)",
+                    });
+                  return result;
+                }, []),
+                { value: undefined, label: "None" },
+              ]}
+              value={(() => {
                 if (sensorIds.length === 0) return undefined;
+                if (sensorIds[1] === undefined) return undefined;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[1]
                 )[0];
                 if (!sensor) return undefined;
-                return { value: sensor._id, label: sensor.name };
+                return { value: sensor._id, label: sensor.name + " (Y)" };
               })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
@@ -196,21 +211,28 @@ export const ChartModal: React.FC<ChartModalProps> = (
             {chartType === ChartType.SCATTER && (
               <DropDown
                 placeholder="Select Heatmap Sensor..."
-                options={props.sensors.reduce(
-                  (result: any[], sensor: Sensor) => {
+                options={[
+                  ...props.sensors.reduce((result: any[], sensor: Sensor) => {
                     if (!sensorIds.includes(sensor._id))
-                      result.push({ value: sensor._id, label: sensor.name });
+                      result.push({
+                        value: sensor._id,
+                        label: sensor.name + " (Heatmap)",
+                      });
                     return result;
-                  },
-                  []
-                )}
-                defaultValue={(() => {
+                  }, []),
+                  { value: undefined, label: "None" },
+                ]}
+                value={(() => {
                   if (sensorIds.length === 0) return undefined;
+                  if (sensorIds[2] === undefined) return undefined;
                   let sensor = props.sensors.filter(
                     (s) => s._id === sensorIds[2]
                   )[0];
                   if (!sensor) return undefined;
-                  return { value: sensor._id, label: sensor.name };
+                  return {
+                    value: sensor._id,
+                    label: sensor.name + " (Heatmap)",
+                  };
                 })()}
                 onChange={(value: any) => {
                   let ids = [...sensorIds];
