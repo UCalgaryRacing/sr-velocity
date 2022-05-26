@@ -47,7 +47,7 @@ Written by Justin Tijunelis
 }
 
 @media only screen and (max-width: 916px) {
-  .chart-box {
+  /* .chart-box {
     height: 400px;
-  }
+  } */
 }

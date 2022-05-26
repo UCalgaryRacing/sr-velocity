@@ -267,7 +267,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 916 ? "320px" : "250px" }}
+        style={{ height: size.width >= 916 ? "285px" : "250px" }}
         className="fill"
       ></div>
       <div className="scatter-controls">{}</div>

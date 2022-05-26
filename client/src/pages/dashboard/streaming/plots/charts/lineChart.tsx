@@ -358,7 +358,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 916 ? "320px" : "250px" }}
+        style={{ height: size.width >= 916 ? "285px" : "250px" }}
         className="fill"
       ></div>
       <div className="line-controls">
