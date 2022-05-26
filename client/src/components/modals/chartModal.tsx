@@ -141,6 +141,12 @@ export const ChartModal: React.FC<ChartModalProps> = (
                   result.push({ value: sensor._id, label: sensor.name });
                 return result;
               }, [])}
+              defaultValue={(() => {
+                let sensor = props.sensors.filter(
+                  (s) => s._id === sensorIds[0]
+                )[0];
+                return { value: sensor._id, label: sensor.name };
+              })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
                 ids[0] = value.value;
@@ -155,6 +161,12 @@ export const ChartModal: React.FC<ChartModalProps> = (
                   result.push({ value: sensor._id, label: sensor.name });
                 return result;
               }, [])}
+              defaultValue={(() => {
+                let sensor = props.sensors.filter(
+                  (s) => s._id === sensorIds[1]
+                )[0];
+                return { value: sensor._id, label: sensor.name };
+              })()}
               onChange={(value: any) => {
                 let ids = [...sensorIds];
                 ids[1] = value.value;

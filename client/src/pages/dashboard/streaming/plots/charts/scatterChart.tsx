@@ -1,9 +1,9 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Stream } from "stream/stream";
-import { Sensor, sensorTypes } from "state";
+import { Sensor } from "state";
 import { DropDown } from "components/interface";
 import {
   lightningChart,
@@ -25,6 +25,8 @@ import "./_styling/scatterPlot.css";
 
 const UPDATE_INTERVAL = 1000; // milliseconds
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73"];
+const defaultColor = ColorRGBA(194, 45, 45, 255);
+const pointSize = 3;
 const theme = {
   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
   lightGrayFill: new SolidFill({ color: ColorHEX("#777777") }),
@@ -66,7 +68,15 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       return last;
     })()
   );
-  // TODO: Have last values for pushing data, and another last values for the legend
+  const [lastLegendValues, setLastLegendValues] = useState<{
+    [key: string]: number;
+  }>(
+    (() => {
+      let last: any = {};
+      for (const sensor of props.sensors) last[sensor.smallId] = 0;
+      return last;
+    })()
+  );
 
   useEffect(() => {
     // @ts-ignore
@@ -99,6 +109,17 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   }, [chart]);
 
   useEffect(() => {
+    if (!pointSeries) return;
+    onUpdatedData();
+  }, [pointSeries]);
+
+  useEffect(() => {
+    // TODO: Create new point series
+    if (!pointSeries) return;
+    onUpdatedData();
+  }, [props.sensors]);
+
+  useEffect(() => {
     if (!heatSensor) return;
     props.stream.unsubscribeFromSensors(dataSubId);
     const smallIds = [...props.sensors, heatSensor].map((s) => s.smallId);
@@ -112,7 +133,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
   };
 
-  const generateLegend = () => {
+  const generateLegend = useCallback(() => {
     if (!lastValues || lastValues === {}) return;
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
@@ -121,7 +142,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
     );
     let i = 0;
-    for (const sensor of [...props.sensors, heatSensor]) {
+    for (const sensor of [...props.sensors.reverse(), heatSensor]) {
       if (!sensor) continue;
       legendElements.push(
         <div
@@ -130,8 +151,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           style={{ color: colors[i] }}
         >
           {generateSensor(
-            sensor.name,
-            lastValues[sensor.smallId],
+            sensor.name + (i === 0 ? "(Y)" : i === 1 ? "(X)" : "(Heat)"),
+            lastLegendValues[sensor.smallId]
+              ? lastLegendValues[sensor.smallId]
+              : 0,
             sensor.unit ? sensor.unit : ""
           )}
         </div>
@@ -139,37 +162,56 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       i++;
     }
     return legendElements;
-  };
+  }, [lastLegendValues]);
 
   const onConnection = () => {
     if (pointSeries) pointSeries.clear();
     setLastValues({});
-    // Set streaming?
   };
 
   const onData = (data: { [key: string]: number }, _: number) => {
-    if (!data) return;
+    if (!data || !pointSeries) return;
     let last = { ...lastValues };
     let xSmallId = props.sensors[0].smallId;
     let ySmallId = props.sensors[1].smallId;
+
+    // Extract the data
     let xData = data[xSmallId];
     let yData = data[ySmallId];
     let heatData = heatSensor ? data[heatSensor.smallId] : undefined;
+
+    // Populate last data
     if (xData) last[xSmallId] = xData;
     if (yData) last[ySmallId] = yData;
     if (heatData && heatSensor) last[heatSensor.smallId] = heatData;
+
+    // Populate last legend data
+    let lastLegend = { ...lastLegendValues };
+    let updateTime = updateTimer - getDataRate(props.sensors);
+    if (updateTime <= 0) {
+      if (xData) lastLegend[xSmallId] = xData;
+      if (yData) lastLegend[ySmallId] = yData;
+      if (heatData && heatSensor) lastLegend[heatSensor.smallId] = heatData;
+    }
+
+    // Push data
     if (last[xSmallId] && last[ySmallId]) {
       // TODO: If heat sensor, add color
       pointSeries.add({
         x: last[xSmallId],
         y: last[ySmallId],
+        size: pointSize,
+        color: defaultColor,
       });
     }
+    setUpdateTimer(updateTime <= 0 ? UPDATE_INTERVAL : updateTime);
+    setLastLegendValues(lastLegend);
     setLastValues(last);
   };
 
   const onUpdatedData = () => {
-    if (pointSeries) pointSeries.clear();
+    if (!pointSeries) return;
+    pointSeries.clear();
     let xData = props.stream.getHistoricalSensorData(props.sensors[0].smallId);
     let yData = props.stream.getHistoricalSensorData(props.sensors[1].smallId);
     let heatData = heatSensor
@@ -187,14 +229,26 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       let data = fillData(xData, heatData);
       heatData = data[1];
       for (let i = 0; i < xData.length; i++) {
-        // TODO, fill with heatmap data
-        points.push({ x: xData[i], y: yData[i], color: "#000" });
+        if (i >= yData.length) break;
+        points.push({
+          x: xData[i].y,
+          y: yData[i].y,
+          size: pointSize,
+          color: defaultColor,
+        });
       }
     } else {
-      for (let i = 0; i < xData.length; i++)
-        points.push({ x: xData[i], y: yData[i] });
+      for (let i = 0; i < xData.length; i++) {
+        if (i >= yData.length) break;
+        points.push({
+          x: xData[i].y,
+          y: yData[i].y,
+          size: pointSize,
+          color: defaultColor,
+        });
+      }
     }
-    if (pointSeries) pointSeries.add(points);
+    pointSeries.add(points);
   };
 
   return (
@@ -227,6 +281,7 @@ const createChart = (chartId: number) => {
     .ChartXY({
       container: document.getElementById(chartId.toString()) as HTMLDivElement,
     })
+    .setTitle("")
     .setBackgroundFillStyle(theme.whiteFill)
     .setSeriesBackgroundFillStyle(theme.whiteFill)
     .setMouseInteractions(false)
@@ -321,24 +376,9 @@ const generatePointSeries = (chart: any) => {
     .addPointSeries({
       pointShape: PointShape.Circle,
     })
-    .setPointSize(20)
+    .setPointSize(pointSize)
     .setPointFillStyle(individualStyle);
   return series;
-};
-
-const fillData = (a: any[], b: any[]) => {
-  let filled: any[] = [];
-  let longerData = a.length >= b.length ? a : b;
-  let shorterData = a.length >= b.length ? b : a;
-  let j = 0;
-  for (let i = 0; i < longerData.length; i++) {
-    if (j >= shorterData.length) break;
-    filled.push(shorterData[j]);
-    if (longerData[i].x === shorterData[j].x) j++;
-  }
-  a = a.length >= b.length ? longerData : filled;
-  b = a.length >= b.length ? filled : longerData;
-  return [a, b];
 };
 
 const getDataRate = (sensors: Sensor[]) => {
@@ -349,183 +389,17 @@ const getDataRate = (sensors: Sensor[]) => {
   return Math.ceil(1000 / Math.min(highest_frequency, 30));
 };
 
-// import React, { useEffect } from "react";
-// import {
-//   ColorRGBA,
-//   IndividualPointFill,
-//   PointShape,
-//   lightningChart,
-//   emptyTick,
-//   AxisScrollStrategies,
-//   SolidFill,
-//   ColorHEX,
-//   AutoCursorModes,
-//   SolidLine,
-//   FontSettings,
-// } from "@arction/lcjs";
-
-// const theme = {
-//   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
-//   lightGrayFill: new SolidFill({ color: ColorHEX("#A0A0A0A0") }),
-//   darkFill: new SolidFill({ color: ColorHEX("#505050") }),
-// };
-
-// type Properties = {
-//   data: any[];
-//   mapUpdate: any;
-//   point: any;
-//   id: string;
-//   dataTitle: string;
-//   unit: string;
-// };
-
-// const ScatterPlot: React.FC<Properties> = (props: Properties) => {
-//   // let chartId: number = Math.trunc(Math.random() * 100000);
-//   let i: number = 0;
-//   let setupComplete: boolean = false;
-//   let padding: number = 0;
-//   let zero: boolean = false;
-//   let pointSeries: any = null;
-//   let individualStyle: any = null;
-//   let chart: any = null;
-//   let zeroX: number = 0;
-//   let zeroY: number = 0;
-//   let zerp: boolean = false;
-
-//   useEffect(() => {
-//     createChart();
-//     return () => {
-//       chart.dispose();
-//     };
-//   }, []);
-
-//   useEffect(() => {
-//     addData();
-//   });
-
-//   const createChart = (): void => {
-//     //Set up chart
-//     chart = lightningChart()
-//       .ChartXY()
-//       .setBackgroundFillStyle(theme.whiteFill)
-//       .setSeriesBackgroundFillStyle(theme.whiteFill);
-//     pointSeries = chart.addPointSeries({ pointShape: PointShape.Circle });
-//     individualStyle = new IndividualPointFill();
-//     individualStyle.setFallbackColor(ColorRGBA(0, 0, 0, 255));
-//     pointSeries
-//       .setPointSize(20.0)
-//       .setPointFillStyle(individualStyle)
-//       .setMouseInteractions(false);
-//     chart
-//       .setMouseInteractions(false)
-//       .setMouseInteractionWheelZoom(false)
-//       .setMouseInteractionPan(false)
-//       .setMouseInteractionRectangleFit(false)
-//       .setMouseInteractionRectangleZoom(false)
-//       .setMouseInteractionsWhileScrolling(false)
-//       .setMouseInteractionsWhileZooming(false);
-//     chart
-//       .getDefaultAxisX()
-//       .setScrollStrategy(AxisScrollStrategies.fitting)
-//       .setTickStyle(emptyTick)
-//       .setMouseInteractions(false)
-//       .setStrokeStyle(
-//         new SolidLine({
-//           thickness: 3,
-//           fillStyle: new SolidFill({ color: ColorHEX("#C8C8C8") }),
-//         })
-//       );
-//     chart
-//       .getDefaultAxisY()
-//       .setScrollStrategy(AxisScrollStrategies.fitting)
-//       .setMouseInteractions(false)
-//       .setTickStyle(emptyTick)
-//       .setStrokeStyle(
-//         new SolidLine({
-//           thickness: 3,
-//           fillStyle: new SolidFill({ color: ColorHEX("#C8C8C8") }),
-//         })
-//       );
-//     // TODO: Need to show cursor with current value the heatmap
-//     let autoCursor = chart.getAutoCursor();
-//     autoCursor.setGridStrokeXStyle(
-//       new SolidLine({
-//         thickness: 1,
-//         fillStyle: new SolidFill({ color: ColorHEX("#C22D2D") }),
-//       })
-//     );
-//     autoCursor.setGridStrokeYStyle(
-//       new SolidLine({
-//         thickness: 1,
-//         fillStyle: new SolidFill({ color: ColorHEX("#C22D2D") }),
-//       })
-//     );
-//     autoCursor.getPointMarker().setSize(0);
-//     autoCursor.disposeTickMarkerX();
-//     autoCursor.disposeTickMarkerY();
-//     var font = new FontSettings({});
-//     font = font.setFamily("helvetica");
-//     font = font.setWeight("bold");
-//     autoCursor.getResultTable().setFont(font);
-//     autoCursor
-//       .getResultTable()
-//       .setTextFillStyle(new SolidFill({ color: ColorHEX("#FFF") }));
-//     autoCursor
-//       .getResultTable()
-//       .getBackground()
-//       .setFillStyle(new SolidFill({ color: ColorHEX("#C22D2D") }));
-//     pointSeries.setCursorEnabled(false);
-//     //Don't allow scrolling
-//     chart.engine.container.onwheel = null;
-//     chart.engine.container.ontouchstart = null;
-//     chart.engine.container.ontouchmove = null;
-//     setupComplete = true;
-//   };
-
-//   const addData = (): void => {
-//     //Need to get value for autocursor somehow
-//     if (setupComplete) {
-//       if (props.mapUpdate) {
-//         pointSeries.clear();
-//         for (var point of props.data) {
-//           addPoint(point);
-//         }
-//       } else {
-//         addPoint(props.point);
-//       }
-//     }
-//   };
-
-//   const addPoint = (arg: any) => {
-//     if (arg === undefined) return;
-//     let point: any = {};
-//     point.x = arg.x;
-//     point.y = arg.y;
-//     point.color = arg.color;
-//     if (!point.x || !point.y) return;
-//     if (!zero) {
-//       zeroX = point.x * 1000;
-//       zeroY = point.y * 1000;
-//       zero = true;
-//       return;
-//     }
-//     point.x *= 1000;
-//     point.x -= zeroX;
-//     point.y *= 1000;
-//     point.y -= zeroY;
-//     pointSeries.add(point);
-//   };
-
-//   return (
-//     <div id="scatter" style={{ marginBottom: "20px" }}>
-//       <div
-//         /*id={chartId}*/ className="fill"
-//         onWheel={(event) => {
-//           return true;
-//         }}
-//       ></div>
-//     </div>
-//   );
-// };
-
-// export default ScatterPlot;
+const fillData = (a: any[], b: any[]) => {
+  let filled: any[] = [];
+  let longerData = a.length > b.length ? a : b;
+  let shorterData = a.length > b.length ? b : a;
+  let j = 0;
+  for (let i = 0; i < longerData.length; i++) {
+    if (j >= shorterData.length) break;
+    filled.push({ x: longerData[i].x, y: shorterData[j].y });
+    if (longerData[i].x <= shorterData[j].x) j++;
+  }
+  a = a.length > b.length ? longerData : filled;
+  b = a.length > b.length ? filled : longerData;
+  return [a, b];
+};
