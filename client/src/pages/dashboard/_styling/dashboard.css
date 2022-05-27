@@ -3,7 +3,6 @@
   position: relative;
   min-height: 100vh;
   padding-top: 66px;
-  overflow-y: auto;
 }
 
 #dashboard #content {
@@ -13,6 +12,7 @@
   min-height: calc(100vh - 120px);
   transition: cubic-bezier();
   transition-duration: 0.3s;
+  overflow: hidden;
 }
 
 #dashboard #dashboard-loading {

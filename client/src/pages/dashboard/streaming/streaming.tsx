@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { DashboardContext } from "../dashboard";
 import ChartView from "./plots/chartView";
 import RawDataView from "./raw_data/rawDataView";
-import { DropDown } from "components/interface";
+import { DropDown, Alert } from "components/interface";
 import { getThings, getSensors } from "crud";
 import { CircularProgress } from "@mui/material";
 import { Thing, Sensor } from "state";
@@ -31,6 +31,7 @@ const Streaming: React.FC = () => {
     useState<boolean>(false);
   const [fetchingSensorsError, setFetchingSensorsError] =
     useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
   const [thing, setThing] = useState<Thing>();
   const [things, setThings] = useState<Thing[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
@@ -83,8 +84,8 @@ const Streaming: React.FC = () => {
   }, [thing, stream]);
 
   const onDisconnection = () => {
-    alert("The real-time session disconnected.");
     setThing(undefined);
+    setShowAlert(true);
   };
 
   if (context.section !== "Streaming") return <></>;
@@ -140,6 +141,14 @@ const Streaming: React.FC = () => {
             }
           })()}
         </div>
+        <Alert
+          title="Something went wrong..."
+          description="The real-time stream disconnected."
+          color="red"
+          onDismiss={() => setShowAlert(false)}
+          show={showAlert}
+          slideOut
+        />
       </div>
     );
   } else if (sensors.length === 0) {
