@@ -131,6 +131,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     setPointSeries(generatePointSeries(chart, props.sensors));
   }, [props.sensors]);
 
+  useEffect(() => {
+    if (boundsValid()) onUpdatedData();
+  }, [values]);
+
   const unsubscribeFromStream = () => {
     props.stream.unsubscribeFromConnection(connectionSubId);
     props.stream.unsubscribeFromSensors(dataSubId);
@@ -206,8 +210,16 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     // Push data
     if (last[xSmallId] && last[ySmallId]) {
       let color = defaultColor;
-      if (last[props.sensors[2].smallId]) {
-        color = ColorHEX(colorMap[0]);
+      if (last[props.sensors[2].smallId] && boundsValid) {
+        let lower = Number(values.lower);
+        let upper = Number(values.upper);
+        let index = Math.round(
+          (last[props.sensors[2].smallId] / (upper - lower)) * colorMap.length -
+            1
+        );
+        if (index < 0) index = 0;
+        if (index > colorMap.length - 1) index = colorMap.length - 1;
+        color = ColorHEX(colorMap[index]);
       }
       pointSeries.add({
         x: last[xSmallId],
@@ -245,8 +257,15 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       for (let i = 0; i < xData.length; i++) {
         if (i >= yData.length || i >= heatData.length) break;
         let color = defaultColor;
-        if (heatData) {
-          color = ColorHEX(colorMap[0]);
+        if (heatData && boundsValid()) {
+          let lower = Number(values.lower);
+          let upper = Number(values.upper);
+          let index = Math.round(
+            (heatData[i].y / (upper - lower)) * colorMap.length - 1
+          );
+          if (index < 0) index = 0;
+          if (index > colorMap.length - 1) index = colorMap.length - 1;
+          color = ColorHEX(colorMap[index]);
         }
         points.push({
           x: xData[i].y,
@@ -270,6 +289,16 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     pointSeries.add(points);
   };
 
+  const boundsValid = () => {
+    if (values.upper !== "" && values.lower !== "") {
+      let lower = Number(values.lower);
+      let upper = Number(values.upper);
+      return lower < upper;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div className="scatter-chart">
       <div
@@ -277,7 +306,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         style={{
           gridTemplateColumns: (() => {
             let template = "1fr 1fr ";
-            if (props.sensors.length > 2) template += "1fr";
+            if (props.sensors.length > 2 && size.width >= 1000)
+              template += "1fr";
             return template;
           })(),
         }}
@@ -289,14 +319,14 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         <div className="scatter-controls">
           <InputField
             name="lower"
-            placeholder="Lower Heat Bound"
+            title="Lower Heat Bound"
             type="number"
             value={values.lower}
             onChange={handleChange}
           />
           <InputField
             name="upper"
-            placeholder="Upper Heat Bound"
+            title="Upper Heat Bound"
             type="number"
             value={values.upper}
             onChange={handleChange}

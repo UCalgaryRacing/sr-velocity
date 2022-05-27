@@ -17,7 +17,7 @@ Written by Justin Tijunelis
 .scatter-controls {
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
+  margin-top: 20px;
   gap: 5px;
 }
 
