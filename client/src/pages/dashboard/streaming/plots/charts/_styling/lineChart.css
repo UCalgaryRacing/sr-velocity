@@ -4,8 +4,13 @@ Written by Justin Tijunelis
 */
 
 .line-chart {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.line-chart .fill {
+  flex-grow: 1;
 }
 
 .line-legend {
@@ -42,19 +47,4 @@ Written by Justin Tijunelis
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 5px;
-}
-
-/* .line-controls .range-slider {
-  margin-top: -5px;
-}
-
-.line-controls .slider {
-  margin-top: 5px;
-} */
-
-.line-chart .line-controls {
-  /* position: absolute;
-  bottom: 5px;
-  left: 0px;
-  right: 0px; */
 }

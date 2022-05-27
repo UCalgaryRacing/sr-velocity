@@ -356,13 +356,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       >
         {generateLegend()}
       </div>
-      <div
-        id={chartId.toString()}
-        style={{
-          height: size.width >= 916 ? 340 : 250,
-        }}
-        className="fill"
-      ></div>
+      <div id={chartId.toString()} className="fill"></div>
       <div className="line-controls">
         <RangeSlider
           title="Interval"

@@ -83,6 +83,7 @@ const Streaming: React.FC = () => {
 
   const onDisconnection = () => {
     alert("The real-time session disconnected.");
+    setThing(undefined);
   };
 
   if (context.section !== "Streaming") return <></>;

@@ -271,7 +271,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   };
 
   return (
-    <div>
+    <div className="scatter-chart">
       <div
         className="line-legend" // Make generic legend component?
         style={{
@@ -284,26 +284,19 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       >
         {generateLegend()}
       </div>
-      <div
-        id={chartId.toString()}
-        style={{
-          height:
-            size.width >= 916 ? (props.sensors.length > 2 ? 330 : 390) : 290,
-        }}
-        className="fill"
-      ></div>
+      <div id={chartId.toString()} className="fill"></div>
       {props.sensors.length > 2 && (
         <div className="scatter-controls">
           <InputField
             name="lower"
-            placeholder="Lower Heatmap Bound"
+            placeholder="Lower Heat Bound"
             type="number"
             value={values.lower}
             onChange={handleChange}
           />
           <InputField
             name="upper"
-            placeholder="Upper Heatmap Bound"
+            placeholder="Upper Heat Bound"
             type="number"
             value={values.upper}
             onChange={handleChange}

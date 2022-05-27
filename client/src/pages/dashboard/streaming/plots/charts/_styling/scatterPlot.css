@@ -3,6 +3,17 @@ Copyright Schulich Racing, FSAE
 Written by Justin Tijunelis
 */
 
+.scatter-chart {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.scatter-chart .fill {
+  flex-grow: 1;
+}
+
 .scatter-controls {
   display: flex;
   flex-direction: row;
@@ -12,4 +23,7 @@ Written by Justin Tijunelis
 
 .scatter-controls > div {
   width: 100%;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
