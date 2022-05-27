@@ -45,3 +45,15 @@ Written by Justin Tijunelis
   width: 100%;
   padding-bottom: 0px;
 }
+
+@media only screen and (max-width: 916px) {
+  .chart-box {
+    height: 450px;
+  }
+}
+
+@media only screen and (max-width: 916px) and (orientation: landscape) {
+  .chart-box {
+    height: 340px;
+  }
+}

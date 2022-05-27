@@ -22,7 +22,7 @@ import {
 } from "@arction/lcjs";
 import colormap from "colormap";
 import { useForm, useWindowSize } from "hooks";
-import "./_styling/scatterPlot.css";
+import "./_styling/scatterChart.css";
 
 const UPDATE_INTERVAL = 1000; // milliseconds
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73"];
@@ -96,7 +96,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   });
 
   useEffect(() => {
-    setChart(createChart(chartId));
+    setChart(createChart(chartId, props.sensors));
     return () => unsubscribeFromStream();
   }, []);
 
@@ -129,6 +129,14 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     const smallIds = [...props.sensors].map((s) => s.smallId);
     setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
     setPointSeries(generatePointSeries(chart, props.sensors));
+    const xSensor = props.sensors[0];
+    chart
+      .getDefaultAxisX()
+      .setTitle(xSensor.name + (xSensor.unit ? "(" + xSensor.unit + ")" : ""));
+    const ySensor = props.sensors[1];
+    chart
+      .getDefaultAxisX()
+      .setTitle(ySensor.name + (ySensor.unit ? "(" + ySensor.unit + ")" : ""));
   }, [props.sensors]);
 
   useEffect(() => {
@@ -150,9 +158,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
     );
     let i = 0;
-    let sensors = [...props.sensors];
-    sensors[0] = [sensors[1], (sensors[1] = sensors[0])][0];
-    for (const sensor of sensors) {
+    for (const sensor of props.sensors) {
       if (!sensor) continue;
       legendElements.push(
         <div
@@ -161,7 +167,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           style={{ color: colors[i] }}
         >
           {generateSensor(
-            sensor.name + (i === 0 ? "(Y)" : i === 1 ? "(X)" : "(Heat)"),
+            sensor.name + (i === 0 ? "(X)" : i === 1 ? "(Y)" : "(Heat)"),
             lastLegendValues[sensor.smallId]
               ? lastLegendValues[sensor.smallId]
               : 0,
@@ -309,7 +315,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         style={{
           gridTemplateColumns: (() => {
             let template = "1fr 1fr ";
-            if (props.sensors.length > 2 && size.width >= 1000)
+            if (
+              props.sensors.length > 2 &&
+              (size.width >= 1000 || size.width > size.height)
+            )
               template += "1fr";
             return template;
           })(),
@@ -340,7 +349,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   );
 };
 
-const createChart = (chartId: number) => {
+const createChart = (chartId: number, sensors: Sensor[]) => {
   // Create the chart
   let chart = lightningChart()
     .ChartXY({
@@ -390,14 +399,22 @@ const createChart = (chartId: number) => {
         font.setFamily("helvetica").setStyle("italic").setSize(8)
       )
       .setLabelFillStyle(theme.darkFill)
-      .setLabelPadding(-14)
-      .setTickPadding(1)
+      .setLabelPadding(-7)
+      .setTickPadding(0)
       .setTickLength(3);
 
   // Format the X-Axis
+  let xSensor = sensors[0];
+  let xTitle = xSensor.name;
+  xTitle += xSensor.unit ? "(" + xSensor.unit + ")" : "";
   chart
-    .setTitle("")
     .getDefaultAxisX()
+    .setTitle(xTitle)
+    .setTitleFont((font: FontSettings) =>
+      font.setFamily("helvetica").setStyle("italic").setSize(10)
+    )
+    .setTitleFillStyle(theme.darkFill)
+    .setTitleMargin(-15)
     .setScrollStrategy(AxisScrollStrategies.fitting)
     .setMouseInteractions(false)
     .setStrokeStyle(
@@ -413,9 +430,17 @@ const createChart = (chartId: number) => {
     );
 
   // Format the Y-Axis
+  let ySensor = sensors[1];
+  let yTitle = ySensor.name;
+  yTitle += ySensor.unit ? " (" + ySensor.unit + ")" : "";
   chart
-    .setTitle("")
     .getDefaultAxisY()
+    .setTitle(yTitle)
+    .setTitleFont((font: FontSettings) =>
+      font.setFamily("helvetica").setStyle("italic").setSize(10)
+    )
+    .setTitleFillStyle(theme.darkFill)
+    .setTitleMargin(-15)
     .setScrollStrategy(AxisScrollStrategies.fitting)
     .setMouseInteractions(false)
     .setStrokeStyle(

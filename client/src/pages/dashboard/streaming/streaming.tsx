@@ -65,6 +65,7 @@ const Streaming: React.FC = () => {
           setFetchingSensors(false);
         })
         .catch((_: any) => {
+          setThing(undefined);
           setFetchingSensorsError(true);
           setFetchingSensors(false);
         });
