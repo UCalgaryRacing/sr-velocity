@@ -338,7 +338,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   };
 
   return (
-    <div>
+    <div className="line-chart">
       <div
         className="line-legend"
         style={{
@@ -358,7 +358,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 916 ? "285px" : "250px" }}
+        style={{
+          height: size.width >= 916 ? 340 : 250,
+        }}
         className="fill"
       ></div>
       <div className="line-controls">
@@ -382,7 +384,6 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
         />
         {Object.keys(slopes).length > 0 && (
           <>
-            <br />
             <SingleSlider
               title="Derivative Smoothing Factor"
               min={0}

@@ -191,12 +191,12 @@ export const ChartModal: React.FC<ChartModalProps> = (
                 { value: undefined, label: "None" },
               ]}
               value={(() => {
-                if (sensorIds.length === 0) return undefined;
-                if (sensorIds[1] === undefined) return undefined;
+                if (sensorIds.length === 0) return null;
+                if (sensorIds[1] === undefined) return null;
                 let sensor = props.sensors.filter(
                   (s) => s._id === sensorIds[1]
                 )[0];
-                if (!sensor) return undefined;
+                if (!sensor) return null;
                 return { value: sensor._id, label: sensor.name + " (Y)" };
               })()}
               onChange={(value: any) => {
@@ -223,12 +223,12 @@ export const ChartModal: React.FC<ChartModalProps> = (
                   { value: undefined, label: "None" },
                 ]}
                 value={(() => {
-                  if (sensorIds.length === 0) return undefined;
-                  if (sensorIds[2] === undefined) return undefined;
+                  if (sensorIds.length === 0) return null;
+                  if (sensorIds[2] === undefined) return null;
                   let sensor = props.sensors.filter(
                     (s) => s._id === sensorIds[2]
                   )[0];
-                  if (!sensor) return undefined;
+                  if (!sensor) return null;
                   return {
                     value: sensor._id,
                     label: sensor.name + " (Heatmap)",

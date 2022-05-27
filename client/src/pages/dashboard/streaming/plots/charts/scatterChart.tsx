@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Stream } from "stream/stream";
 import { Sensor } from "state";
+import { InputField } from "components/interface";
 import {
   lightningChart,
   AxisScrollStrategies,
@@ -19,7 +20,8 @@ import {
   IndividualPointFill,
   ColorRGBA,
 } from "@arction/lcjs";
-import { useWindowSize } from "hooks";
+import colormap from "colormap";
+import { useForm, useWindowSize } from "hooks";
 import "./_styling/scatterPlot.css";
 
 const UPDATE_INTERVAL = 1000; // milliseconds
@@ -32,6 +34,12 @@ const theme = {
   darkFill: new SolidFill({ color: ColorHEX("#171717") }),
   redFill: new SolidFill({ color: ColorHEX("#C22D2D") }),
 };
+const colorMap = colormap({
+  colormap: "jet",
+  nshades: 500,
+  format: "hex",
+  alpha: 1,
+});
 
 interface ScatterChartProps {
   allSensors: Sensor[];
@@ -56,7 +64,6 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
   const [pointSeries, setPointSeries] = useState<any>();
-  const [updateTimer, setUpdateTimer] = useState<number>(UPDATE_INTERVAL);
   const [lastValues, setLastValues] = useState<{
     [key: string]: number;
   }>(
@@ -75,6 +82,11 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       return last;
     })()
   );
+  const [updateTimer, setUpdateTimer] = useState<number>(UPDATE_INTERVAL);
+  const [values, handleChange] = useForm({
+    lower: "",
+    upper: "",
+  });
 
   useEffect(() => {
     // @ts-ignore
@@ -193,12 +205,15 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
 
     // Push data
     if (last[xSmallId] && last[ySmallId]) {
-      // TODO: If heat sensor, add color
+      let color = defaultColor;
+      if (last[props.sensors[2].smallId]) {
+        color = ColorHEX(colorMap[0]);
+      }
       pointSeries.add({
         x: last[xSmallId],
         y: last[ySmallId],
         size: pointSize,
-        color: defaultColor,
+        color: color,
         value: last[props.sensors[2].smallId],
       });
     }
@@ -229,11 +244,15 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       heatData = data[1];
       for (let i = 0; i < xData.length; i++) {
         if (i >= yData.length || i >= heatData.length) break;
+        let color = defaultColor;
+        if (heatData) {
+          color = ColorHEX(colorMap[0]);
+        }
         points.push({
           x: xData[i].y,
           y: yData[i].y,
           size: pointSize,
-          color: defaultColor,
+          color: color,
           value: heatData[i].y,
         });
       }
@@ -267,10 +286,30 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       </div>
       <div
         id={chartId.toString()}
-        style={{ height: size.width >= 916 ? "330px" : "290px" }}
+        style={{
+          height:
+            size.width >= 916 ? (props.sensors.length > 2 ? 330 : 390) : 290,
+        }}
         className="fill"
       ></div>
-      <div className="scatter-controls"></div>
+      {props.sensors.length > 2 && (
+        <div className="scatter-controls">
+          <InputField
+            name="lower"
+            placeholder="Lower Heatmap Bound"
+            type="number"
+            value={values.lower}
+            onChange={handleChange}
+          />
+          <InputField
+            name="upper"
+            placeholder="Upper Heatmap Bound"
+            type="number"
+            value={values.upper}
+            onChange={handleChange}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,0 +1,15 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.scatter-controls {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+.scatter-controls > div {
+  width: 100%;
+}

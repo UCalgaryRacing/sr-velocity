@@ -3,6 +3,11 @@ Copyright Schulich Racing, FSAE
 Written by Justin Tijunelis
 */
 
+.line-chart {
+  position: relative;
+  height: 100%;
+}
+
 .line-legend {
   text-align: center;
   font-size: 8px;
@@ -36,4 +41,20 @@ Written by Justin Tijunelis
 .line-controls {
   padding-left: 15px;
   padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+/* .line-controls .range-slider {
+  margin-top: -5px;
+}
+
+.line-controls .slider {
+  margin-top: 5px;
+} */
+
+.line-chart .line-controls {
+  /* position: absolute;
+  bottom: 5px;
+  left: 0px;
+  right: 0px; */
 }

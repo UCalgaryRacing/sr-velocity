@@ -4,6 +4,6 @@ Written by Justin Tijunelis
 */
 
 .slider .slider-title {
-  font-size: var(--fz-xs);
   text-align: center;
+  font-size: var(--fz-xxs);
 }
