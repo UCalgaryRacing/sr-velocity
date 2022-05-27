@@ -14,7 +14,6 @@ Written by Justin Tijunelis
 }
 
 .line-legend {
-  text-align: center;
   font-size: 8px;
   display: grid;
   position: relative;
@@ -25,7 +24,7 @@ Written by Justin Tijunelis
 .line-legend .sensor {
   font-weight: bold;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   text-align: left;
   height: 25px !important;
   margin-bottom: 5px;
