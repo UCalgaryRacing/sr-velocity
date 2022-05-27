@@ -210,11 +210,12 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     // Push data
     if (last[xSmallId] && last[ySmallId]) {
       let color = defaultColor;
-      if (last[props.sensors[2].smallId] && boundsValid) {
+      if (last[props.sensors[2].smallId] && boundsValid()) {
         let lower = Number(values.lower);
         let upper = Number(values.upper);
         let index = Math.round(
-          (last[props.sensors[2].smallId] / (upper - lower)) * colorMap.length -
+          ((last[props.sensors[2].smallId] - lower) / Math.abs(upper - lower)) *
+            colorMap.length -
             1
         );
         if (index < 0) index = 0;
@@ -261,7 +262,9 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           let lower = Number(values.lower);
           let upper = Number(values.upper);
           let index = Math.round(
-            (heatData[i].y / (upper - lower)) * colorMap.length - 1
+            ((heatData[i].y - lower) / Math.abs(upper - lower)) *
+              colorMap.length -
+              1
           );
           if (index < 0) index = 0;
           if (index > colorMap.length - 1) index = colorMap.length - 1;
