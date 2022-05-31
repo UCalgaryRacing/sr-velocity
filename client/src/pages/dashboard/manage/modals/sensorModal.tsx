@@ -70,7 +70,11 @@ export const SensorModal: React.FC<SensorModalProps> = (
 
   const cleanSensor = (sensor: any) => {
     let cleaned = { ...sensor };
-    for (const key of numberFields) cleaned[key] = Number(cleaned[key]);
+    for (const key of numberFields) {
+      if (cleaned[key] == "") delete cleaned[key];
+      else cleaned[key] = Number(cleaned[key]);
+    }
+    console.log(cleaned);
     return cleaned;
   };
 
@@ -253,7 +257,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
           name="upperWarning"
           title="Upper Warning"
           type="number"
-          value={values.lowerWarning}
+          value={values.upperWarning}
           onChange={handleChange}
         />
         <InputField

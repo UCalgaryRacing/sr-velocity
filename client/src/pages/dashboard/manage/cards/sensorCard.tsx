@@ -74,11 +74,11 @@ export const SensorCard: React.FC<SensorCardProps> = (
       </div>
       <div>
         <b>Lower Bound:&nbsp;</b>
-        {props.sensor.lowerBound ? props.sensor.lowerBound : "N/A"}
+        {props.sensor.lowerBound}
       </div>
       <div>
         <b>Upper Bound:&nbsp;</b>
-        {props.sensor.upperBound ? props.sensor.upperBound : "N/A"}
+        {props.sensor.upperBound}
       </div>
       <div>
         <b>Significance:&nbsp;</b>

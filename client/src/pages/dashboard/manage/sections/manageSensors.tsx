@@ -75,6 +75,7 @@ export const ManageSensors: React.FC = () => {
           sensors.sort((a: Sensor, b: Sensor) =>
             a.name.toLowerCase().localeCompare(b.name.toLowerCase())
           );
+          console.log(sensors);
           setSensors(sensors);
           setNoSensors(sensors.length === 0);
           setFetchingSensors(false);
