@@ -19,6 +19,7 @@ interface ChartModalProps {
   toggle: any;
   sensors: Sensor[];
   chart?: Chart;
+  charts?: Chart[];
 }
 
 export const ChartModal: React.FC<ChartModalProps> = (
@@ -27,7 +28,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
   const [sensorOptions, setSensorOptions] = useState<any[]>([]);
   const [selectedSensors, setSelectedSensors] = useState<any[]>([]);
   const [sensorIds, setSensorIds] = useState<string[]>([]);
-  const [chartType, setChartType] = useState<ChartType>();
+  const [chartType, setChartType] = useState<ChartType>(ChartType.LINE);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [values, handleChange] = useForm(
@@ -63,11 +64,20 @@ export const ChartModal: React.FC<ChartModalProps> = (
   const onSubmit = (e: any) => {
     e.preventDefault();
     let newChart: Chart = {
-      _id: uuidv4(),
+      _id: props.chart ? props.chart._id : uuidv4(),
       name: values.name,
       type: chartType as string,
       sensorIds: sensorIds,
     };
+    if (props.charts) {
+      let duplicates = props.charts.filter(
+        (c) => c.name === newChart.name && c._id !== newChart._id
+      );
+      if (duplicates.length !== 0) {
+        alert("Chart name must be unique.");
+        return;
+      }
+    }
     if (chartType === ChartType.SCATTER) {
       let emptyIds = false;
       for (const id of sensorIds)
@@ -114,10 +124,15 @@ export const ChartModal: React.FC<ChartModalProps> = (
         />
         <DropDown
           placeholder="Select Chart Type..."
-          options={[
-            { value: ChartType.LINE, label: ChartType.LINE },
-            { value: ChartType.SCATTER, label: ChartType.SCATTER },
-          ]}
+          options={(() => {
+            let options = [{ value: ChartType.LINE, label: ChartType.LINE }];
+            if (props.sensors.length > 1)
+              options.push({
+                value: ChartType.SCATTER,
+                label: ChartType.SCATTER,
+              });
+            return options;
+          })()}
           onChange={(value: any) => {
             setChartType(value.value);
             if (value.value !== ChartType.LINE) setSensorIds(["", ""]);
@@ -130,6 +145,8 @@ export const ChartModal: React.FC<ChartModalProps> = (
                   value: props.chart.type as ChartType,
                   label: props.chart.type as ChartType,
                 }
+              : props.sensors.length === 1
+              ? { value: ChartType.LINE, label: ChartType.LINE }
               : undefined
           }
           isSearchable

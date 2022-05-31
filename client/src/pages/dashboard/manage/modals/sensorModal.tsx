@@ -53,7 +53,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const [type, setType] = useState<string>(
     props.sensor ? props.sensor.type : ""
   );
-  const [disabled, setDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -71,10 +70,9 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const cleanSensor = (sensor: any) => {
     let cleaned = { ...sensor };
     for (const key of numberFields) {
-      if (cleaned[key] == "") delete cleaned[key];
+      if (cleaned[key] == "") cleaned[key] = null;
       else cleaned[key] = Number(cleaned[key]);
     }
-    console.log(cleaned);
     return cleaned;
   };
 
@@ -100,7 +98,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
         ...props.sensor,
         ...values,
         canId: hexToNumber(values.canId),
-        disabled: disabled,
       });
       putSensor(sensor)
         .then((_: any) => {
@@ -121,9 +118,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         canId: hexToNumber(values.canId),
         type: type,
         thingId: props.thing._id,
-        disabled: disabled,
       });
-      console.log(sensor);
       postSensor(sensor)
         .then((sensor: Sensor) => {
           setLoading(false);

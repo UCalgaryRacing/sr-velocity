@@ -17,6 +17,7 @@ interface ChartBoxProps {
   stream: Stream;
   onDelete?: (chartId: string) => void;
   onUpdate?: (chart: Chart) => void;
+  charts: Chart[];
 }
 
 export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
@@ -67,6 +68,7 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
           }}
           sensors={props.allSensors}
           chart={props.chart}
+          charts={props.charts}
         />
       )}
       <ConfirmModal

@@ -74,7 +74,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
         presets.sort((a: ChartPreset, b: ChartPreset) =>
           a.name.toLowerCase().localeCompare(b.name.toLowerCase())
         );
-        console.log(presets);
         setChartPresets(presets);
         setFetchingPresets(false);
       })
@@ -124,6 +123,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           stream={props.stream}
           onDelete={onDeleteChart}
           onUpdate={onChartUpdate}
+          charts={charts}
         />
       );
     }
@@ -358,6 +358,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           show={showChartModal}
           toggle={onChartUpdate}
           sensors={props.sensors}
+          charts={charts}
         />
       )}
       {showPresetModal && (
