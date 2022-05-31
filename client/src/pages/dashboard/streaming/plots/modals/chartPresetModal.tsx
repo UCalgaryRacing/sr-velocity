@@ -38,7 +38,8 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
     e.preventDefault();
     setLoading(true);
     const cleanedCharts = props.charts.map((chart) => {
-      chart._id = "";
+      // @ts-ignore
+      delete chart["_id"];
       return chart;
     });
     if (props.chartPreset) {
