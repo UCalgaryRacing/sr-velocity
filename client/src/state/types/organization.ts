@@ -4,5 +4,5 @@
 export type Organization = {
   _id: string;
   name: string;
-  apiKey: string;
+  apiKey?: string;
 };

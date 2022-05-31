@@ -3,7 +3,7 @@
 
 export type Comment = {
   _id: string;
-  user_id: string;
+  userId: string;
   time: string;
   content: string;
   sessionId?: string;

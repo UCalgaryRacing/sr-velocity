@@ -11,5 +11,6 @@ export type Chart = {
   _id: string;
   name: string;
   type: string;
+  chartPresetId?: string;
   sensorIds: string[];
 };

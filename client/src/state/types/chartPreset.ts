@@ -5,7 +5,7 @@ import { Chart } from ".";
 
 export type ChartPreset = {
   _id: string;
-  thing_id: string;
+  thingId: string;
   name: string;
   charts: Chart[];
 };

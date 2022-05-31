@@ -151,8 +151,7 @@ export const ManageSensors: React.FC = () => {
     for (let sensor of [...sensors]) {
       let lowerQuery = query.toLowerCase();
       let name = sensor.name.toLowerCase();
-      let category = sensor.category ? sensor.category.toLowerCase() : "";
-      if (name.includes(lowerQuery) || category.includes(lowerQuery)) {
+      if (name.includes(lowerQuery)) {
         matchingSensors.push(sensor);
       }
     }

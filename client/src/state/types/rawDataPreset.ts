@@ -4,6 +4,6 @@
 export type RawDataPreset = {
   _id: string;
   name: string;
-  sensorIds: string[];
   thingId: string;
+  sensorIds: string[];
 };

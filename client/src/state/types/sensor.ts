@@ -6,12 +6,10 @@ export type Sensor = {
   smallId: number;
   type: string;
   lastUpdate: number;
-  category?: string;
   name: string;
   frequency: number;
   unit?: string;
   canId: number;
-  disabled: boolean;
   thingId: string;
   upperCalibration?: number;
   lowerCalibration?: number;
@@ -20,8 +18,9 @@ export type Sensor = {
   lowerWarning?: number;
   upperDanger?: number;
   lowerDanger?: number;
-  // TODO: Add lower and upper bound
-  // FUTURE: Add protocol
+  lowerBound: number;
+  upperBound: number;
+  significance: number;
 };
 
 export const sensorTypes = {

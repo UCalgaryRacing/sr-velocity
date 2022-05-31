@@ -24,7 +24,6 @@ interface SensorCardProps {
   onSensorDelete?: (sensorId: string) => void;
 }
 
-// TODO: Add disabled styling
 export const SensorCard: React.FC<SensorCardProps> = (
   props: SensorCardProps
 ) => {
@@ -50,20 +49,9 @@ export const SensorCard: React.FC<SensorCardProps> = (
   };
 
   return (
-    <div
-      className="card"
-      style={{ color: props.sensor.disabled ? "#777777" : "#171717" }}
-    >
+    <div className="card">
       <div className="card-title">
-        <b>
-          {props.sensor.name +
-            " " +
-            (props.sensor.disabled ? " - DISABLED" : "")}
-        </b>
-      </div>
-      <div>
-        <b>Category:&nbsp;</b>
-        {props.sensor.category ? props.sensor.category : "N/A"}
+        <b>{props.sensor.name}</b>
       </div>
       <div>
         <b>Data Type:&nbsp;</b>
@@ -85,10 +73,16 @@ export const SensorCard: React.FC<SensorCardProps> = (
         {props.sensor.unit ? props.sensor.unit : "N/A"}
       </div>
       <div>
-        <b>Conversion Multiplier:&nbsp;</b>
-        {props.sensor.conversionMultiplier
-          ? props.sensor.conversionMultiplier
-          : "N/A"}
+        <b>Lower Bound:&nbsp;</b>
+        {props.sensor.lowerBound ? props.sensor.lowerBound : "N/A"}
+      </div>
+      <div>
+        <b>Upper Bound:&nbsp;</b>
+        {props.sensor.upperBound ? props.sensor.upperBound : "N/A"}
+      </div>
+      <div>
+        <b>Significance:&nbsp;</b>
+        {props.sensor.significance ? props.sensor.significance : "N/A"}
       </div>
       <div>
         <b>Lower Calibration:&nbsp;</b>
@@ -97,6 +91,12 @@ export const SensorCard: React.FC<SensorCardProps> = (
       <div>
         <b>Upper Calibration:&nbsp;</b>
         {props.sensor.upperCalibration ? props.sensor.upperCalibration : "N/A"}
+      </div>
+      <div>
+        <b>Conversion Multiplier:&nbsp;</b>
+        {props.sensor.conversionMultiplier
+          ? props.sensor.conversionMultiplier
+          : "N/A"}
       </div>
       <div>
         <b>Lower Warning:&nbsp;</b>

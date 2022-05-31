@@ -1,12 +1,10 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import { Comment } from "./";
+import { Comment } from ".";
 
-export type Run = {
+export type Collection = {
   _id: string;
   name: string;
-  startTime: string;
-  endTime: string;
   comments?: Comment[];
 };

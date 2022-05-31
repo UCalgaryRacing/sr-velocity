@@ -19,7 +19,7 @@ export const deleteSession = (sessionId: string) => {
   return new Promise<void>((resolve, reject) => {});
 };
 
-export const getSessionComments = (sessionId: Session) => {
+export const getSessionComments = (sessionId: string) => {
   return new Promise<Comment[]>((resolve, reject) => {});
 };
 
@@ -31,6 +31,6 @@ export const putSessionComment = (comment: Comment) => {
   return new Promise<void>((resolve, reject) => {});
 };
 
-export const deleteSessionComment = (commentId: string) => {
+export const deleteSessionComment = (commentId: Comment) => {
   return new Promise<void>((resolve, reject) => {});
 };

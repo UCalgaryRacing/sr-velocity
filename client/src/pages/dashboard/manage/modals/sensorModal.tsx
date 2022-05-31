@@ -3,13 +3,7 @@
 
 import React, { useState } from "react";
 import { BaseModal } from "components/modals";
-import {
-  InputField,
-  TextButton,
-  Alert,
-  DropDown,
-  SegmentedControl,
-} from "components/interface";
+import { InputField, TextButton, Alert, DropDown } from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
 import { Sensor, Thing, numberToHex, hexToNumber, sensorTypes } from "state";
@@ -24,10 +18,12 @@ interface SensorModalProps {
 const initialValues = {
   name: "",
   type: "",
-  category: "",
   canId: "0x",
   frequency: "",
   unit: "",
+  lowerBound: "",
+  upperBound: "",
+  significance: "",
   lowerCalibration: "",
   upperCalibration: "",
   conversionMultiplier: "",
@@ -35,7 +31,6 @@ const initialValues = {
   upperWarning: "",
   lowerDanger: "",
   upperDanger: "",
-  disabled: false,
 };
 
 const numberFields = [
@@ -47,6 +42,9 @@ const numberFields = [
   "upperWarning",
   "lowerDanger",
   "upperDanger",
+  "lowerBound",
+  "upperBound",
+  "significance",
 ];
 
 export const SensorModal: React.FC<SensorModalProps> = (
@@ -177,14 +175,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
           isSearchable
         />
         <InputField
-          name="category"
-          title="Category"
-          value={values.category}
-          minLength={4}
-          maxLength={20}
-          onChange={handleChange}
-        />
-        <InputField
           name="canId"
           title="CAN ID ([0x]########)"
           value={values.canId}
@@ -206,6 +196,29 @@ export const SensorModal: React.FC<SensorModalProps> = (
           title="Unit"
           value={values.unit}
           maxLength={10}
+          onChange={handleChange}
+        />
+        <InputField
+          name="lowerBound"
+          title="Lower Bound"
+          type="number"
+          value={values.lowerBound}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          name="upperBound"
+          title="Upper Bound"
+          type="number"
+          value={values.upperBound}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          name="significance"
+          title="Significance"
+          type="number"
+          value={values.significance}
           onChange={handleChange}
         />
         <InputField
@@ -256,22 +269,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
           type="number"
           value={values.upperDanger}
           onChange={handleChange}
-        />
-        <SegmentedControl
-          name="sensor-toggle"
-          options={[
-            {
-              label: "Enabled",
-              value: false,
-              default: props.sensor ? !props.sensor.disabled : true,
-            },
-            {
-              label: "Disabled",
-              value: true,
-              default: props.sensor ? props.sensor.disabled : false,
-            },
-          ]}
-          onChange={setDisabled}
         />
         <TextButton title="Save" loading={loading} />
       </BaseModal>
