@@ -118,6 +118,7 @@ export const ManageOrganization: React.FC = () => {
                   type="button"
                   img={<Cached />}
                   onClick={requestNewKey}
+                  loading={updateKeyLoading}
                 />
               </ToolTip>
             </div>
