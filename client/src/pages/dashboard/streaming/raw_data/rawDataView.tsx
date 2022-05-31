@@ -10,6 +10,7 @@ import {
   TextButton,
 } from "components/interface";
 import { DashboardContext } from "../../dashboard";
+import { DashboardLoading } from "pages/dashboard/loading";
 import DashNav from "components/navigation/dashNav";
 import { SaveOutlined, Add } from "@mui/icons-material";
 import {
@@ -167,16 +168,12 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
   return (
     <>
       {fetchingPresets ? (
-        <div id="dashboard-loading">
-          <div id="dashboard-loading-content">
-            <>
-              <CircularProgress style={{ color: "black" }} />
-              <br />
-              <br />
-              <b>Fetching presets...</b>
-            </>
-          </div>
-        </div>
+        <DashboardLoading>
+          <CircularProgress style={{ color: "black" }} />
+          <br />
+          <br />
+          <b>Fetching presets...</b>
+        </DashboardLoading>
       ) : (
         <>
           <DashNav margin={context.margin}>
@@ -266,19 +263,16 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>
           {boxes.length === 0 && (
-            <div id="dashboard-loading">
-              <div id="dashboard-loading-content">
-                <>
-                  <b>No Sensors selected...</b>
-                  <br />
-                  <br />
-                  <TextButton
-                    title="Add Sensor(s)"
-                    onClick={() => setShowRawBoxModal(true)}
-                  />
-                </>
-              </div>
-            </div>
+            <DashboardLoading>
+              {" "}
+              <b>No Sensors selected...</b>
+              <br />
+              <br />
+              <TextButton
+                title="Add Sensor(s)"
+                onClick={() => setShowRawBoxModal(true)}
+              />
+            </DashboardLoading>
           )}
         </>
       )}

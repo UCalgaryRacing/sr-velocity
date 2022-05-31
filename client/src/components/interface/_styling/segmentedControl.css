@@ -1,3 +1,12 @@
+/* 
+Copyright Schulich Racing FSAE
+Written by Justin Tijunelis
+*/
+
+.sc-container {
+  height: 44px !important;
+}
+
 .segmented-control {
   margin: 0;
   border-radius: var(--border-radius);

@@ -81,10 +81,6 @@ export const SensorCard: React.FC<SensorCardProps> = (
         {props.sensor.upperBound}
       </div>
       <div>
-        <b>Significance:&nbsp;</b>
-        {props.sensor.significance ? props.sensor.significance : "N/A"}
-      </div>
-      <div>
         <b>Lower Calibration:&nbsp;</b>
         {props.sensor.lowerCalibration ? props.sensor.lowerCalibration : "N/A"}
       </div>

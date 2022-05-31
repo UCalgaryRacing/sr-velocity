@@ -7,6 +7,11 @@ Written by Justin Tijunelis
   font-weight: bold;
 }
 
+.modal-content .compressed-form {
+  display: flex;
+  gap: 10px;
+}
+
 .base-modal-inline-items {
   display: inline-flex;
   width: 100%;

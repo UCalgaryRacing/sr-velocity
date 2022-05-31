@@ -19,6 +19,7 @@ import { getOrganization } from "crud";
 import { bindActionCreators } from "redux";
 import { CircularProgress } from "@mui/material";
 import "./_styling/dashboard.css";
+import { DashboardLoading } from "./loading";
 
 export const DashboardContext = React.createContext({
   page: "",
@@ -68,24 +69,21 @@ const Dashboard: React.FC = () => {
     <div id="dashboard" {...gestures}>
       <Sidebar toggled={sideBarToggled} onCollapse={setSideBarCollapsed} />
       {loading || setupError ? (
-        <div
-          id="dashboard-loading"
+        <DashboardLoading
           style={{
             marginLeft: size.width >= 916 ? (!sideBarCollapsed ? 76 : 220) : 0,
           }}
         >
-          <div id="dashboard-loading-content">
-            {loading && (
-              <>
-                <CircularProgress style={{ color: "black" }} />
-                <br />
-                <br />
-                <b>Preparing the dashboard...</b>
-              </>
-            )}
-            <b>{setupError && "Something went wrong. Please refresh."}</b>
-          </div>
-        </div>
+          {loading && (
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Preparing the dashboard...</b>
+            </>
+          )}
+          <b>{setupError && "Something went wrong. Please refresh."}</b>
+        </DashboardLoading>
       ) : (
         <>
           <div
@@ -104,7 +102,7 @@ const Dashboard: React.FC = () => {
             >
               {state.dashboard.section === "Streaming" && <Streaming />}
               {state.dashboard.section === "Historical" && <Historical />}
-              <Manage />
+              {state.dashboard.section === "Manage" && <Manage />}
             </DashboardContext.Provider>
           </div>
         </>

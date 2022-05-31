@@ -8,6 +8,7 @@ import { CircularProgress } from "@mui/material";
 import { InputField, Alert, DropDown } from "components/interface";
 import { User, UserRole } from "state";
 import { getUsers } from "crud";
+import { DashboardLoading } from "pages/dashboard/loading";
 import DashNav from "components/navigation/dashNav";
 
 export const ManageUsers: React.FC = () => {
@@ -114,22 +115,20 @@ export const ManageUsers: React.FC = () => {
   return (
     <>
       {error || fetching ? (
-        <div id="manage-loading">
-          <div id="manage-loading-content">
-            {fetching ? (
-              <>
-                <CircularProgress style={{ color: "black" }} />
-                <br />
-                <br />
-                <b>Fetching Users...</b>
-              </>
-            ) : (
-              <>
-                <b>{error && "Could not fetch users, please refresh."}</b>
-              </>
-            )}
-          </div>
-        </div>
+        <DashboardLoading>
+          {fetching ? (
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Fetching Users...</b>
+            </>
+          ) : (
+            <>
+              <b>{error && "Could not fetch users, please refresh."}</b>
+            </>
+          )}
+        </DashboardLoading>
       ) : (
         <div>
           <DashNav margin={context.margin}>

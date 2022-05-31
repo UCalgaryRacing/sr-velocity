@@ -15,6 +15,7 @@ import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import { ThingModal } from "../modals/thingModal";
 import { ThingCard } from "../cards";
+import { DashboardLoading } from "pages/dashboard/loading";
 import { getThings, getOperators } from "crud";
 import {
   useAppSelector,
@@ -154,32 +155,30 @@ export const ManageThings: React.FC = () => {
   return (
     <>
       {noThings || error || fetching ? (
-        <div id="manage-loading">
-          <div id="manage-loading-content">
-            {fetching ? (
-              <>
-                <CircularProgress style={{ color: "black" }} />
-                <br />
-                <br />
-                <b>Fetching Things...</b>
-              </>
-            ) : (
-              <>
-                <b>
-                  {!error
-                    ? "Your organization has no Things yet."
-                    : "Could not fetch Things, please refresh."}
-                </b>
-                {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
-                  <TextButton
-                    title="Create a new Thing"
-                    onClick={() => setShowThingModal(true)}
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        <DashboardLoading>
+          {fetching ? (
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Fetching Things...</b>
+            </>
+          ) : (
+            <>
+              <b>
+                {!error
+                  ? "Your organization has no Things yet."
+                  : "Could not fetch Things, please refresh."}
+              </b>
+              {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
+                <TextButton
+                  title="Create a new Thing"
+                  onClick={() => setShowThingModal(true)}
+                />
+              )}
+            </>
+          )}
+        </DashboardLoading>
       ) : (
         <div id="manage-content">
           <DashNav margin={context.margin}>

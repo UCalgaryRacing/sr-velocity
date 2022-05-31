@@ -1,3 +1,8 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
 #dashboard {
   display: flex;
   position: relative;
@@ -13,20 +18,6 @@
   transition: cubic-bezier();
   transition-duration: 0.3s;
   overflow: hidden;
-}
-
-#dashboard #dashboard-loading {
-  display: flex;
-  margin-top: -54px;
-  min-height: calc(100vh - 84px);
-  width: 100%;
-}
-
-#dashboard #dashboard-loading #dashboard-loading-content {
-  text-align: center;
-  max-width: 400px;
-  width: 100%;
-  margin: auto;
 }
 
 @media only screen and (max-width: 916px) {

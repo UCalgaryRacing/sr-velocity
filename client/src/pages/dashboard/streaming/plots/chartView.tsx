@@ -6,6 +6,7 @@ import { ChartBox } from "./chartBox";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add, CachedOutlined } from "@mui/icons-material";
 import GridLayout from "react-grid-layout";
+import { DashboardLoading } from "pages/dashboard/loading";
 import {
   IconButton,
   ToolTip,
@@ -209,16 +210,12 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
   return (
     <>
       {fetchingPresets ? (
-        <div id="dashboard-loading">
-          <div id="dashboard-loading-content">
-            <>
-              <CircularProgress style={{ color: "black" }} />
-              <br />
-              <br />
-              <b>Fetching presets...</b>
-            </>
-          </div>
-        </div>
+        <DashboardLoading>
+          <CircularProgress style={{ color: "black" }} />
+          <br />
+          <br />
+          <b>Fetching presets...</b>
+        </DashboardLoading>
       ) : (
         <>
           <DashNav margin={context.margin}>

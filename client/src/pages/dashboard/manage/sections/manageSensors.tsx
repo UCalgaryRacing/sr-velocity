@@ -23,6 +23,7 @@ import {
   IconButton,
   DropDown,
 } from "components/interface";
+import { DashboardLoading } from "pages/dashboard/loading";
 import { Add } from "@mui/icons-material";
 import { SensorModal } from "../modals/sensorModal";
 import { useWindowSize } from "hooks";
@@ -167,72 +168,71 @@ export const ManageSensors: React.FC = () => {
       errorFetchingSensors ||
       fetchingThings ||
       fetchingSensors ? (
-        <div id="manage-loading">
-          <div id="manage-loading-content">
-            {fetchingThings || fetchingSensors ? (
-              <>
-                <CircularProgress style={{ color: "black" }} />
-                <br />
-                <br />
-                <b>Fetching&nbsp;{fetchingThings ? "Things" : "Sensors"}...</b>
-              </>
-            ) : (
-              <>
-                <b>
-                  {!thing && (
-                    <>
-                      {!errorFetchingThings
-                        ? "Your organization has no Things yet. You can create one on the Thing page."
-                        : "Could not fetch Things, please refresh."}
-                    </>
-                  )}
-                  {thing && (
-                    <>
-                      {!errorFetchingSensors && thing
-                        ? "The Thing has no Sensors yet."
-                        : "Could not fetch Sensors, please refresh."}
-                    </>
-                  )}
-                </b>
-                {!errorFetchingSensors &&
-                  thing &&
-                  isAuthAtLeast(user, UserRole.ADMIN) && (
-                    <TextButton
-                      title="Create a new Sensor"
-                      onClick={() => setShowSensorModal(true)}
-                    />
-                  )}
-                {!errorFetchingSensors && thing && (
+        <DashboardLoading>
+          {" "}
+          {fetchingThings || fetchingSensors ? (
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Fetching&nbsp;{fetchingThings ? "Things" : "Sensors"}...</b>
+            </>
+          ) : (
+            <>
+              <b>
+                {!thing && (
                   <>
-                    {isAuthAtLeast(user, UserRole.ADMIN) && (
-                      <>
-                        <br />
-                        <br />
-                        <b>Or select a different Thing:</b>
-                      </>
-                    )}
-                    <br />
-                    <br />
-                    <DropDown
-                      placeholder="Select Thing..."
-                      options={things.map((thing) => {
-                        return { value: thing._id, label: thing.name };
-                      })}
-                      onChange={(value: any) => {
-                        for (const thing of things)
-                          if (thing._id === value.value) setThing(thing);
-                      }}
-                      defaultValue={{ value: thing._id, label: thing.name }}
-                      isSearchable
-                    />
+                    {!errorFetchingThings
+                      ? "Your organization has no Things yet. You can create one on the Thing page."
+                      : "Could not fetch Things, please refresh."}
                   </>
                 )}
-              </>
-            )}
-          </div>
-        </div>
+                {thing && (
+                  <>
+                    {!errorFetchingSensors && thing
+                      ? "The Thing has no Sensors yet."
+                      : "Could not fetch Sensors, please refresh."}
+                  </>
+                )}
+              </b>
+              {!errorFetchingSensors &&
+                thing &&
+                isAuthAtLeast(user, UserRole.ADMIN) && (
+                  <TextButton
+                    title="Create a new Sensor"
+                    onClick={() => setShowSensorModal(true)}
+                  />
+                )}
+              {!errorFetchingSensors && thing && (
+                <>
+                  {isAuthAtLeast(user, UserRole.ADMIN) && (
+                    <>
+                      <br />
+                      <br />
+                      <b>Or select a different Thing:</b>
+                    </>
+                  )}
+                  <br />
+                  <br />
+                  <DropDown
+                    placeholder="Select Thing..."
+                    options={things.map((thing) => {
+                      return { value: thing._id, label: thing.name };
+                    })}
+                    onChange={(value: any) => {
+                      for (const thing of things)
+                        if (thing._id === value.value) setThing(thing);
+                    }}
+                    defaultValue={{ value: thing._id, label: thing.name }}
+                    isSearchable
+                  />
+                </>
+              )}
+            </>
+          )}
+        </DashboardLoading>
       ) : (
-        <div id="manage-content">
+        <div>
           {thing ? (
             <>
               <DashNav margin={context.margin}>
@@ -306,24 +306,22 @@ export const ManageSensors: React.FC = () => {
               )}
             </>
           ) : (
-            <div id="manage-loading">
-              <div id="manage-loading-content">
-                <b>Select the Thing you want Sensors for:</b>
-                <br />
-                <br />
-                <DropDown
-                  placeholder="Select Thing..."
-                  options={things.map((thing) => {
-                    return { value: thing._id, label: thing.name };
-                  })}
-                  onChange={(value: any) => {
-                    for (const thing of things)
-                      if (thing._id === value.value) setThing(thing);
-                  }}
-                  isSearchable
-                />
-              </div>
-            </div>
+            <DashboardLoading>
+              <b>Select the Thing you want Sensors for:</b>
+              <br />
+              <br />
+              <DropDown
+                placeholder="Select Thing..."
+                options={things.map((thing) => {
+                  return { value: thing._id, label: thing.name };
+                })}
+                onChange={(value: any) => {
+                  for (const thing of things)
+                    if (thing._id === value.value) setThing(thing);
+                }}
+                isSearchable
+              />
+            </DashboardLoading>
           )}
         </div>
       )}

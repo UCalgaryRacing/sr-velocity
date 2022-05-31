@@ -22,6 +22,7 @@ import {
   isAuthAtLeast,
   UserRole,
 } from "state";
+import { DashboardLoading } from "pages/dashboard/loading";
 import DashNav from "components/navigation/dashNav";
 import { getOperators, getThings } from "crud";
 import { Add } from "@mui/icons-material";
@@ -158,34 +159,32 @@ export const ManageOperators: React.FC = () => {
   return (
     <>
       {noOperators || error || fetching ? (
-        <div id="manage-loading">
-          <div id="manage-loading-content">
-            {fetching ? (
-              <>
-                <CircularProgress style={{ color: "black" }} />
-                <br />
-                <br />
-                <b>Fetching Operators...</b>
-              </>
-            ) : (
-              <>
-                <b>
-                  {!error
-                    ? "Your organization has no Operators yet."
-                    : "Could not fetch Operators, please refresh."}
-                </b>
-                {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
-                  <TextButton
-                    title="Create a new Operator"
-                    onClick={() => setShowOperatorModal(true)}
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        <DashboardLoading>
+          {fetching ? (
+            <>
+              <CircularProgress style={{ color: "black" }} />
+              <br />
+              <br />
+              <b>Fetching Operators...</b>
+            </>
+          ) : (
+            <>
+              <b>
+                {!error
+                  ? "Your organization has no Operators yet."
+                  : "Could not fetch Operators, please refresh."}
+              </b>
+              {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
+                <TextButton
+                  title="Create a new Operator"
+                  onClick={() => setShowOperatorModal(true)}
+                />
+              )}
+            </>
+          )}
+        </DashboardLoading>
       ) : (
-        <div id="manage-content">
+        <div>
           <DashNav margin={context.margin}>
             <div className="left">
               {isAuthAtLeast(user, UserRole.ADMIN) && (

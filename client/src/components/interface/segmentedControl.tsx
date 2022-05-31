@@ -16,11 +16,13 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = (
   props: SegmentedControlProps
 ) => {
   return (
-    <SC
-      name={props.name}
-      options={props.options}
-      setValue={props.onChange}
-      style={{ color: "#ba1833" }}
-    />
+    <div className="sc-container">
+      <SC
+        name={props.name}
+        options={props.options}
+        setValue={props.onChange}
+        style={{ color: "#ba1833" }}
+      />
+    </div>
   );
 };

@@ -1,9 +1,15 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BaseModal } from "components/modals";
-import { InputField, TextButton, Alert, DropDown } from "components/interface";
+import {
+  InputField,
+  TextButton,
+  Alert,
+  DropDown,
+  SegmentedControl,
+} from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
 import { Sensor, Thing, numberToHex, hexToNumber, sensorTypes } from "state";
@@ -23,7 +29,6 @@ const initialValues = {
   unit: "",
   lowerBound: "",
   upperBound: "",
-  significance: "",
   lowerCalibration: "",
   upperCalibration: "",
   conversionMultiplier: "",
@@ -44,7 +49,6 @@ const numberFields = [
   "upperDanger",
   "lowerBound",
   "upperBound",
-  "significance",
 ];
 
 export const SensorModal: React.FC<SensorModalProps> = (
@@ -53,14 +57,95 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const [type, setType] = useState<string>(
     props.sensor ? props.sensor.type : ""
   );
+  const [numberType, setNumberType] = useState<string>();
+  const [precision, setPrecision] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [values, handleChange] = useForm(
     props.sensor
-      ? { ...props.sensor, canId: numberToHex(props.sensor.canId) }
+      ? {
+          ...props.sensor,
+          canId: "0x" + numberToHex(props.sensor.canId).toUpperCase(),
+        }
       : initialValues
   );
+
+  useEffect(() => {
+    if (props.sensor) {
+      const decimals = ["d", "f"];
+      if (decimals.includes(props.sensor.type)) {
+        setNumberType("Decimal");
+        setPrecision(props.sensor.type === "f" ? 7 : 15);
+      } else if (props.sensor.type === "?") {
+        setNumberType("On/Off");
+      } else {
+        setNumberType("Discrete");
+      }
+      let lower = Number(props.sensor.lowerBound);
+      let upper = Number(props.sensor.upperBound);
+      setType(findOptimalType(lower, upper));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (values.lowerBound !== "" && values.upperBound !== "") {
+      let lower = Number(values.lowerBound);
+      let upper = Number(values.upperBound);
+      if (lower >= upper) {
+        alert("The lower bound must be less than the upper bound.");
+      } else setType(findOptimalType(lower, upper));
+    }
+  }, [values, numberType, precision]);
+
+  const findOptimalType = (lower: number, upper: number) => {
+    let type = "?";
+    const BYTE1_MAX = 2 ** 8 - 1;
+    const BYTE2_MAX = 2 ** 16 - 1;
+    const BYTE4_MAX = 2 ** 32 - 1;
+    const BYTE8_MAX = 2 ** 64 - 1;
+    const FLOAT_MAX = 3.402823466e38;
+    if (numberType === "Decimal") {
+      if (precision === 15) {
+        type = "d";
+      } else {
+        if (Math.abs(lower) <= FLOAT_MAX || Math.abs(upper) <= FLOAT_MAX)
+          type = "f";
+        else {
+          setPrecision(15);
+          type = "d";
+        }
+      }
+    } else if (numberType === "Discrete") {
+      if (lower < 0) {
+        const absLower = Math.abs(lower);
+        const absUpper = Math.abs(upper);
+        if (absLower <= BYTE1_MAX / 2 && absUpper <= BYTE1_MAX / 2) type = "c";
+        else if (absLower <= BYTE2_MAX / 2 && absUpper <= BYTE2_MAX / 2)
+          type = "h";
+        else if (absLower <= BYTE4_MAX / 2 && absUpper <= BYTE4_MAX / 2)
+          type = "i";
+        else if (absLower <= BYTE8_MAX / 2 && absUpper <= BYTE8_MAX / 2)
+          type = "q";
+        else {
+          alert(
+            "The upper and/or lower bound is too large, it must be less that 2^63."
+          );
+          type = "";
+        }
+      } else {
+        if (upper <= BYTE1_MAX) type = "B";
+        else if (upper <= BYTE2_MAX) type = "H";
+        else if (upper <= BYTE4_MAX) type = "I";
+        else if (upper <= BYTE8_MAX) type = "Q";
+        else {
+          alert("The upper bound is to large, it must be less than 2^64.");
+          type = "";
+        }
+      }
+    }
+    return type;
+  };
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -149,29 +234,9 @@ export const SensorModal: React.FC<SensorModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={4}
+          minLength={3}
           maxLength={20}
           required
-        />
-        <DropDown
-          placeholder="Sensor Type"
-          options={(() => {
-            let options: any[] = [];
-            for (const [key, value] of Object.entries(sensorTypes))
-              options.push({ value: key, label: value });
-            return options;
-          })()}
-          onChange={(value: any) => setType(value.value)}
-          defaultValue={(() => {
-            return props.sensor
-              ? {
-                  value: props.sensor.type,
-                  // @ts-ignore
-                  label: sensorTypes[props.sensor.type],
-                }
-              : null;
-          })()}
-          isSearchable
         />
         <InputField
           name="canId"
@@ -186,6 +251,8 @@ export const SensorModal: React.FC<SensorModalProps> = (
           name="frequency"
           title="Frequency"
           type="number"
+          min={1}
+          max={120}
           value={values.frequency}
           onChange={handleChange}
           required
@@ -197,43 +264,88 @@ export const SensorModal: React.FC<SensorModalProps> = (
           maxLength={10}
           onChange={handleChange}
         />
-        <InputField
-          name="lowerBound"
-          title="Lower Bound"
-          type="number"
-          value={values.lowerBound}
-          onChange={handleChange}
-          required
+        <SegmentedControl
+          name="Value Type"
+          options={[
+            {
+              label: "Decimal",
+              value: "Decimal",
+              default: numberType ? numberType === "Decimal" : true,
+            },
+            {
+              label: "Discrete",
+              value: "Discrete",
+              default: numberType ? numberType === "Discrete" : false,
+            },
+            {
+              label: "On/Off",
+              value: "On/Off",
+              default: numberType ? numberType === "On/Off" : false,
+            },
+          ]}
+          onChange={(value: any) => {
+            setNumberType(value);
+            if (value === "On/Off") {
+              values.upperBound = "";
+              values.lowerBound = "";
+              setPrecision(undefined);
+            }
+          }}
         />
-        <InputField
-          name="upperBound"
-          title="Upper Bound"
-          type="number"
-          value={values.upperBound}
-          onChange={handleChange}
-          required
-        />
-        <InputField
-          name="significance"
-          title="Significance"
-          type="number"
-          value={values.significance}
-          onChange={handleChange}
-        />
-        <InputField
-          name="lowerCalibration"
-          title="Lower Calibration"
-          type="number"
-          value={values.lowerCalibration}
-          onChange={handleChange}
-        />
-        <InputField
-          name="upperCalibration"
-          title="Upper Calibration"
-          type="number"
-          value={values.upperCalibration}
-          onChange={handleChange}
-        />
+        {numberType === "Decimal" && (
+          <SegmentedControl
+            name="Precision"
+            options={[
+              {
+                label: "7 Decimals",
+                value: 7,
+                default: precision ? precision === 7 : true,
+              },
+              {
+                label: "15 Decimals",
+                value: 15,
+                default: precision ? precision === 15 : false,
+              },
+            ]}
+            onChange={(value: any) => setPrecision(value)}
+          />
+        )}
+        {numberType !== "On/Off" && (
+          <div className="compressed-form">
+            <InputField
+              name="lowerBound"
+              title="Lower Bound"
+              type="number"
+              value={values.lowerBound}
+              onChange={handleChange}
+              required
+            />
+            <InputField
+              name="upperBound"
+              title="Upper Bound"
+              type="number"
+              value={values.upperBound}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
+        <div className="compressed-form">
+          <InputField
+            name="lowerCalibration"
+            title="Lower Calibration"
+            type="number"
+            value={values.lowerCalibration}
+            onChange={handleChange}
+          />
+          <InputField
+            name="upperCalibration"
+            title="Upper Calibration"
+            type="number"
+            value={values.upperCalibration}
+            onChange={handleChange}
+          />
+        </div>
         <InputField
           name="conversionMultiplier"
           title="Conversion Multiplier"
@@ -241,34 +353,38 @@ export const SensorModal: React.FC<SensorModalProps> = (
           value={values.conversionMultiplier}
           onChange={handleChange}
         />
-        <InputField
-          name="lowerWarning"
-          title="Lower Warning"
-          type="number"
-          value={values.lowerWarning}
-          onChange={handleChange}
-        />
-        <InputField
-          name="upperWarning"
-          title="Upper Warning"
-          type="number"
-          value={values.upperWarning}
-          onChange={handleChange}
-        />
-        <InputField
-          name="lowerDanger"
-          title="Lower Danger"
-          type="number"
-          value={values.lowerDanger}
-          onChange={handleChange}
-        />
-        <InputField
-          name="upperDanger"
-          title="Upper Danger"
-          type="number"
-          value={values.upperDanger}
-          onChange={handleChange}
-        />
+        <div className="compressed-form">
+          <InputField
+            name="lowerWarning"
+            title="Lower Warning"
+            type="number"
+            value={values.lowerWarning}
+            onChange={handleChange}
+          />
+          <InputField
+            name="upperWarning"
+            title="Upper Warning"
+            type="number"
+            value={values.upperWarning}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="compressed-form">
+          <InputField
+            name="lowerDanger"
+            title="Lower Danger"
+            type="number"
+            value={values.lowerDanger}
+            onChange={handleChange}
+          />
+          <InputField
+            name="upperDanger"
+            title="Upper Danger"
+            type="number"
+            value={values.upperDanger}
+            onChange={handleChange}
+          />
+        </div>
         <TextButton title="Save" loading={loading} />
       </BaseModal>
       <Alert
