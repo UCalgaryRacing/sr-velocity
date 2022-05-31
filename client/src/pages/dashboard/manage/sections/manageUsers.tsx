@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import { UserCard } from "../cards";
 import { CircularProgress } from "@mui/material";
-import { InputField, Alert, DropDown } from "components/interface";
+import { InputField, Alert, DropDown, TextButton } from "components/interface";
 import { User, UserRole } from "state";
 import { getUsers } from "crud";
 import { DashboardLoading } from "pages/dashboard/loading";
@@ -23,24 +23,8 @@ export const ManageUsers: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
 
-  useEffect(() => {
-    getUsers()
-      .then((users: User[]) => {
-        users.sort((a: User, b: User) =>
-          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-        );
-        setUsers(users);
-        setFetching(false);
-      })
-      .catch((_: any) => {
-        setFetching(false);
-        setError(true);
-      });
-  }, []);
-
-  useEffect(() => {
-    generateUserCards(users);
-  }, [users]);
+  useEffect(() => fetchUsers(), []);
+  useEffect(() => generateUserCards(users), [users]);
 
   useEffect(() => {
     if (roleFilter === "All") {
@@ -53,6 +37,21 @@ export const ManageUsers: React.FC = () => {
       setNoMatchingUsers(filteredUsers.length === 0);
     }
   }, [roleFilter]);
+
+  const fetchUsers = () => {
+    getUsers()
+      .then((users: User[]) => {
+        users.sort((a: User, b: User) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setUsers(users);
+        setFetching(false);
+      })
+      .catch((_: any) => {
+        setFetching(false);
+        setError(true);
+      });
+  };
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -125,7 +124,10 @@ export const ManageUsers: React.FC = () => {
             </>
           ) : (
             <>
-              <b>{error && "Could not fetch users, please refresh."}</b>
+              <b>{error && "Could not fetch users."}</b>
+              {error && (
+                <TextButton title="Try Again" onClick={() => fetchUsers()} />
+              )}
             </>
           )}
         </DashboardLoading>

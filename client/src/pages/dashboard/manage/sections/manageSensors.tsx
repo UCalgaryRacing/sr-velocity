@@ -51,7 +51,11 @@ export const ManageSensors: React.FC = () => {
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showSensorModal, setShowSensorModal] = useState<boolean>(false);
 
-  useEffect(() => {
+  useEffect(() => fetchThings(), []);
+  useEffect(() => fetchSensors(), [thing]);
+  useEffect(() => generateSensorCards(sensors), [sensors]);
+
+  const fetchThings = () => {
     getThings()
       .then((things: Thing[]) => {
         things.sort((a: Thing, b: Thing) =>
@@ -66,9 +70,9 @@ export const ManageSensors: React.FC = () => {
         setFetchingThings(false);
         setErrorFetchingThings(true);
       });
-  }, []);
+  };
 
-  useEffect(() => {
+  const fetchSensors = () => {
     if (thing) {
       setFetchingSensors(true);
       getSensors(thing?._id)
@@ -85,11 +89,7 @@ export const ManageSensors: React.FC = () => {
           setErrorFetchingSensors(true);
         });
     }
-  }, [thing]);
-
-  useEffect(() => {
-    generateSensorCards(sensors);
-  }, [sensors]);
+  };
 
   const alert = (error: boolean, description: string) => {
     setAlertDescription(description);
@@ -184,14 +184,26 @@ export const ManageSensors: React.FC = () => {
                   <>
                     {!errorFetchingThings
                       ? "Your organization has no Things yet. You can create one on the Thing page."
-                      : "Could not fetch Things, please refresh."}
+                      : "Could not fetch Things."}
+                    {errorFetchingThings && (
+                      <TextButton
+                        title="Try Again"
+                        onClick={() => fetchThings()}
+                      />
+                    )}
                   </>
                 )}
                 {thing && (
                   <>
                     {!errorFetchingSensors && thing
                       ? "The Thing has no Sensors yet."
-                      : "Could not fetch Sensors, please refresh."}
+                      : "Could not fetch Sensors."}
+                    {errorFetchingSensors && (
+                      <TextButton
+                        title="Try Again"
+                        onClick={() => fetchSensors()}
+                      />
+                    )}
                   </>
                 )}
               </b>

@@ -45,7 +45,23 @@ export const ManageThings: React.FC = () => {
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showThingModal, setShowThingModal] = useState<boolean>(false);
 
+  useEffect(() => fetchThings(), []);
+  useEffect(() => generateThingCards(things, operators), [things, operators]);
+
   useEffect(() => {
+    if (operatorFilter === "All") {
+      generateThingCards(things, operators);
+    } else {
+      let filteredThings = [];
+      for (const thing of things)
+        if (thing.operatorIds.includes(operatorFilter))
+          filteredThings.push(thing);
+      generateThingCards(filteredThings, operators);
+      setNoMatchingThings(filteredThings.length === 0);
+    }
+  }, [operatorFilter]);
+
+  const fetchThings = () => {
     getThings()
       .then((things: Thing[]) => {
         getOperators()
@@ -70,24 +86,7 @@ export const ManageThings: React.FC = () => {
         setFetching(false);
         setError(true);
       });
-  }, []);
-
-  useEffect(() => {
-    generateThingCards(things, operators);
-  }, [things, operators]);
-
-  useEffect(() => {
-    if (operatorFilter === "All") {
-      generateThingCards(things, operators);
-    } else {
-      let filteredThings = [];
-      for (const thing of things)
-        if (thing.operatorIds.includes(operatorFilter))
-          filteredThings.push(thing);
-      generateThingCards(filteredThings, operators);
-      setNoMatchingThings(filteredThings.length === 0);
-    }
-  }, [operatorFilter]);
+  };
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -168,13 +167,16 @@ export const ManageThings: React.FC = () => {
               <b>
                 {!error
                   ? "Your organization has no Things yet."
-                  : "Could not fetch Things, please refresh."}
+                  : "Could not fetch Things."}
               </b>
               {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
                 <TextButton
                   title="Create a new Thing"
                   onClick={() => setShowThingModal(true)}
                 />
+              )}
+              {error && (
+                <TextButton title="Try Again" onClick={() => fetchThings()} />
               )}
             </>
           )}

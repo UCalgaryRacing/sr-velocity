@@ -4,12 +4,11 @@ Written by Justin Tijunelis
 */
 
 .card {
-  border-radius: var(--border-radius);
-  border: 1px solid var(--red);
+  border-radius: var(--border-radius) !important;
+  border: 1px solid var(--red) !important;
   min-height: 87px;
   padding: 5px;
-  position: relative;
-  font-size: var(--fz-sm);
+  font-size: var(--fz-xs);
   padding-right: 50px;
 }
 

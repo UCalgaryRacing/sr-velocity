@@ -46,7 +46,26 @@ export const ManageOperators: React.FC = () => {
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showOperatorModal, setShowOperatorModal] = useState<boolean>(false);
 
+  useEffect(() => fetchOperators(), []);
+
   useEffect(() => {
+    generateOperatorCards(operators, things);
+  }, [operators, things]);
+
+  useEffect(() => {
+    if (thingFilter === "All") {
+      generateOperatorCards(operators, things);
+    } else {
+      let filteredOperators = [];
+      for (const operator of operators)
+        if (operator.thingIds.includes(thingFilter))
+          filteredOperators.push(operator);
+      generateOperatorCards(filteredOperators, things);
+      setNoMatchingOperators(filteredOperators.length === 0);
+    }
+  }, [thingFilter]);
+
+  const fetchOperators = () => {
     getOperators()
       .then((operators: Operator[]) => {
         getThings()
@@ -71,24 +90,7 @@ export const ManageOperators: React.FC = () => {
         setFetching(false);
         setError(true);
       });
-  }, []);
-
-  useEffect(() => {
-    generateOperatorCards(operators, things);
-  }, [operators, things]);
-
-  useEffect(() => {
-    if (thingFilter === "All") {
-      generateOperatorCards(operators, things);
-    } else {
-      let filteredOperators = [];
-      for (const operator of operators)
-        if (operator.thingIds.includes(thingFilter))
-          filteredOperators.push(operator);
-      generateOperatorCards(filteredOperators, things);
-      setNoMatchingOperators(filteredOperators.length === 0);
-    }
-  }, [thingFilter]);
+  };
 
   const alert = (description: string) => {
     setAlertDescription(description);
@@ -172,12 +174,18 @@ export const ManageOperators: React.FC = () => {
               <b>
                 {!error
                   ? "Your organization has no Operators yet."
-                  : "Could not fetch Operators, please refresh."}
+                  : "Could not fetch Operators."}
               </b>
               {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
                 <TextButton
                   title="Create a new Operator"
                   onClick={() => setShowOperatorModal(true)}
+                />
+              )}
+              {error && (
+                <TextButton
+                  title="Try Again"
+                  onClick={() => fetchOperators()}
                 />
               )}
             </>

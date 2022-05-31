@@ -5,11 +5,12 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { DashboardContext } from "../dashboard";
 import ChartView from "./plots/chartView";
 import RawDataView from "./raw_data/rawDataView";
-import { DropDown, Alert } from "components/interface";
+import { DropDown, Alert, TextButton } from "components/interface";
 import { getThings, getSensors } from "crud";
 import { CircularProgress } from "@mui/material";
 import { Thing, Sensor } from "state";
 import { Stream } from "stream/stream";
+import { DashboardLoading } from "../loading";
 
 enum StreamingSection {
   CHARTS = "Real-Time Charts",
@@ -37,6 +38,16 @@ const Streaming: React.FC = () => {
   const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
+    fetchThings();
+    return () => stream.unsubscribeFromDisconnection(disconnectSubId);
+  }, []);
+
+  useEffect(() => {
+    fetchSensors(); // @ts-ignore
+    onDisconnectionCallback.current = onDisconnection;
+  }, [thing, stream]);
+
+  const fetchThings = () => {
     getThings()
       .then((things: Thing[]) => {
         things.sort((a: Thing, b: Thing) =>
@@ -50,10 +61,9 @@ const Streaming: React.FC = () => {
         setFetchingThingsError(true);
         setFetchingThings(false);
       });
-    return () => stream.unsubscribeFromDisconnection(disconnectSubId);
-  }, []);
+  };
 
-  useEffect(() => {
+  const fetchSensors = () => {
     if (thing) {
       // Fetch the sensors
       setFetchingSensors(true);
@@ -79,9 +89,7 @@ const Streaming: React.FC = () => {
         stream.subscribeToDisconnection(onDisconnectionCallback)
       );
     }
-    // @ts-ignore
-    onDisconnectionCallback.current = onDisconnection;
-  }, [thing, stream]);
+  };
 
   const onDisconnection = () => {
     setThing(undefined);
@@ -92,8 +100,8 @@ const Streaming: React.FC = () => {
 
   if (!thing || fetchingSensors) {
     return (
-      <div id="dashboard-loading">
-        <div id="dashboard-loading-content">
+      <>
+        <DashboardLoading>
           {(() => {
             if (fetchingThings || fetchingSensors) {
               return (
@@ -108,16 +116,28 @@ const Streaming: React.FC = () => {
               );
             } else if (fetchingThingsError || fetchingSensorsError) {
               return (
-                <b>
-                  Could not fetch&nbsp;{fetchingThings ? "Things" : "Sensors"}.
-                  Please refresh to try again.
-                </b>
+                <>
+                  <b>
+                    Could not fetch&nbsp;{fetchingThings ? "Things" : "Sensors"}
+                    .
+                  </b>
+                  <TextButton
+                    title="Try Again"
+                    onClick={() => {
+                      if (fetchingThings) fetchThings();
+                      else fetchSensors();
+                    }}
+                  />
+                </>
               );
             } else {
               return (
                 <>
                   {things?.length === 0 ? (
-                    <>No Things are available.</>
+                    <>
+                      No Things are available. Create one through the manage
+                      page.
+                    </>
                   ) : (
                     <>
                       <b>Select a Thing to view streaming data for:</b>
@@ -140,7 +160,7 @@ const Streaming: React.FC = () => {
               );
             }
           })()}
-        </div>
+        </DashboardLoading>
         <Alert
           title="Something went wrong..."
           description="The real-time stream disconnected."
@@ -149,31 +169,29 @@ const Streaming: React.FC = () => {
           show={showAlert}
           slideOut
         />
-      </div>
+      </>
     );
   } else if (sensors.length === 0) {
     return (
-      <div id="dashboard-loading">
-        <div id="dashboard-loading-content">
-          <b>
-            The Thing has no sensors. Select a different Thing or create sensors
-            through the manage page.
-          </b>
-          <br />
-          <br />
-          <DropDown
-            placeholder="Select Thing..."
-            options={things.map((thing) => {
-              return { value: thing._id, label: thing.name };
-            })}
-            onChange={(value: any) => {
-              for (const thing of things)
-                if (thing._id === value.value) setThing(thing);
-            }}
-            isSearchable
-          />
-        </div>
-      </div>
+      <DashboardLoading>
+        <b>
+          The Thing has no sensors. Select a different Thing or create sensors
+          through the manage page.
+        </b>
+        <br />
+        <br />
+        <DropDown
+          placeholder="Select Thing..."
+          options={things.map((thing) => {
+            return { value: thing._id, label: thing.name };
+          })}
+          onChange={(value: any) => {
+            for (const thing of things)
+              if (thing._id === value.value) setThing(thing);
+          }}
+          isSearchable
+        />
+      </DashboardLoading>
     );
   } else {
     switch (context.page) {

@@ -18,8 +18,9 @@ import {
 import { getOrganization } from "crud";
 import { bindActionCreators } from "redux";
 import { CircularProgress } from "@mui/material";
-import "./_styling/dashboard.css";
 import { DashboardLoading } from "./loading";
+import { TextButton } from "components/interface";
+import "./_styling/dashboard.css";
 
 export const DashboardContext = React.createContext({
   page: "",
@@ -47,23 +48,25 @@ const Dashboard: React.FC = () => {
   const size = useWindowSize();
 
   useEffect(() => {
-    if (!state.organization) {
-      setLoading(true);
-      getOrganization()
-        .then((organization: Organization) => {
-          setOrganization(organization);
-          setLoading(false);
-        })
-        .catch((_: any) => {
-          setLoading(false);
-          setSetupError(true);
-        });
-    }
+    if (!state.organization) fetchOrganization();
   }, []);
 
   useEffect(() => {
     if (size.width >= 916 && sideBarToggled) setSideBarToggled(false);
   }, [size.width]);
+
+  const fetchOrganization = () => {
+    setLoading(true);
+    getOrganization()
+      .then((organization: Organization) => {
+        setOrganization(organization);
+        setLoading(false);
+      })
+      .catch((_: any) => {
+        setLoading(false);
+        setSetupError(true);
+      });
+  };
 
   return (
     <div id="dashboard" {...gestures}>
@@ -83,6 +86,9 @@ const Dashboard: React.FC = () => {
             </>
           )}
           <b>{setupError && "Something went wrong. Please refresh."}</b>
+          {setupError && (
+            <TextButton title="Try Again" onClick={() => fetchOrganization()} />
+          )}
         </DashboardLoading>
       ) : (
         <>

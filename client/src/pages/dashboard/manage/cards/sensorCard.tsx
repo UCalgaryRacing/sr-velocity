@@ -73,7 +73,7 @@ export const SensorCard: React.FC<SensorCardProps> = (
           let doubles = ["f", "d"];
           if (doubles.includes(type))
             description =
-              "Decimal, " + type === "f" ? "7" : "15" + " point precision";
+              "Decimal, " + (type === "f" ? "7" : "15") + " point precision";
           else if (type === "?") description = "On/Off";
           else description = "Discrete";
           // @ts-ignore
