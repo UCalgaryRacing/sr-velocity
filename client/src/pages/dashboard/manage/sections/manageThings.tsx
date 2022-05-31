@@ -206,13 +206,15 @@ export const ManageThings: React.FC = () => {
               <DropDown
                 placeholder="Filter by Operator..."
                 options={(() => {
-                  let options = [{ value: "All", label: "All" }];
+                  let options = [
+                    { value: "All", label: "All (Operator Filter)" },
+                  ];
                   for (const operator of operators)
                     options.push({ value: operator._id, label: operator.name });
                   return options;
                 })()}
                 onChange={(value: any) => setOperatorFilter(value.value)}
-                defaultValue={{ value: "All", label: "All" }}
+                defaultValue={{ value: "All", label: "All (Operator Filter)" }}
                 isSearchable
               />
               <InputField

@@ -42,5 +42,13 @@ export const hexToNumber = (hex: string) => {
 };
 
 export const numberToHex = (number: number) => {
-  return number.toString(16);
+  let hex = number.toString(16);
+  if (hex.length < 8) {
+    let zeroCount = 8 - hex.length;
+    console.log(zeroCount);
+    for (let i = 0; i < zeroCount; i++) {
+      hex = "0" + hex;
+    }
+  }
+  return hex;
 };

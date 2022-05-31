@@ -138,15 +138,15 @@ export const ManageUsers: React.FC = () => {
               <DropDown
                 placeholder="Filter by Role..."
                 options={[
-                  { value: "All", label: "All" },
-                  { value: "Admin", label: "Admin" },
-                  { value: "Lead", label: "Lead" },
-                  { value: "Member", label: "Member" },
-                  { value: "Guest", label: "Guest" },
-                  { value: "Pending", label: "Pending" },
+                  { value: "All", label: "All (Role Filter)" },
+                  { value: "Admin", label: "Admin (Role Filter)" },
+                  { value: "Lead", label: "Lead (Role Filter)" },
+                  { value: "Member", label: "Member (Role Filter)" },
+                  { value: "Guest", label: "Guest (Role Filter)" },
+                  { value: "Pending", label: "Pending (Role Filter)" },
                 ]}
                 onChange={(value: any) => setRoleFilter(value.value)}
-                defaultValue={{ value: "All", label: "All" }}
+                defaultValue={{ value: "All", label: "All (Role Filter)" }}
                 isSearchable
               />
               <InputField
