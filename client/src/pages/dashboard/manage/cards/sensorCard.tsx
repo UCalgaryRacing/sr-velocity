@@ -54,13 +54,6 @@ export const SensorCard: React.FC<SensorCardProps> = (
         <b>{props.sensor.name}</b>
       </div>
       <div>
-        <b>Data Type:&nbsp;</b>
-        {(() => {
-          // @ts-ignore
-          return sensorTypes[props.sensor.type];
-        })()}
-      </div>
-      <div>
         <b>Can ID:&nbsp;</b>
         0x{numberToHex(props.sensor.canId).toUpperCase()}
       </div>
@@ -71,6 +64,21 @@ export const SensorCard: React.FC<SensorCardProps> = (
       <div>
         <b>Unit:&nbsp;</b>
         {props.sensor.unit ? props.sensor.unit : "N/A"}
+      </div>
+      <div>
+        <b>Data Type:&nbsp;</b>
+        {(() => {
+          let description = ";";
+          let type = props.sensor.type;
+          let doubles = ["f", "d"];
+          if (doubles.includes(type))
+            description =
+              "Decimal, " + type === "f" ? "7" : "15" + " point precision";
+          else if (type === "?") description = "On/Off";
+          else description = "Discrete";
+          // @ts-ignore
+          return description + " (" + sensorTypes[type] + ")";
+        })()}
       </div>
       <div>
         <b>Lower Bound:&nbsp;</b>
