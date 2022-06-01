@@ -1,7 +1,7 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   InputField,
   DropDown,
@@ -12,6 +12,7 @@ import {
 } from "components/interface";
 import { BaseModal } from "components/modals";
 import { Session, Collection, Operator, Thing } from "state";
+import { postSession, putSession } from "crud";
 import { useForm } from "hooks";
 
 interface SessionModalProps {
@@ -31,17 +32,29 @@ export const SessionModal: React.FC<SessionModalProps> = (
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>();
   const [endTime, setEndTime] = useState<Date>();
-  const [collectionId, setCollectionId] = useState<string>("");
-  const [operatorId, setOperatorId] = useState<string>("");
+  const [, setCollectionId] = useState<string>("");
+  const [, setOperatorId] = useState<string>("");
+  const [file, setFile] = useState<File>();
   const [values, handleChange] = useForm(
     props.session
       ? props.session
       : { name: "", collectionId: null, operatorId: null }
   );
 
+  useEffect(() => {
+    if (props.session) {
+      setStartTime(new Date(props.session.startTime));
+      props.session.endTime && setEndTime(new Date(props.session.endTime));
+    }
+  }, [props.session]);
+
   const alert = (description: string) => {
     setAlertDescription(description);
     setShowAlert(true);
+  };
+
+  const onFileDrop = (acceptedFiles: any[]) => {
+    if (!acceptedFiles[0].name.endsWith(".csv")) setFile(acceptedFiles[0]);
   };
 
   const onSubmit = () => {
@@ -55,7 +68,42 @@ export const SessionModal: React.FC<SessionModalProps> = (
       return;
     }
 
-    // Create the session, then upload the file
+    if (!file) {
+      alert("A file must be selected to create a session.");
+      return;
+    }
+
+    setLoading(true);
+    if (props.session) {
+      let session = {
+        ...values,
+        startTime: startTime.getTime(),
+        endTime: endTime.getTime(),
+      };
+      putSession(session)
+        .then(() => {
+          setLoading(false);
+          props.toggle(session);
+        })
+        .catch((_: any) => {
+          setLoading(false);
+          alert("Could not update session, please try again.");
+        });
+    } else {
+      let session = {
+        ...values,
+        startTime: startTime.getTime(),
+        endTime: endTime.getTime(),
+      };
+      postSession(session)
+        .then((session: Session) => {
+          // TODO - Attempt to upload the file
+        })
+        .catch((_: any) => {
+          setLoading(false);
+          alert("Could not create session, please try again.");
+        });
+    }
   };
 
   return (
@@ -129,7 +177,9 @@ export const SessionModal: React.FC<SessionModalProps> = (
             isSearchable
           />
         )}
-        <DropZone />
+        {!props.session && (
+          <DropZone maxFiles={1} onDrop={onFileDrop} file={file} />
+        )}
         <TextButton title="Save" loading={loading} />
       </BaseModal>
       <Alert

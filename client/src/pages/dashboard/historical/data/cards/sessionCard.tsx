@@ -89,10 +89,12 @@ export const SessionCard: React.FC<SessionCardProps> = (
         <b>Start Time:&nbsp;</b>
         {convertUnixTime(props.session.startTime)}
       </div>
-      <div>
-        <b>End Time:&nbsp;</b>
-        {convertUnixTime(props.session.endTime)}
-      </div>
+      {props.session.endTime && (
+        <div>
+          <b>End Time:&nbsp;</b>
+          {convertUnixTime(props.session.endTime)}
+        </div>
+      )}
       {isAuthAtLeast(user, UserRole.LEAD) && (
         <>
           <IconButton
@@ -100,11 +102,13 @@ export const SessionCard: React.FC<SessionCardProps> = (
             img={<CloseOutlined />}
             onClick={() => setShowConfirmationModal(true)}
           />
-          <IconButton
-            id="session-card-edit"
-            img={<Edit />}
-            onClick={() => setShowModal(true)}
-          />
+          {props.session.endTime && (
+            <IconButton
+              id="session-card-edit"
+              img={<Edit />}
+              onClick={() => setShowModal(true)}
+            />
+          )}
         </>
       )}
       {isAuthAtLeast(user, UserRole.MEMBER) && (
