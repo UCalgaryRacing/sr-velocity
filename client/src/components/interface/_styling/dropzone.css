@@ -1,0 +1,16 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.dropzone {
+  border: 1px dashed var(--red);
+  border-radius: var(--border-radius);
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone p {
+  margin: 0;
+  line-height: 7;
+}

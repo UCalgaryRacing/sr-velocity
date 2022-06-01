@@ -5,6 +5,7 @@ Written by Justin Tijunelis
 
 .sc-container {
   height: 44px !important;
+  width: 100%;
 }
 
 .segmented-control {

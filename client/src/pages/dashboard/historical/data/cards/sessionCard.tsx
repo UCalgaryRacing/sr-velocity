@@ -14,6 +14,8 @@ import {
   Session,
   Collection,
   Comment,
+  Thing,
+  Operator,
   isAuthAtLeast,
   UserRole,
   useAppSelector,
@@ -25,8 +27,10 @@ import { SessionModal } from "../modals/sessionModal";
 import "./_styling/sessionCard.css";
 
 interface SessionCardProps {
+  thing: Thing;
   session: Session;
   collections: Collection[];
+  operators: Operator[];
   onUpdate: (session: Session) => void;
   onDelete: (sessionId: string) => void;
 }
@@ -137,8 +141,10 @@ export const SessionCard: React.FC<SessionCardProps> = (
       <SessionModal
         show={showModal}
         toggle={() => setShowModal(false)}
+        thing={props.thing}
         session={props.session}
         collections={props.collections}
+        operators={props.operators}
       />
       <Alert
         title="Something went wrong..."

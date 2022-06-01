@@ -8,5 +8,6 @@ export type Session = {
   name: string;
   startTime: number;
   endTime: number;
-  collectionId: string;
+  collectionId?: string;
+  operatorId?: string;
 };

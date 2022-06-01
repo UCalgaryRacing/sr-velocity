@@ -1,3 +1,8 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
 .text-button {
   border-radius: var(--border-radius);
   background-color: var(--red);

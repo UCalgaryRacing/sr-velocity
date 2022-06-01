@@ -75,7 +75,7 @@ Written by Justin Tijunelis and Joey Van Lierop
   }
 
   #dash-nav .segmented-control {
-    width: calc(100% - 44px) !important;
+    width: 100% !important;
   }
 
   #dash-nav .right {

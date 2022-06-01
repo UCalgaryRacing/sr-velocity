@@ -1,0 +1,54 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.react-datetime-picker {
+  width: 100%;
+  height: 44px !important;
+}
+
+.react-datetime-picker > div {
+  border: 1px solid var(--red);
+  border-radius: var(--border-radius);
+}
+
+.react-datetime-picker input:invalid,
+.react-datetime-picker__inputGroup__input:invalid {
+  background-color: rgba(1, 1, 1, 0.05);
+}
+
+.react-datetime-picker__button:enabled:hover
+  .react-datetime-picker__button__icon,
+.react-datetime-picker__button:enabled:focus
+  .react-datetime-picker__button__icon,
+.react-calendar__month-view__days__day--weekend {
+  stroke: var(--red);
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: var(--light-gray);
+}
+
+.react-datetime-picker__clock {
+  display: none;
+}
+
+.react-datetime-picker__inputGroup {
+  padding-left: 15px;
+}
+
+.react-calendar__tile--now,
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: var(--green);
+  color: var(--white);
+}
+
+.react-calendar__tile--active,
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background-color: var(--red);
+  color: white;
+}

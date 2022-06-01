@@ -3,11 +3,11 @@
 
 import React, { useEffect, useState } from "react";
 import { SegmentedControl, DropDown, TextButton } from "components/interface";
-import { Thing, Session, Collection } from "state";
+import { Thing, Session, Collection, Operator } from "state";
 import { DashboardLoading } from "../../loading";
 import { CollectionView } from "./collectionView";
 import { SessionView } from "./sessionView";
-import { getSessions, getCollections } from "crud";
+import { getSessions, getCollections, getOperators } from "crud";
 import { CircularProgress } from "@mui/material";
 import "./_styling/dataView.css";
 
@@ -25,36 +25,50 @@ interface DataViewProps {
 const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
   const [listType, setListType] = useState<ListType>(ListType.SESSION);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [operators, setOperators] = useState<Operator[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [fetching, setFetching] = useState<{
     [k: string]: string | boolean;
   }>({ fetching: false, error: false });
 
-  useEffect(() => fetchSessionsAndCollections(), []);
+  useEffect(() => fetchCollectionsOperatorsSessions(), []);
   useEffect(() => {
-    fetchSessionsAndCollections();
+    fetchCollectionsOperatorsSessions();
   }, [props.thing]);
 
-  const fetchSessionsAndCollections = () => {
+  const fetchCollectionsOperatorsSessions = () => {
     setFetching({
       fetching: true,
       error: false,
     });
-    getSessions(props.thing._id)
-      .then((sessions: Session[]) => {
-        setSessions(sessions);
-        getCollections(props.thing._id)
-          .then((collections: Collection[]) => {
-            setCollections(collections);
-            setFetching({ ...fetching, fetching: false });
+    getOperators()
+      .then((operators: Operator[]) => {
+        let thingOperators = operators.filter((o) =>
+          o.thingIds.includes(props.thing._id)
+        );
+        thingOperators.sort((a: Operator, b: Operator) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setOperators(thingOperators);
+        getSessions(props.thing._id)
+          .then((sessions: Session[]) => {
+            setSessions(sessions);
+            getCollections(props.thing._id)
+              .then((collections: Collection[]) => {
+                setCollections(collections);
+                setFetching({ ...fetching, fetching: false });
+              })
+              .catch((_: any) =>
+                setFetching({ ...fetching, fetching: false, error: true })
+              );
           })
-          .catch((_: any) => {
-            setFetching({ ...fetching, fetching: false, error: true });
-          });
+          .catch((_: any) =>
+            setFetching({ ...fetching, fetching: false, error: true })
+          );
       })
-      .catch((_: any) => {
-        setFetching({ ...fetching, fetching: false, error: true });
-      });
+      .catch((_: any) =>
+        setFetching({ ...fetching, fetching: false, error: true })
+      );
   };
 
   const onSessionUpdate = (session: Session) => {
@@ -129,16 +143,16 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
                 <CircularProgress style={{ color: "black" }} />
                 <br />
                 <br />
-                <b>Fetching Sessions and Collections...</b>
+                <b>Fetching Collections, Operators, and Sessions...</b>
               </>
             );
           } else {
             return (
               <>
-                <b>Could not fetch Sessions and Collections.</b>
+                <b>Failed to fetch Collections, Operators, and Sessions.</b>
                 <TextButton
                   title="Try Again"
-                  onClick={() => fetchSessionsAndCollections()}
+                  onClick={() => fetchCollectionsOperatorsSessions()}
                 />
               </>
             );
@@ -153,8 +167,10 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
           <SessionView
             viewChange={viewChange}
             thingChange={thingChange}
+            thing={props.thing}
             sessions={sessions}
             collections={collections}
+            operators={operators}
             onUpdate={onSessionUpdate}
             onDelete={onSessionDelete}
           />

@@ -8,14 +8,16 @@ import { SessionModal } from "./modals/sessionModal";
 import { SessionCard } from "./cards/sessionCard";
 import { DashboardContext } from "../../dashboard";
 import { Add } from "@mui/icons-material";
-import { Session, Collection } from "state";
+import { Session, Collection, Thing, Operator } from "state";
 import { useWindowSize } from "hooks";
 
 interface SessionViewProps {
   viewChange: any;
   thingChange: any;
+  thing: Thing;
   sessions: Session[];
   collections: Collection[];
+  operators: Operator[];
   onUpdate: (session: Session) => void;
   onDelete: (sessionId: string) => void;
 }
@@ -26,6 +28,7 @@ export const SessionView: React.FC<SessionViewProps> = (
   const size = useWindowSize();
   const context = useContext(DashboardContext);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const generateSessionCards = useCallback(() => {
     let cards: any[] = [];
@@ -33,8 +36,10 @@ export const SessionView: React.FC<SessionViewProps> = (
       cards.push(
         <SessionCard
           key={session._id}
+          thing={props.thing}
           session={session}
           collections={props.collections}
+          operators={props.operators}
           onUpdate={props.onUpdate}
           onDelete={props.onDelete}
         />
@@ -66,9 +71,19 @@ export const SessionView: React.FC<SessionViewProps> = (
         <SessionModal
           show={showModal}
           toggle={() => setShowModal(false)}
+          thing={props.thing}
           collections={props.collections}
+          operators={props.operators}
         />
       )}
+      <Alert
+        title="Something went wrong..."
+        description="Please try again..."
+        color="red"
+        onDismiss={() => setShowAlert(false)}
+        show={showAlert}
+        slideOut
+      />
     </>
   );
 };

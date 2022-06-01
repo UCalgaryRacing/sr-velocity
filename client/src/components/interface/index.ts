@@ -12,3 +12,5 @@ export * from "./rangeSlider";
 export * from "./alert";
 export * from "./multiSelect";
 export * from "./slider";
+export * from "./dropzone";
+export * from "./datetime";
