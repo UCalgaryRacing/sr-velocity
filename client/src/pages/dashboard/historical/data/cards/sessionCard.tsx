@@ -95,6 +95,15 @@ export const SessionCard: React.FC<SessionCardProps> = (
           {convertUnixTime(props.session.endTime)}
         </div>
       )}
+      {props.session.operatorId && (
+        <div>
+          <b>Operator:&nbsp;</b>
+          {
+            props.operators.filter((o) => o._id === props.session.operatorId)[0]
+              .name
+          }
+        </div>
+      )}
       {isAuthAtLeast(user, UserRole.LEAD) && (
         <>
           <IconButton
@@ -144,7 +153,10 @@ export const SessionCard: React.FC<SessionCardProps> = (
       />
       <SessionModal
         show={showModal}
-        toggle={() => setShowModal(false)}
+        toggle={(session: Session) => {
+          if (session) props.onUpdate(session);
+          setShowModal(false);
+        }}
         thing={props.thing}
         session={props.session}
         collections={props.collections}
@@ -164,11 +176,5 @@ export const SessionCard: React.FC<SessionCardProps> = (
 
 const convertUnixTime = (unixTimestamp: number) => {
   var date = new Date(unixTimestamp * 1000);
-  var dmy = date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
-  var hours = date.getHours();
-  var minutes = "0" + date.getMinutes();
-  var seconds = "0" + date.getSeconds();
-  return (
-    dmy + " " + hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2)
-  );
+  return date.toLocaleString();
 };

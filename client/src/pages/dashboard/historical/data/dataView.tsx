@@ -75,7 +75,7 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
     if (session && session._id) {
       let updatedSessions = [...sessions];
       for (let i in sessions)
-        if (updatedSessions[i].name === session.name)
+        if (updatedSessions[i]._id === session._id)
           updatedSessions[i] = session;
       setSessions(updatedSessions);
     }
@@ -92,7 +92,7 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
     if (collection && collection._id) {
       let updatedCollections = [...collections];
       for (let i in collections)
-        if (updatedCollections[i].name === collection.name)
+        if (updatedCollections[i]._id === collection._id)
           updatedCollections[i] = collection;
       setCollections(updatedCollections);
     }

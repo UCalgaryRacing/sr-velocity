@@ -35,3 +35,7 @@ export const deleteSession = (sessionId: string) => {
       .catch((err: any) => reject(err));
   });
 };
+
+export const downloadSessionFile = (sessionId: string) => {
+  return new Promise<void>((resolve, reject) => {});
+};

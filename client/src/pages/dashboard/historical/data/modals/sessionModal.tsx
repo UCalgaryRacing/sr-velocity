@@ -57,7 +57,8 @@ export const SessionModal: React.FC<SessionModalProps> = (
     setFile(acceptedFiles[0]);
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e: any) => {
+    e.preventDefault();
     if (!startTime || !endTime) {
       alert("The session must have a start and end time.");
       return;
