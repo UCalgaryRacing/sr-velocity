@@ -11,4 +11,5 @@ export * from "./sessions";
 export * from "./things";
 export * from "./chartPresets";
 export * from "./rawDataPresets";
+export * from "./comment";
 export * from "./iot";

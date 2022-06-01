@@ -7,5 +7,5 @@ export type Comment = {
   time: string;
   content: string;
   sessionId?: string;
-  runId?: string;
+  collectionId?: string;
 };

@@ -249,7 +249,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         />
         <InputField
           name="frequency"
-          title="Frequency"
+          title="Frequency (Hz)"
           type="number"
           min={1}
           max={120}

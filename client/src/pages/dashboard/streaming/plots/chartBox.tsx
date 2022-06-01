@@ -38,7 +38,6 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
           />
         </ToolTip>
       </div>
-      <div className="chart-legend"></div>
       <div className="chart-area">
         {(() => {
           switch (props.chart.type) {

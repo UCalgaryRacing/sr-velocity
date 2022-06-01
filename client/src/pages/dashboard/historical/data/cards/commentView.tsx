@@ -2,31 +2,15 @@
 // Written by Jonathan Breidfjord
 
 import { formatDistanceToNow } from "date-fns";
-import { RunType } from "./run";
-import { SessionType } from "./session";
-import { useFetch } from "../../../../hooks/useFetch";
+import { Session, Collection, Comment } from "state";
 
-interface Comment {
-  id: number;
-  userId: number;
-  date: Date;
-  content: string;
-}
-
-interface SessionComment extends Comment {
-  sessionId: number;
-}
-
-interface RunComment extends Comment {
-  runId: number;
-}
-
-type Props = {
-  item: RunType | SessionType;
-  itemType: "run" | "session";
+type CommentViewProps = {
+  contextId: string;
 };
 
-export default function Comments({ item, itemType }: Props) {
+export const CommentView: React.FC<CommentViewProps> = (
+  props: CommentViewProps
+) => {
   // TODO: Replace with getRunComments and getSessionComments
   // Temporary URL, using json-server for dummy data
   // const url = `http://localhost:3001/${itemType}Comments?${itemType}Id=${item.id}`;
@@ -56,4 +40,4 @@ export default function Comments({ item, itemType }: Props) {
   //   </ul>
   // );
   return <></>;
-}
+};

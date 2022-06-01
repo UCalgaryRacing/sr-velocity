@@ -1,0 +1,32 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.session-card {
+  min-height: 88px !important;
+}
+
+#session-card-delete {
+  position: absolute;
+  top: 5px;
+  right: 45px;
+}
+
+#session-card-edit {
+  position: absolute;
+  top: 45px;
+  right: 45px;
+}
+
+#session-card-download {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#session-card-comment {
+  position: absolute;
+  top: 45px;
+  right: 5px;
+}

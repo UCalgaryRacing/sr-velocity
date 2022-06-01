@@ -2,8 +2,7 @@
 // Written by Jonathan Breidfjord
 
 import { Comment, GetApp } from "@mui/icons-material";
-import Comments from "./comments";
-import { IconButton } from "../../../../components/interface/iconButton";
+import { IconButton } from "components/interface";
 import { useState } from "react";
 
 export interface SessionType {
@@ -16,15 +15,18 @@ type Props = {
   handleDownload: (item: SessionType) => void;
 };
 
-export default function Session({ session, handleDownload }: Props) {
+export default function CollectionCard({ session, handleDownload }: Props) {
   const [showComments, setShowComments] = useState(false);
 
   return (
     <div className="session data-list-item">
       {session.name}
       <IconButton onClick={() => handleDownload(session)} img={<GetApp />} />
-      <IconButton onClick={() => setShowComments((prev) => !prev)} img={<Comment />} />
-      {showComments && <Comments item={session} itemType="session" />}
+      <IconButton
+        onClick={() => setShowComments((prev) => !prev)}
+        img={<Comment />}
+      />
+      {/* {showComments && <Comments item={session} itemType="session" />} */}
     </div>
   );
 }

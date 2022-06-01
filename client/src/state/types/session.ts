@@ -6,7 +6,7 @@ import { Comment } from ".";
 export type Session = {
   _id: string;
   name: string;
-  startTime: string;
-  endTime: string;
-  comments?: Comment[];
+  startTime: number;
+  endTime: number;
+  collectionId: string;
 };

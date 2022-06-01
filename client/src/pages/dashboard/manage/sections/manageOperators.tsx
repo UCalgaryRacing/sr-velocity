@@ -47,7 +47,6 @@ export const ManageOperators: React.FC = () => {
   const [showOperatorModal, setShowOperatorModal] = useState<boolean>(false);
 
   useEffect(() => fetchOperators(), []);
-
   useEffect(
     () => generateOperatorCards(operators, things),
     [operators, things]
@@ -67,6 +66,8 @@ export const ManageOperators: React.FC = () => {
   }, [thingFilter]);
 
   const fetchOperators = () => {
+    setFetching(true);
+    setError(false);
     getOperators()
       .then((operators: Operator[]) => {
         getThings()

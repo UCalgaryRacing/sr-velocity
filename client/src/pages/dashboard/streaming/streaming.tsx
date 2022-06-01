@@ -33,7 +33,7 @@ const Streaming: React.FC = () => {
   const [fetchingSensorsError, setFetchingSensorsError] =
     useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [thing, setThing] = useState<Thing>();
+  const [currentThing, setCurrentThing] = useState<Thing>();
   const [things, setThings] = useState<Thing[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
 
@@ -45,7 +45,7 @@ const Streaming: React.FC = () => {
   useEffect(() => {
     fetchSensors(); // @ts-ignore
     onDisconnectionCallback.current = onDisconnection;
-  }, [thing, stream]);
+  }, [currentThing, stream]);
 
   const fetchThings = () => {
     setFetchingThings(true);
@@ -56,7 +56,7 @@ const Streaming: React.FC = () => {
           a.name.toLowerCase().localeCompare(b.name.toLowerCase())
         );
         setThings(things);
-        if (things.length === 1) setThing(things[0]);
+        if (things.length === 1) setCurrentThing(things[0]);
         setFetchingThings(false);
       })
       .catch((_: any) => {
@@ -66,11 +66,11 @@ const Streaming: React.FC = () => {
   };
 
   const fetchSensors = () => {
-    if (thing) {
+    if (currentThing) {
       // Fetch the sensors
       setFetchingSensors(true);
       setFetchingSensorsError(false);
-      getSensors(thing?._id)
+      getSensors(currentThing?._id)
         .then((sensors: Sensor[]) => {
           sensors.sort((a: Sensor, b: Sensor) =>
             a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -79,7 +79,7 @@ const Streaming: React.FC = () => {
           setFetchingSensors(false);
         })
         .catch((_: any) => {
-          setThing(undefined);
+          setCurrentThing(undefined);
           setFetchingSensorsError(true);
           setFetchingSensors(false);
         });
@@ -87,7 +87,7 @@ const Streaming: React.FC = () => {
       // Reopen the stream with the new thing id
       stream.unsubscribeFromDisconnection(disconnectSubId);
       stream.close();
-      stream.connect(thing._id);
+      stream.connect(currentThing._id);
       setDisconnectSubId(
         stream.subscribeToDisconnection(onDisconnectionCallback)
       );
@@ -95,13 +95,13 @@ const Streaming: React.FC = () => {
   };
 
   const onDisconnection = () => {
-    setThing(undefined);
+    setCurrentThing(undefined);
     setShowAlert(true);
   };
 
   if (context.section !== "Streaming") return <></>;
 
-  if (!thing || fetchingSensors) {
+  if (!currentThing || fetchingSensors) {
     return (
       <>
         <DashboardLoading>
@@ -149,12 +149,9 @@ const Streaming: React.FC = () => {
                       <DropDown
                         placeholder="Select Thing..."
                         options={things.map((thing) => {
-                          return { value: thing._id, label: thing.name };
+                          return { value: thing, label: thing.name };
                         })}
-                        onChange={(value: any) => {
-                          for (const thing of things)
-                            if (thing._id === value.value) setThing(thing);
-                        }}
+                        onChange={(value: any) => setCurrentThing(value.value)}
                         isSearchable
                       />
                     </>
@@ -190,7 +187,7 @@ const Streaming: React.FC = () => {
           })}
           onChange={(value: any) => {
             for (const thing of things)
-              if (thing._id === value.value) setThing(thing);
+              if (thing._id === value.value) setCurrentThing(thing);
           }}
           isSearchable
         />
@@ -203,9 +200,9 @@ const Streaming: React.FC = () => {
           <ChartView
             sensors={sensors}
             things={things}
-            thing={thing}
+            thing={currentThing}
             stream={stream}
-            onThingChange={(thing: Thing) => setThing(thing)}
+            onThingChange={(thing: Thing) => setCurrentThing(thing)}
           />
         );
       case StreamingSection.RAW_DATA:
@@ -213,9 +210,9 @@ const Streaming: React.FC = () => {
           <RawDataView
             sensors={sensors}
             things={things}
-            thing={thing}
+            thing={currentThing}
             stream={stream}
-            onThingChange={(thing: Thing) => setThing(thing)}
+            onThingChange={(thing: Thing) => setCurrentThing(thing)}
           />
         );
       default:
