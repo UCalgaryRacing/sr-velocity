@@ -54,7 +54,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
   };
 
   const onFileDrop = (acceptedFiles: any[]) => {
-    if (!acceptedFiles[0].name.endsWith(".csv")) setFile(acceptedFiles[0]);
+    setFile(acceptedFiles[0]);
   };
 
   const onSubmit = () => {
@@ -65,11 +65,6 @@ export const SessionModal: React.FC<SessionModalProps> = (
 
     if (startTime.getTime() > endTime.getTime()) {
       alert("The end time must be after the start time.");
-      return;
-    }
-
-    if (!file) {
-      alert("A file must be selected to create a session.");
       return;
     }
 
@@ -90,6 +85,10 @@ export const SessionModal: React.FC<SessionModalProps> = (
           alert("Could not update session, please try again.");
         });
     } else {
+      if (!file) {
+        alert("A file must be selected to create a session.");
+        return;
+      }
       let session = {
         ...values,
         startTime: startTime.getTime(),

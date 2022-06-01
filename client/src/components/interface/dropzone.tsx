@@ -10,7 +10,7 @@ interface DropZoneProps extends DropzoneOptions {
 }
 
 export const DropZone: React.FC<DropZoneProps> = (props: DropZoneProps) => {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     ...props,
     accept: { "text/csv": [".csv"] },
   });
