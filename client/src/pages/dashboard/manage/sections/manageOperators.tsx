@@ -48,9 +48,10 @@ export const ManageOperators: React.FC = () => {
 
   useEffect(() => fetchOperators(), []);
 
-  useEffect(() => {
-    generateOperatorCards(operators, things);
-  }, [operators, things]);
+  useEffect(
+    () => generateOperatorCards(operators, things),
+    [operators, things]
+  );
 
   useEffect(() => {
     if (thingFilter === "All") {

@@ -62,6 +62,8 @@ export const ManageThings: React.FC = () => {
   }, [operatorFilter]);
 
   const fetchThings = () => {
+    setFetching(true);
+    setError(false);
     getThings()
       .then((things: Thing[]) => {
         getOperators()

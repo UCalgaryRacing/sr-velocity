@@ -57,6 +57,7 @@ const Dashboard: React.FC = () => {
 
   const fetchOrganization = () => {
     setLoading(true);
+    setSetupError(false);
     getOrganization()
       .then((organization: Organization) => {
         setOrganization(organization);

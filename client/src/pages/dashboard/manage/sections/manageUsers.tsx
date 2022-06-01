@@ -39,6 +39,8 @@ export const ManageUsers: React.FC = () => {
   }, [roleFilter]);
 
   const fetchUsers = () => {
+    setFetching(true);
+    setError(false);
     getUsers()
       .then((users: User[]) => {
         users.sort((a: User, b: User) =>

@@ -56,6 +56,8 @@ export const ManageSensors: React.FC = () => {
   useEffect(() => generateSensorCards(sensors), [sensors]);
 
   const fetchThings = () => {
+    setFetchingThings(true);
+    setErrorFetchingThings(false);
     getThings()
       .then((things: Thing[]) => {
         things.sort((a: Thing, b: Thing) =>
@@ -75,6 +77,7 @@ export const ManageSensors: React.FC = () => {
   const fetchSensors = () => {
     if (thing) {
       setFetchingSensors(true);
+      setErrorFetchingSensors(false);
       getSensors(thing?._id)
         .then((sensors: Sensor[]) => {
           sensors.sort((a: Sensor, b: Sensor) =>

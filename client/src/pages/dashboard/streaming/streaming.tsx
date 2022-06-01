@@ -48,6 +48,8 @@ const Streaming: React.FC = () => {
   }, [thing, stream]);
 
   const fetchThings = () => {
+    setFetchingThings(true);
+    setFetchingThingsError(false);
     getThings()
       .then((things: Thing[]) => {
         things.sort((a: Thing, b: Thing) =>
@@ -67,6 +69,7 @@ const Streaming: React.FC = () => {
     if (thing) {
       // Fetch the sensors
       setFetchingSensors(true);
+      setFetchingSensorsError(false);
       getSensors(thing?._id)
         .then((sensors: Sensor[]) => {
           sensors.sort((a: Sensor, b: Sensor) =>
