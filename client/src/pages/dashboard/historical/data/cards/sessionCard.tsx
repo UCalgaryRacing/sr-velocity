@@ -162,7 +162,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
               onClick={() =>
                 showComments ? setShowComments(false) : fetchComments()
               }
-              loading={commentsLoading}
+              loading={true}
             />
           </>
         )}

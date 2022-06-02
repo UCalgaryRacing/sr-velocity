@@ -55,7 +55,11 @@ export const SessionView: React.FC<SessionViewProps> = (
         <div className="left">
           {size.width >= 916 ? (
             <ToolTip value="New Session">
-              <IconButton img={<Add />} onClick={() => setShowModal(true)} />
+              <IconButton
+                img={<Add />}
+                onClick={() => setShowModal(true)}
+                loading={true}
+              />
             </ToolTip>
           ) : (
             <TextButton
