@@ -2,7 +2,7 @@
 
 const got = require("got");
 
-async function call(path, method = "GET", options = {}) {
+const call = async (path, method = "GET", options = {}) => {
   // Setup the request
   options = options || {};
   const searchParams = options.searchParams || {};
@@ -26,6 +26,6 @@ async function call(path, method = "GET", options = {}) {
 
   // Return the response
   return res;
-}
+};
 
 module.exports = call;

@@ -8,7 +8,7 @@ import { Comment } from "state";
 
 export const getComments = (contextId: string) => {
   return new Promise<Comment[]>((resolve, reject) => {
-    request("GET", "/database/sessions/" + contextId + "/comments")
+    request("GET", "/database/comments/" + contextId)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -16,7 +16,7 @@ export const getComments = (contextId: string) => {
 
 export const postComment = (comment: Comment) => {
   return new Promise<Comment>((resolve, reject) => {
-    request("POST", "/database/comment", comment)
+    request("POST", "/database/comments", comment)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -24,7 +24,7 @@ export const postComment = (comment: Comment) => {
 
 export const putComment = (comment: Comment) => {
   return new Promise<void>((resolve, reject) => {
-    request("PUT", "/database/sessions/", comment)
+    request("PUT", "/database/comments/", comment)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));
   });
@@ -32,7 +32,7 @@ export const putComment = (comment: Comment) => {
 
 export const deleteComment = (commentId: Comment) => {
   return new Promise<void>((resolve, reject) => {
-    request("DELETE", "/database/sessions/comment" + commentId)
+    request("DELETE", "/database/comments/" + commentId)
       .then((_: any) => resolve())
       .catch((err: any) => reject(err));
   });

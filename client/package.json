@@ -26,6 +26,7 @@
     "buffer": "^6.0.3",
     "colormap": "^2.3.2",
     "date-fns": "^2.28.0",
+    "downloadjs": "^1.4.7",
     "firebase": "^9.4.1",
     "hamburger-react": "^2.4.1",
     "js-cookie": "^3.0.1",
@@ -87,6 +88,7 @@
     ]
   },
   "devDependencies": {
+    "@types/downloadjs": "^1.4.3",
     "@types/enzyme": "^3.10.8",
     "@types/jquery": "^3.5.8",
     "@types/rc-slider": "^8.6.4",

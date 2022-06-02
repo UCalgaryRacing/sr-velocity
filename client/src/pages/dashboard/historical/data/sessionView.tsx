@@ -10,6 +10,7 @@ import { DashboardContext } from "../../dashboard";
 import { Add } from "@mui/icons-material";
 import { Session, Collection, Thing, Operator } from "state";
 import { useWindowSize } from "hooks";
+import "./_styling/sessionView.css";
 
 interface SessionViewProps {
   viewChange: any;
@@ -66,7 +67,7 @@ export const SessionView: React.FC<SessionViewProps> = (
         </div>
         <div className="right">{props.thingChange}</div>
       </DashNav>
-      {generateSessionCards()}
+      <div id="session-cards">{generateSessionCards()}</div>
       {showModal && (
         <SessionModal
           show={showModal}

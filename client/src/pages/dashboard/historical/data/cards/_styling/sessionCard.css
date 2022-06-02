@@ -5,6 +5,7 @@ Written by Justin Tijunelis
 
 .session-card {
   min-height: 155px !important;
+  padding-right: 35px;
 }
 
 #session-card-delete {

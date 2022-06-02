@@ -37,5 +37,9 @@ export const deleteSession = (sessionId: string) => {
 };
 
 export const downloadSessionFile = (sessionId: string) => {
-  return new Promise<void>((resolve, reject) => {});
+  return new Promise<any>((resolve, reject) => {
+    request("GET", "/database/sessions/" + sessionId + "/file")
+      .then((blob: any) => resolve(blob))
+      .catch((err: any) => reject(err));
+  });
 };

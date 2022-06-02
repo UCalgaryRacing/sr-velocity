@@ -5,7 +5,6 @@ import React, { ButtonHTMLAttributes } from "react";
 import { CircularProgress } from "@mui/material";
 import "./_styling/iconButton.css";
 
-// How do we make sure only one of these props is passed?
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   src?: string;
   img?: any; // Check for JSX

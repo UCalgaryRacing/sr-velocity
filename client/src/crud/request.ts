@@ -13,7 +13,7 @@ export const request = (method: string, route: string, body: any = {}) => {
     let fetch_data: RequestInit = {
       method: method,
       headers: {
-        "Content-Type": "application/json", // TODO: Support other types
+        "Content-Type": "application/json",
         Accept: "application/json",
       },
       credentials: "include",

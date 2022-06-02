@@ -127,6 +127,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
 
   useEffect(() => {
     if (!chart) return;
+    setLastValues(
+      (() => {
+        let last: any = {};
+        for (const sensor of props.sensors)
+          last[sensor.smallId] = { value: 0, slope: 0 };
+        return last;
+      })()
+    );
     props.stream.unsubscribeFromSensors(dataSubId);
     initializeLineSeries();
     const smallIds = props.sensors.map((s) => s.smallId);
@@ -203,7 +211,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           </ToolTip>
           {generateSensor(
             sensor.name,
-            lastValues[sensor.smallId]["value"],
+            lastValues[sensor.smallId]
+              ? lastValues[sensor.smallId]["value"]
+              : 0,
             sensor.unit ? sensor.unit : ""
           )}
         </div>

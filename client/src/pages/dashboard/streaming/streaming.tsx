@@ -128,7 +128,7 @@ const Streaming: React.FC = () => {
                     title="Try Again"
                     onClick={() => {
                       if (fetchingThings) fetchThings();
-                      else fetchSensors();
+                      else setFetchingSensorsError(false);
                     }}
                   />
                 </>

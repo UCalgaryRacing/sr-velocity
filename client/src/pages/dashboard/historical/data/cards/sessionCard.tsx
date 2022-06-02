@@ -22,9 +22,10 @@ import {
   RootState,
 } from "state";
 import { CommentView } from "./commentView";
-import { deleteSession, getComments } from "crud";
+import { deleteSession, getComments, downloadSessionFile } from "crud";
 import { ConfirmModal } from "components/modals";
 import { SessionModal } from "../modals/sessionModal";
+import download from "downloadjs";
 import "./_styling/sessionCard.css";
 
 interface SessionCardProps {
@@ -67,17 +68,26 @@ export const SessionCard: React.FC<SessionCardProps> = (
     getComments(props.session._id)
       .then((comments: Comment[]) => {
         setComments(comments);
-        //setCommentsLoading(false);
+        setCommentsLoading(false);
         setShowComments(true);
       })
       .catch((_: any) => {
-        //setCommentsLoading(false);
+        setCommentsLoading(false);
         setShowAlert(true);
       });
   };
 
   const downloadFile = () => {
-    // TODO
+    setDownloading(true);
+    downloadSessionFile(props.session._id)
+      .then((blob: any) => {
+        download(blob, props.session.name + ".csv", "text/csv");
+        setDownloading(false);
+      })
+      .catch((_: any) => {
+        setDownloading(false);
+        alert("Failed to download file. Please try again...");
+      });
   };
 
   return (
@@ -195,6 +205,6 @@ export const SessionCard: React.FC<SessionCardProps> = (
 };
 
 const convertUnixTime = (unixTimestamp: number) => {
-  var date = new Date(unixTimestamp * 1000);
+  var date = new Date(unixTimestamp);
   return date.toLocaleString();
 };

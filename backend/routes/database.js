@@ -13,9 +13,14 @@ database.all("*", async (req, res) => {
   })
     .then(async (response) => {
       if (response.statusCode === 200) {
-        if (response.body)
+        if (response.body) {
           res.status(response.statusCode).json(response.body).end();
-        else res.status(response.statusCode).end();
+        } else if (response.headers["content-type"] == "text/csv") {
+          let file = await response.blob();
+          res.status(response.statusCode).send(file).end();
+        } else {
+          res.status(response.statusCode).end();
+        }
       } else {
         res.status(response.statusCode).end();
       }

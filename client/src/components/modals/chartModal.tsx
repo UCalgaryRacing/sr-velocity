@@ -139,15 +139,13 @@ export const ChartModal: React.FC<ChartModalProps> = (
             else setSensorIds([]);
             setSelectedSensors([]);
           }}
-          defaultValue={
+          value={
             props.chart
               ? {
                   value: props.chart.type as ChartType,
                   label: props.chart.type as ChartType,
                 }
-              : props.sensors.length === 1
-              ? { value: ChartType.LINE, label: ChartType.LINE }
-              : undefined
+              : { value: ChartType.LINE, label: ChartType.LINE }
           }
           isSearchable
         />

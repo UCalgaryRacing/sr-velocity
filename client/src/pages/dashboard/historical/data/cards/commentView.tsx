@@ -1,5 +1,5 @@
 // Copyright Schulich Racing FSAE
-// Written by Jonathan Breidfjord
+// Written by Justin Tijunelis
 
 import React, { useCallback, useState } from "react";
 import { CommentCard } from "./commentCard";
