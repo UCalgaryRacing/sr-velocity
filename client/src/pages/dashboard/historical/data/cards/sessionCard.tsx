@@ -21,6 +21,7 @@ import {
   useAppSelector,
   RootState,
 } from "state";
+import { CommentView } from "./commentView";
 import { deleteSession, getComments } from "crud";
 import { ConfirmModal } from "components/modals";
 import { SessionModal } from "../modals/sessionModal";
@@ -41,8 +42,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
   const user = useAppSelector((state: RootState) => state.user);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showConfirmationModal, setShowConfirmationModal] =
-    useState<boolean>(false);
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -67,11 +67,11 @@ export const SessionCard: React.FC<SessionCardProps> = (
     getComments(props.session._id)
       .then((comments: Comment[]) => {
         setComments(comments);
-        setCommentsLoading(false);
+        //setCommentsLoading(false);
         setShowComments(true);
       })
       .catch((_: any) => {
-        setCommentsLoading(false);
+        //setCommentsLoading(false);
         setShowAlert(true);
       });
   };
@@ -81,95 +81,115 @@ export const SessionCard: React.FC<SessionCardProps> = (
   };
 
   return (
-    <div className="card session-card">
-      <div className="card-title">
-        <b>{props.session.name}</b>
-      </div>
-      <div>
-        <b>Start Time:&nbsp;</b>
-        {convertUnixTime(props.session.startTime)}
-      </div>
-      {props.session.endTime && (
-        <div>
-          <b>End Time:&nbsp;</b>
-          {convertUnixTime(props.session.endTime)}
+    <div className="card">
+      <div className="session-card">
+        <div className="card-title">
+          <b>{props.session.name}</b>
         </div>
-      )}
-      {props.session.operatorId && (
         <div>
-          <b>Operator:&nbsp;</b>
-          {
-            props.operators.filter((o) => o._id === props.session.operatorId)[0]
-              .name
-          }
+          <b>Start Time:&nbsp;</b>
+          {convertUnixTime(props.session.startTime)}
         </div>
-      )}
-      {isAuthAtLeast(user, UserRole.LEAD) && (
-        <>
-          <IconButton
-            id="session-card-delete"
-            img={<CloseOutlined />}
-            onClick={() => setShowConfirmationModal(true)}
-          />
-          {props.session.endTime && (
+        {props.session.endTime && (
+          <div>
+            <b>End Time:&nbsp;</b>
+            {convertUnixTime(props.session.endTime)}
+          </div>
+        )}
+        {props.session.collectionId && (
+          <div>
+            <b>Collection:&nbsp;</b>
+            {
+              props.collections.filter(
+                (c) => c._id === props.session.collectionId
+              )[0].name
+            }
+          </div>
+        )}
+        {props.session.operatorId && (
+          <div>
+            <b>Operator:&nbsp;</b>
+            {
+              props.operators.filter(
+                (o) => o._id === props.session.operatorId
+              )[0].name
+            }
+          </div>
+        )}
+        {isAuthAtLeast(user, UserRole.LEAD) && (
+          <>
             <IconButton
-              id="session-card-edit"
-              img={<Edit />}
-              onClick={() => setShowModal(true)}
+              id="session-card-delete"
+              img={<CloseOutlined />}
+              onClick={() => setShowConfirmModal(true)}
             />
-          )}
-        </>
+            {props.session.endTime && (
+              <IconButton
+                id="session-card-edit"
+                img={<Edit />}
+                onClick={() => setShowModal(true)}
+              />
+            )}
+          </>
+        )}
+        {isAuthAtLeast(user, UserRole.MEMBER) && (
+          <>
+            <IconButton
+              id="session-card-download"
+              img={<FileDownloadOutlined />}
+              onClick={() => downloadFile()}
+              loading={downloading}
+            />
+            <IconButton
+              id="session-card-comment"
+              img={
+                showComments ? (
+                  <CommentsDisabledOutlined />
+                ) : (
+                  <CommentOutlined />
+                )
+              }
+              onClick={() =>
+                showComments ? setShowComments(false) : fetchComments()
+              }
+              loading={commentsLoading}
+            />
+          </>
+        )}
+        <ConfirmModal
+          title={
+            "Are you sure you want to delete Session '" +
+            props.session.name +
+            "'?"
+          }
+          show={showConfirmModal}
+          toggle={() => setShowConfirmModal(false)}
+          onConfirm={onDelete}
+          loading={deleteLoading}
+        />
+        <SessionModal
+          show={showModal}
+          toggle={(session: Session) => {
+            if (session) props.onUpdate(session);
+            setShowModal(false);
+          }}
+          thing={props.thing}
+          session={props.session}
+          collections={props.collections}
+          operators={props.operators}
+        />
+        <Alert
+          title="Something went wrong..."
+          description="Please try again..."
+          color="red"
+          onDismiss={() => setShowAlert(false)}
+          show={showAlert}
+          slideOut
+        />
+      </div>
+      {showComments && (
+        <CommentView contextId={props.session._id} comments={comments} />
       )}
-      {isAuthAtLeast(user, UserRole.MEMBER) && (
-        <>
-          <IconButton
-            id="session-card-download"
-            img={<FileDownloadOutlined />}
-            onClick={() => downloadFile()}
-            loading={downloading}
-          />
-          <IconButton
-            id="session-card-comment"
-            img={
-              showComments ? <CommentsDisabledOutlined /> : <CommentOutlined />
-            }
-            onClick={() =>
-              showComments ? setShowComments(false) : fetchComments()
-            }
-            loading={commentsLoading}
-          />
-        </>
-      )}
-      <ConfirmModal
-        title={
-          "Are you sure you want to delete Session '" +
-          props.session.name +
-          "'?"
-        }
-        show={showConfirmationModal}
-        toggle={() => setShowConfirmationModal(false)}
-        onConfirm={onDelete}
-        loading={deleteLoading}
-      />
-      <SessionModal
-        show={showModal}
-        toggle={(session: Session) => {
-          if (session) props.onUpdate(session);
-          setShowModal(false);
-        }}
-        thing={props.thing}
-        session={props.session}
-        collections={props.collections}
-        operators={props.operators}
-      />
-      <Alert
-        title="Something went wrong..."
-        description="Please try again..."
-        color="red"
-        onDismiss={() => setShowAlert(false)}
-        show={showAlert}
-        slideOut
-      />
     </div>
   );
 };

@@ -9,7 +9,6 @@ Written by Justin Tijunelis
   min-height: 87px;
   padding: 5px;
   font-size: var(--fz-xs);
-  padding-right: 50px;
 }
 
 .card .card-title {

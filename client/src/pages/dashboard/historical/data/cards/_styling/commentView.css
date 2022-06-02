@@ -1,0 +1,13 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.comment-view {
+  margin-top: 5px;
+  border-top: 1px solid var(--red);
+}
+
+.comment-view .comment-content {
+  margin-top: 5px;
+}

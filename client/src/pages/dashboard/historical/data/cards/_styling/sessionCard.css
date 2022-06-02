@@ -4,29 +4,29 @@ Written by Justin Tijunelis
 */
 
 .session-card {
-  min-height: 88px !important;
+  min-height: 155px !important;
 }
 
 #session-card-delete {
   position: absolute;
   top: 5px;
-  right: 45px;
+  right: 5px;
 }
 
 #session-card-edit {
   position: absolute;
   top: 45px;
-  right: 45px;
+  right: 5px;
 }
 
 #session-card-download {
   position: absolute;
-  top: 5px;
+  top: 85px;
   right: 5px;
 }
 
 #session-card-comment {
   position: absolute;
-  top: 45px;
+  top: 125px;
   right: 5px;
 }

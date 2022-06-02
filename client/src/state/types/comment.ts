@@ -4,7 +4,8 @@
 export type Comment = {
   _id: string;
   userId: string;
-  time: string;
+  username: string;
+  time: number;
   content: string;
   sessionId?: string;
   collectionId?: string;
