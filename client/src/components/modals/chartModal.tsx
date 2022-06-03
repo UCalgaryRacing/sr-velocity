@@ -156,6 +156,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
             selectedValues={selectedSensors}
             onSelect={onSensorChange}
             onRemove={onSensorChange}
+            selectionLimit={4}
             isSearchable
           />
         )}

@@ -20,7 +20,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   ...props
 }) => {
   return (
-    <button className="icon-button" {...props}>
+    <button className="icon-button" {...props} disabled={props.disabled}>
       {loading ? (
         <CircularProgress
           className="icon-loading"

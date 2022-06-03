@@ -4,8 +4,6 @@
 import { request } from "./request";
 import { Comment } from "state";
 
-// TODO: Update go db to use one comment model, rip sessions out.
-
 export const getComments = (contextId: string) => {
   return new Promise<Comment[]>((resolve, reject) => {
     request("GET", "/database/comments/" + contextId)
@@ -30,7 +28,7 @@ export const putComment = (comment: Comment) => {
   });
 };
 
-export const deleteComment = (commentId: Comment) => {
+export const deleteComment = (commentId: string) => {
   return new Promise<void>((resolve, reject) => {
     request("DELETE", "/database/comments/" + commentId)
       .then((_: any) => resolve())

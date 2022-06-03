@@ -13,6 +13,7 @@ import { useWindowSize } from "hooks";
 import "./_styling/sessionView.css";
 
 interface SessionViewProps {
+  refresh: any;
   viewChange: any;
   thingChange: any;
   thing: Thing;
@@ -53,13 +54,10 @@ export const SessionView: React.FC<SessionViewProps> = (
     <>
       <DashNav margin={context.margin}>
         <div className="left">
+          {props.refresh}
           {size.width >= 916 ? (
             <ToolTip value="New Session">
-              <IconButton
-                img={<Add />}
-                onClick={() => setShowModal(true)}
-                loading={true}
-              />
+              <IconButton img={<Add />} onClick={() => setShowModal(true)} />
             </ToolTip>
           ) : (
             <TextButton
@@ -75,7 +73,10 @@ export const SessionView: React.FC<SessionViewProps> = (
       {showModal && (
         <SessionModal
           show={showModal}
-          toggle={() => setShowModal(false)}
+          toggle={(session: Session) => {
+            if (session) props.onUpdate(session);
+            setShowModal(false);
+          }}
           thing={props.thing}
           collections={props.collections}
           operators={props.operators}

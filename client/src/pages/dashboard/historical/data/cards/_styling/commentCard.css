@@ -21,18 +21,22 @@ Written by Justin Tijunelis
   color: var(--red);
   font-size: 8px;
   margin-top: 7px;
+  position: absolute;
+  top: 0px;
+  right: 5px;
 }
 
 .comment-card .modify-comment {
   display: flex;
-}
-
-.comment-card #comment-edit {
-  margin-right: 30px;
+  gap: 10px;
   text-decoration: underline;
   font-weight: bold;
+  font-style: italic;
   cursor: pointer;
   color: var(--red);
+  position: absolute;
+  bottom: 0px;
+  right: 5px;
 }
 
 .comment-card #comment-delete {
@@ -40,4 +44,8 @@ Written by Justin Tijunelis
   text-decoration: underline;
   font-weight: bold;
   color: var(--red);
+}
+
+.comment-card p {
+  margin: 0;
 }

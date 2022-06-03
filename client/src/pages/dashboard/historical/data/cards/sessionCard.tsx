@@ -20,6 +20,7 @@ import {
   UserRole,
   useAppSelector,
   RootState,
+  CommentType,
 } from "state";
 import { CommentView } from "./commentView";
 import { deleteSession, getComments, downloadSessionFile } from "crud";
@@ -49,6 +50,14 @@ export const SessionCard: React.FC<SessionCardProps> = (
   const [comments, setComments] = useState<Comment[]>([]);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertError, setAlertError] = useState<boolean>(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
+
+  const alert = (error: boolean, description: string) => {
+    setAlertDescription(description);
+    setAlertError(error);
+    setShowAlert(true);
+  };
 
   const onDelete = () => {
     setDeleteLoading(true);
@@ -67,6 +76,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
     setCommentsLoading(true);
     getComments(props.session._id)
       .then((comments: Comment[]) => {
+        comments.sort((a: Comment, b: Comment) => a.lastUpdate - b.lastUpdate);
         setComments(comments);
         setCommentsLoading(false);
         setShowComments(true);
@@ -75,6 +85,34 @@ export const SessionCard: React.FC<SessionCardProps> = (
         setCommentsLoading(false);
         setShowAlert(true);
       });
+  };
+
+  const onCommentUpdate = (comment: Comment) => {
+    if (comment && comment._id) {
+      let updatedComments = [...comments];
+      let updated = false;
+      for (let i in comments) {
+        if (updatedComments[i]._id === comment._id) {
+          updatedComments[i] = comment;
+          updated = true;
+        }
+      }
+      if (!updated) updatedComments.push(comment);
+      updatedComments.sort(
+        (a: Comment, b: Comment) => a.lastUpdate - b.lastUpdate
+      );
+      setComments(updatedComments);
+      alert(false, updated ? "Comment updated!" : "Comment created!");
+    }
+  };
+
+  const onCommentDelete = (commentId: string) => {
+    if (!commentId) return;
+    let updatedComments = [];
+    for (let comment of comments)
+      if (comment._id !== commentId) updatedComments.push(comment);
+    setComments(updatedComments);
+    alert(false, "Comment deleted!");
   };
 
   const downloadFile = () => {
@@ -86,7 +124,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
       })
       .catch((_: any) => {
         setDownloading(false);
-        alert("Failed to download file. Please try again...");
+        alert(true, "Failed to download file. Please try again...");
       });
   };
 
@@ -100,12 +138,12 @@ export const SessionCard: React.FC<SessionCardProps> = (
           <b>Start Time:&nbsp;</b>
           {convertUnixTime(props.session.startTime)}
         </div>
-        {props.session.endTime && (
-          <div>
-            <b>End Time:&nbsp;</b>
-            {convertUnixTime(props.session.endTime)}
-          </div>
-        )}
+        <div>
+          <b>End Time:&nbsp;</b>
+          {props.session.endTime
+            ? convertUnixTime(props.session.endTime)
+            : "IN PROGRESS"}
+        </div>
         {props.session.collectionId && (
           <div>
             <b>Collection:&nbsp;</b>
@@ -133,13 +171,11 @@ export const SessionCard: React.FC<SessionCardProps> = (
               img={<CloseOutlined />}
               onClick={() => setShowConfirmModal(true)}
             />
-            {props.session.endTime && (
-              <IconButton
-                id="session-card-edit"
-                img={<Edit />}
-                onClick={() => setShowModal(true)}
-              />
-            )}
+            <IconButton
+              id="session-card-edit"
+              img={<Edit />}
+              onClick={() => setShowModal(true)}
+            />
           </>
         )}
         {isAuthAtLeast(user, UserRole.MEMBER) && (
@@ -149,6 +185,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
               img={<FileDownloadOutlined />}
               onClick={() => downloadFile()}
               loading={downloading}
+              disabled={props.session.endTime ? false : true}
             />
             <IconButton
               id="session-card-comment"
@@ -162,7 +199,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
               onClick={() =>
                 showComments ? setShowComments(false) : fetchComments()
               }
-              loading={true}
+              loading={commentsLoading}
             />
           </>
         )}
@@ -177,28 +214,36 @@ export const SessionCard: React.FC<SessionCardProps> = (
           onConfirm={onDelete}
           loading={deleteLoading}
         />
-        <SessionModal
-          show={showModal}
-          toggle={(session: Session) => {
-            if (session) props.onUpdate(session);
-            setShowModal(false);
-          }}
-          thing={props.thing}
-          session={props.session}
-          collections={props.collections}
-          operators={props.operators}
-        />
+        {showModal && (
+          <SessionModal
+            show={showModal}
+            toggle={(session: Session) => {
+              if (session) props.onUpdate(session);
+              setShowModal(false);
+            }}
+            thing={props.thing}
+            session={props.session}
+            collections={props.collections}
+            operators={props.operators}
+          />
+        )}
         <Alert
-          title="Something went wrong..."
-          description="Please try again..."
-          color="red"
+          title={alertError ? "Something went wrong..." : "Success"}
+          description={alertDescription}
+          color={alertError ? "red" : "green"}
           onDismiss={() => setShowAlert(false)}
           show={showAlert}
           slideOut
         />
       </div>
       {showComments && (
-        <CommentView contextId={props.session._id} comments={comments} />
+        <CommentView
+          contextId={props.session._id}
+          comments={comments}
+          type={CommentType.SESSION}
+          onUpdate={onCommentUpdate}
+          onDelete={onCommentDelete}
+        />
       )}
     </div>
   );

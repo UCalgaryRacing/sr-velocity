@@ -36,6 +36,10 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    if (values.name.includes("New Preset")) {
+      alert("The Preset name must be unique. Please try again...");
+      return;
+    }
     setLoading(true);
     const cleanedCharts = props.charts.map((chart) => {
       // @ts-ignore

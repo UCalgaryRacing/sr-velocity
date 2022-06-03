@@ -57,24 +57,33 @@ export const SessionModal: React.FC<SessionModalProps> = (
     setFile(acceptedFiles[0]);
   };
 
+  const inProgress = () => {
+    if (props.session) {
+      if (props.session.endTime) return false;
+      else return true;
+    }
+  };
+
   const onSubmit = (e: any) => {
     e.preventDefault();
-    if (!startTime || !endTime) {
-      alert("The session must have a start and end time.");
-      return;
-    }
+    if (!inProgress()) {
+      if (!startTime || !endTime) {
+        alert("The session must have a start and end time.");
+        return;
+      }
 
-    if (startTime.getTime() > endTime.getTime()) {
-      alert("The end time must be after the start time.");
-      return;
+      if (startTime.getTime() > endTime.getTime()) {
+        alert("The end time must be after the start time.");
+        return;
+      }
     }
 
     setLoading(true);
     if (props.session) {
       let session = {
         ...values,
-        startTime: startTime.getTime(),
-        endTime: endTime.getTime(),
+        startTime: startTime!.getTime(),
+        endTime: !inProgress() ? endTime!.getTime() : null,
       };
       putSession(session)
         .then(() => {
@@ -92,8 +101,8 @@ export const SessionModal: React.FC<SessionModalProps> = (
       }
       let session = {
         ...values,
-        startTime: startTime.getTime(),
-        endTime: endTime.getTime(),
+        startTime: startTime!.getTime(),
+        endTime: !inProgress() ? endTime!.getTime() : null,
       };
       postSession(session)
         .then((session: Session) => {
@@ -123,8 +132,12 @@ export const SessionModal: React.FC<SessionModalProps> = (
           maxLength={20}
           required
         />
-        <DateTime value={startTime} onChange={setStartTime} />
-        <DateTime value={endTime} onChange={setEndTime} />
+        {!inProgress() && (
+          <>
+            <DateTime value={startTime} onChange={setStartTime} />
+            <DateTime value={endTime} onChange={setEndTime} />
+          </>
+        )}
         {props.collections.length > 0 && (
           <DropDown
             placeholder="Select Collection..."

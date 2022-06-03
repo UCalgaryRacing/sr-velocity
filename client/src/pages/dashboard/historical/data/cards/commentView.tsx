@@ -2,51 +2,58 @@
 // Written by Justin Tijunelis
 
 import React, { useCallback, useState } from "react";
+import { CommentModal } from "../modals/commentModal";
 import { CommentCard } from "./commentCard";
-import { Comment } from "state";
-import { TextArea } from "components/interface";
+import { Comment, CommentType } from "state";
+import { TextButton } from "components/interface";
 import "./_styling/commentView.css";
 
 type CommentViewProps = {
   contextId: string;
   comments: Comment[];
+  type: CommentType;
+  onUpdate: (comment: Comment) => void;
+  onDelete: (commentId: string) => void;
 };
 
 export const CommentView: React.FC<CommentViewProps> = (
   props: CommentViewProps
 ) => {
-  const [text, setText] = useState<string>();
+  const [showCommentModal, setShowCommentModal] = useState<boolean>(false);
 
   const generateComments = useCallback(() => {
     let commentUI: any = [];
-    // TODO: Sort the comments
-    //for (const comment of props.comments) {
-    commentUI.push(
-      <CommentCard
-        comment={{
-          _id: "",
-          userId: "",
-          username: "Tijunel",
-          time: 100,
-          content: "<div>This is a comment.<div>",
-          sessionId: props.contextId,
-        }}
-      />
-    );
-    //}
-    return commentUI;
+    for (const comment of props.comments)
+      commentUI.push(
+        <CommentCard
+          comment={comment}
+          contextId={props.contextId}
+          type={props.type}
+          onUpdate={props.onUpdate}
+          onDelete={props.onDelete}
+        />
+      );
+    if (commentUI.length > 0) return commentUI;
+    else return <div className="no-comments">No comments yet!</div>;
   }, [props.comments]);
 
   return (
     <div className="comment-view">
       <div className="comment-content">
         {generateComments()}
-        <TextArea
-          value={text}
-          onUpdate={setText}
-          holder="Comment with velocity..."
-        />
+        <TextButton title="Comment" onClick={() => setShowCommentModal(true)} />
       </div>
+      {showCommentModal && (
+        <CommentModal
+          show={showCommentModal}
+          toggle={(comment: Comment) => {
+            if (comment) props.onUpdate(comment);
+            setShowCommentModal(false);
+          }}
+          contextId={props.contextId}
+          type={props.type}
+        />
+      )}
     </div>
   );
 };

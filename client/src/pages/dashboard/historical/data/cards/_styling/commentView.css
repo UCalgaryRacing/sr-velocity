@@ -11,3 +11,9 @@ Written by Justin Tijunelis
 .comment-view .comment-content {
   margin-top: 5px;
 }
+
+.comment-view .no-comments {
+  font-weight: bold;
+  text-align: center;
+  margin: 5px;
+}
