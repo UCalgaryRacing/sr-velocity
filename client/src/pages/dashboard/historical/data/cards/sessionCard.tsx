@@ -76,7 +76,6 @@ export const SessionCard: React.FC<SessionCardProps> = (
     setCommentsLoading(true);
     getComments(props.session._id)
       .then((comments: Comment[]) => {
-        comments.sort((a: Comment, b: Comment) => a.lastUpdate - b.lastUpdate);
         setComments(comments);
         setCommentsLoading(false);
         setShowComments(true);
@@ -88,6 +87,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
   };
 
   const onCommentUpdate = (comment: Comment) => {
+    // TODO: Update to work with replies
     if (comment && comment._id) {
       let updatedComments = [...comments];
       let updated = false;
@@ -107,6 +107,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
   };
 
   const onCommentDelete = (commentId: string) => {
+    // TODO: Update to work with replies
     if (!commentId) return;
     let updatedComments = [];
     for (let comment of comments)
@@ -162,6 +163,12 @@ export const SessionCard: React.FC<SessionCardProps> = (
                 (o) => o._id === props.session.operatorId
               )[0].name
             }
+          </div>
+        )}
+        {props.session.fileSize && (
+          <div>
+            <b>File Size:&nbsp;</b>
+            {humanFileSize(props.session.fileSize)}
           </div>
         )}
         {isAuthAtLeast(user, UserRole.LEAD) && (
@@ -253,3 +260,22 @@ const convertUnixTime = (unixTimestamp: number) => {
   var date = new Date(unixTimestamp);
   return date.toLocaleString();
 };
+
+// Thank you: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
+function humanFileSize(bytes: any, si = false, dp = 1) {
+  const thresh = si ? 1000 : 1024;
+  if (Math.abs(bytes) < thresh) return bytes + " Bytes";
+  const units = si
+    ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+  let u = -1;
+  const r = 10 ** dp;
+  do {
+    bytes /= thresh;
+    ++u;
+  } while (
+    Math.round(Math.abs(bytes) * r) / r >= thresh &&
+    u < units.length - 1
+  );
+  return bytes.toFixed(dp) + " " + units[u];
+}

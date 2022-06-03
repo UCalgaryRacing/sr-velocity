@@ -65,8 +65,8 @@ export const ManageProfile: React.FC = () => {
   };
 
   return (
-    <div id="centered">
-      <div id="centered-content">
+    <div id="manage-centered">
+      <div id="manage-centered-content">
         <form id="sign-in-form" onSubmit={onSubmit}>
           <img src="assets/team-logo.svg" />
           <InputField

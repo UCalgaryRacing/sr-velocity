@@ -52,23 +52,35 @@ export const SessionView: React.FC<SessionViewProps> = (
 
   return (
     <>
-      <DashNav margin={context.margin}>
-        <div className="left">
-          {props.refresh}
-          {size.width >= 916 ? (
-            <ToolTip value="New Session">
-              <IconButton img={<Add />} onClick={() => setShowModal(true)} />
-            </ToolTip>
-          ) : (
+      {props.sessions.length === 0 ? (
+        <div id="centered">
+          <div id="centered-content">
+            <b>No Sessions yet.</b>
             <TextButton
-              title="New Session"
+              title="Create a Session"
               onClick={() => setShowModal(true)}
             />
-          )}
-          {props.viewChange}
+          </div>
         </div>
-        <div className="right">{props.thingChange}</div>
-      </DashNav>
+      ) : (
+        <DashNav margin={context.margin}>
+          <div className="left">
+            {props.refresh}
+            {size.width >= 916 ? (
+              <ToolTip value="New Session">
+                <IconButton img={<Add />} onClick={() => setShowModal(true)} />
+              </ToolTip>
+            ) : (
+              <TextButton
+                title="New Session"
+                onClick={() => setShowModal(true)}
+              />
+            )}
+            {props.viewChange}
+          </div>
+          <div className="right">{props.thingChange}</div>
+        </DashNav>
+      )}
       <div id="session-cards">{generateSessionCards()}</div>
       {showModal && (
         <SessionModal

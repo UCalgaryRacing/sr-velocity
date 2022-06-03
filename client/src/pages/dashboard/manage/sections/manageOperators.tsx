@@ -244,8 +244,8 @@ export const ManageOperators: React.FC = () => {
           </DashNav>
           <div id="manage-grid">{operatorCards}</div>
           {noMatchingOperators && (
-            <div id="no-match">
-              <div id="no-match-content">
+            <div id="centered">
+              <div id="centered-content">
                 <b>No matching Operators found...</b>
               </div>
             </div>
