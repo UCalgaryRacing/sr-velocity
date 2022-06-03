@@ -14,4 +14,6 @@ export type Comment = {
   content: string;
   sessionId?: string;
   collectionId?: string;
+  commentId?: string;
+  comments: Comment[];
 };

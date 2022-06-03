@@ -6,6 +6,8 @@ export type Session = {
   name: string;
   startTime: number;
   endTime?: number;
+  fileSize?: number;
+  generated: boolean;
   collectionId?: string;
   operatorId?: string;
 };

@@ -59,6 +59,10 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    if (values.name.includes("New Preset")) {
+      alert("The Preset name must be unique. Please try again...");
+      return;
+    }
     setLoading(true);
     if (props.rawDataPreset) {
       let preset = {
