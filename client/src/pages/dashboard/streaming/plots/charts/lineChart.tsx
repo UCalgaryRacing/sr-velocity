@@ -27,6 +27,7 @@ import { useWindowSize } from "hooks";
 import "./_styling/lineChart.css";
 
 const SLOPE_COMPUTE_INTERVAL = 1000; // milliseconds
+const MAX_FREQUENCY = 24;
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73", "#E69D00"];
 const theme = {
   whiteFill: new SolidFill({ color: ColorHEX("#FFFFFF") }),
@@ -532,7 +533,7 @@ const createSeries = (
 };
 
 const getSlope = (data: any[], window: number, frequency: number) => {
-  frequency = Math.min(30, frequency);
+  frequency = Math.min(MAX_FREQUENCY, frequency);
   let slope: any = [];
   if (data.length > 1) {
     let golayOptions = {
@@ -566,7 +567,7 @@ const getDataRate = (sensors: Sensor[]) => {
   for (const sensor of sensors)
     if (sensor["frequency"] > highest_frequency)
       highest_frequency = sensor["frequency"];
-  return Math.ceil(1000 / Math.min(highest_frequency, 30));
+  return Math.ceil(1000 / Math.min(highest_frequency, MAX_FREQUENCY));
 };
 
 const toggleGrid = (chart: any) => {

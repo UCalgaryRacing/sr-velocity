@@ -25,6 +25,7 @@ import { useForm, useWindowSize } from "hooks";
 import "./_styling/scatterChart.css";
 
 const UPDATE_INTERVAL = 1000; // milliseconds
+const MAX_FREQUENCY = 24;
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73"];
 const defaultColor = ColorRGBA(194, 45, 45, 255);
 const pointSize = 3;
@@ -504,7 +505,7 @@ const getDataRate = (sensors: Sensor[]) => {
   for (const sensor of sensors)
     if (sensor["frequency"] > highest_frequency)
       highest_frequency = sensor["frequency"];
-  return Math.ceil(1000 / Math.min(highest_frequency, 30));
+  return Math.ceil(1000 / Math.min(highest_frequency, MAX_FREQUENCY));
 };
 
 const fillData = (a: any[], b: any[]) => {
