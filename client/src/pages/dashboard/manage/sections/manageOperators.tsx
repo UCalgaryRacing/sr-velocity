@@ -151,11 +151,10 @@ export const ManageOperators: React.FC = () => {
 
   const onSearch = (query: string) => {
     let matchingOperators = [];
-    for (let thing of [...operators]) {
-      if (thing.name.toLowerCase().includes(query.toLowerCase())) {
+    let lowerQuery = query.toLowerCase().trim();
+    for (let thing of [...operators])
+      if (thing.name.toLowerCase().includes(lowerQuery))
         matchingOperators.push(thing);
-      }
-    }
     generateOperatorCards(matchingOperators, things);
     setNoMatchingOperators(matchingOperators.length === 0);
   };
@@ -235,8 +234,8 @@ export const ManageOperators: React.FC = () => {
                 id="manage-nav-search"
                 value={query}
                 onChange={(e: any) => {
-                  setQuery(e.target.value.trim());
-                  onSearch(e.target.value.trim());
+                  setQuery(e.target.value);
+                  onSearch(e.target.value);
                 }}
                 required
               />

@@ -152,13 +152,10 @@ export const ManageSensors: React.FC = () => {
 
   const onSearch = (query: string) => {
     let matchingSensors = [];
-    for (let sensor of [...sensors]) {
-      let lowerQuery = query.toLowerCase();
-      let name = sensor.name.toLowerCase();
-      if (name.includes(lowerQuery)) {
+    let lowerQuery = query.toLowerCase().trim();
+    for (let sensor of [...sensors])
+      if (sensor.name.toLowerCase().includes(lowerQuery))
         matchingSensors.push(sensor);
-      }
-    }
     generateSensorCards(matchingSensors);
     setNoMatchingSensors(matchingSensors.length === 0);
   };
@@ -304,8 +301,8 @@ export const ManageSensors: React.FC = () => {
                     id="manage-nav-search"
                     value={query}
                     onChange={(e: any) => {
-                      setQuery(e.target.value.trim());
-                      onSearch(e.target.value.trim());
+                      setQuery(e.target.value);
+                      onSearch(e.target.value);
                     }}
                     required
                   />

@@ -101,10 +101,11 @@ export const ManageUsers: React.FC = () => {
 
   const onSearch = (query: string) => {
     let matchingUsers = [];
+    let lowerQuery = query.toLowerCase().trim();
     for (let user of [...users]) {
       if (
-        user.name.toLowerCase().includes(query.toLowerCase()) ||
-        user.email.toLowerCase().includes(query.toLowerCase())
+        user.name.toLowerCase().includes(lowerQuery) ||
+        user.email.toLowerCase().includes(lowerQuery)
       ) {
         matchingUsers.push(user);
       }
@@ -159,8 +160,8 @@ export const ManageUsers: React.FC = () => {
                 id="manage-nav-search"
                 value={query}
                 onChange={(e: any) => {
-                  setQuery(e.target.value.trim());
-                  onSearch(e.target.value.trim());
+                  setQuery(e.target.value);
+                  onSearch(e.target.value);
                 }}
                 required
               />

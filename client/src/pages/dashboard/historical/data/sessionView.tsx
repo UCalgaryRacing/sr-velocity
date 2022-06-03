@@ -60,10 +60,20 @@ export const SessionView: React.FC<SessionViewProps> = (
 
   const onSearch = (query: string) => {
     let matchingSessions = [];
-    for (let session of [...props.sessions])
-      if (session.name.toLowerCase().includes(query.toLowerCase()))
-        // TODO : Search operators and collections too
+    let lowerQuery = query.toLowerCase().trim();
+    for (let session of [...props.sessions]) {
+      let nameMatches = session.name.toLowerCase().includes(lowerQuery);
+      let collectionsMatch =
+        props.collections.filter((c) =>
+          c.name.toLowerCase().includes(lowerQuery)
+        ).length > 0;
+      let operatorsMatch =
+        props.operators.filter((o) => o.name.toLowerCase().includes(lowerQuery))
+          .length > 0;
+      if (nameMatches || collectionsMatch || operatorsMatch) {
         matchingSessions.push(session);
+      }
+    }
     setSessions(matchingSessions);
   };
 
@@ -93,8 +103,8 @@ export const SessionView: React.FC<SessionViewProps> = (
             id="manage-nav-search"
             value={query}
             onChange={(e: any) => {
-              setQuery(e.target.value.trim());
-              onSearch(e.target.value.trim());
+              setQuery(e.target.value);
+              onSearch(e.target.value);
             }}
             required
           />

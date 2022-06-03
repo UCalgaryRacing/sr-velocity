@@ -144,11 +144,10 @@ export const ManageThings: React.FC = () => {
 
   const onSearch = (query: string) => {
     let matchingThings = [];
-    for (let thing of [...things]) {
-      if (thing.name.toLowerCase().includes(query.toLowerCase())) {
+    let lowerQuery = query.toLowerCase().trim();
+    for (let thing of [...things])
+      if (thing.name.toLowerCase().includes(lowerQuery))
         matchingThings.push(thing);
-      }
-    }
     generateThingCards(matchingThings, operators);
     setNoMatchingThings(matchingThings.length === 0);
   };
@@ -227,8 +226,8 @@ export const ManageThings: React.FC = () => {
                 id="manage-nav-search"
                 value={query}
                 onChange={(e: any) => {
-                  setQuery(e.target.value.trim());
-                  onSearch(e.target.value.trim());
+                  setQuery(e.target.value);
+                  onSearch(e.target.value);
                 }}
                 required
               />
