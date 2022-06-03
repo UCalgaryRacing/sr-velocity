@@ -13,6 +13,7 @@ interface CommentModalProps {
   contextId: string;
   comment?: Comment;
   type: CommentType;
+  reply?: boolean;
 }
 
 export const CommentModal: React.FC<CommentModalProps> = (
@@ -25,7 +26,7 @@ export const CommentModal: React.FC<CommentModalProps> = (
   const [text, setText] = useState<string>();
 
   useEffect(() => {
-    if (props.comment) setText(props.comment.content);
+    if (props.comment && !props.reply) setText(props.comment.content);
   }, [props.comment]);
 
   const alert = (description: string) => {
@@ -38,7 +39,7 @@ export const CommentModal: React.FC<CommentModalProps> = (
       alert("Comment must have information.");
     } else {
       setLoading(true);
-      if (props.comment) {
+      if (props.comment && !props.reply) {
         const comment: any = { ...props.comment, content: text };
         putComment(comment)
           .then(() => {
@@ -56,6 +57,8 @@ export const CommentModal: React.FC<CommentModalProps> = (
           time: new Date().getTime(),
           content: text!,
         };
+        if (props.reply && props.comment)
+          comment["commentId"] = props.comment?._id;
         if (props.type === CommentType.SESSION)
           comment["sessionId"] = props.contextId;
         else comment["collectionId"] = props.contextId;
@@ -75,7 +78,13 @@ export const CommentModal: React.FC<CommentModalProps> = (
   return (
     <>
       <BaseModal
-        title={props.comment ? "Edit Comment" : "New Comment"}
+        title={
+          props.comment
+            ? props.reply
+              ? "Reply to Comment"
+              : "Edit Comment"
+            : "New Comment"
+        }
         show={props.show}
         toggle={props.toggle}
       >

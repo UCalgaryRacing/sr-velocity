@@ -16,6 +16,7 @@ interface CommentCardProps {
   type: CommentType;
   onUpdate: (comment: Comment) => void;
   onDelete: (commentId: string) => void;
+  depth: number;
 }
 
 export const CommentCard: React.FC<CommentCardProps> = (
@@ -26,6 +27,7 @@ export const CommentCard: React.FC<CommentCardProps> = (
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [reply, setReply] = useState<boolean>(false);
 
   const onDelete = () => {
     setLoading(true);
@@ -40,19 +42,47 @@ export const CommentCard: React.FC<CommentCardProps> = (
       });
   };
 
+  const generateReplies = () => {
+    let replies = [];
+    for (const reply of props.comment.comments) {
+      replies.push(
+        <CommentCard
+          key={reply._id}
+          comment={reply}
+          contextId={props.contextId}
+          type={props.type}
+          onUpdate={props.onUpdate}
+          onDelete={props.onDelete}
+          depth={props.depth + 1}
+        />
+      );
+    }
+    return replies;
+  };
+
   return (
     <div className="comment-card">
-      <div className="comment-user">{props.comment.username}</div>
+      <div className="comment-user">
+        {props.comment.username}
+        <div className="comment-time">
+          {convertUnixTime(props.comment.lastUpdate)}
+        </div>
+      </div>
       <div className="comment-content">
         {ReactHtmlParser(props.comment.content)}
       </div>
-      <div className="comment-time">
-        {convertUnixTime(props.comment.lastUpdate)}
-      </div>
       <div className="modify-comment">
-        <div id="comment-reply" onClick={() => setShowModal(true)}>
-          Reply
-        </div>
+        {props.depth < 4 && (
+          <div
+            id="comment-reply"
+            onClick={() => {
+              setReply(true);
+              setShowModal(true);
+            }}
+          >
+            Reply
+          </div>
+        )}
         {user?._id === props.comment.userId && (
           <>
             <div id="comment-edit" onClick={() => setShowModal(true)}>
@@ -64,6 +94,7 @@ export const CommentCard: React.FC<CommentCardProps> = (
           </>
         )}
       </div>
+      {generateReplies()}
       <ConfirmModal
         title="Are you sure you want to delete this Comment?"
         show={showConfirm}
@@ -77,10 +108,12 @@ export const CommentCard: React.FC<CommentCardProps> = (
           toggle={(comment: Comment) => {
             if (comment) props.onUpdate(comment);
             setShowModal(false);
+            setReply(false);
           }}
           comment={props.comment}
           contextId={props.contextId}
           type={props.type}
+          reply={reply}
         />
       )}
       <Alert

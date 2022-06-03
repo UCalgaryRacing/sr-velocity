@@ -16,7 +16,7 @@ export const TextArea: React.FC<TextAreaProps> = (props: TextAreaProps) => {
   return (
     <div className="text-area">
       <ReactQuill
-        value={props.value}
+        value={props.value || ""}
         placeholder={props.holder}
         onChange={props.onUpdate}
       />

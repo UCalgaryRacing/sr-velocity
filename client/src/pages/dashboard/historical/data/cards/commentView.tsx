@@ -26,11 +26,13 @@ export const CommentView: React.FC<CommentViewProps> = (
     for (const comment of props.comments)
       commentUI.push(
         <CommentCard
+          key={comment._id}
           comment={comment}
           contextId={props.contextId}
           type={props.type}
           onUpdate={props.onUpdate}
           onDelete={props.onDelete}
+          depth={0}
         />
       );
     if (commentUI.length > 0) return commentUI;

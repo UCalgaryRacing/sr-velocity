@@ -14,16 +14,16 @@ Written by Justin Tijunelis
   font-style: italic;
   font-weight: bold;
   color: var(--red);
+  display: flex;
 }
 
 .comment-card .comment-time {
   font-style: italic;
   color: var(--red);
   font-size: 8px;
-  margin-top: 7px;
-  position: absolute;
-  top: 0px;
-  right: 5px;
+  font-weight: 400;
+  margin-left: 5px;
+  margin-top: 4px;
 }
 
 .comment-card .modify-comment {
@@ -32,10 +32,11 @@ Written by Justin Tijunelis
   text-decoration: underline;
   font-weight: bold;
   font-style: italic;
+  font-size: var(--fz-xxs);
   cursor: pointer;
   color: var(--red);
   position: absolute;
-  bottom: 0px;
+  top: 0px;
   right: 5px;
 }
 
@@ -46,6 +47,22 @@ Written by Justin Tijunelis
   color: var(--red);
 }
 
-.comment-card p {
+.comment-card .comment-content {
+  padding-bottom: 10px;
+}
+
+.comment-card p,
+.comment-card ol {
   margin: 0;
+  padding-bottom: 0px;
+}
+
+.comment-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.comment-card ol {
+  margin: 0;
+  padding-left: 24px;
 }

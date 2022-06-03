@@ -86,32 +86,47 @@ export const SessionCard: React.FC<SessionCardProps> = (
       });
   };
 
-  const onCommentUpdate = (comment: Comment) => {
-    // TODO: Update to work with replies
-    if (comment && comment._id) {
-      let updatedComments = [...comments];
-      let updated = false;
-      for (let i in comments) {
-        if (updatedComments[i]._id === comment._id) {
-          updatedComments[i] = comment;
-          updated = true;
+  const recurseCommentUpdate = (comment: Comment, comments: Comment[]): any => {
+    let newComments: Comment[] = [...comments];
+    let updated = false;
+    for (let i = 0; i < newComments.length; i++) {
+      if (newComments[i]._id === comment._id) {
+        newComments[i] = comment;
+        return [true, newComments];
+      } else {
+        let result = recurseCommentUpdate(comment, newComments[i].comments);
+        newComments[i].comments = result[1];
+        if (result[0]) return [true, newComments];
+        else if (newComments[i]._id === comment.commentId) {
+          newComments[i].comments.push(comment);
         }
       }
-      if (!updated) updatedComments.push(comment);
-      updatedComments.sort(
-        (a: Comment, b: Comment) => a.lastUpdate - b.lastUpdate
-      );
-      setComments(updatedComments);
-      alert(false, updated ? "Comment updated!" : "Comment created!");
+    }
+    return [updated, newComments];
+  };
+
+  const onCommentUpdate = (comment: Comment) => {
+    if (comment && comment._id) {
+      let result = recurseCommentUpdate(comment, comments);
+      if (!result[0] && !comment.commentId) result[1].push(comment);
+      setComments(result[1]);
+      alert(false, result[0] ? "Comment updated!" : "Comment created!");
     }
   };
 
-  const onCommentDelete = (commentId: string) => {
-    // TODO: Update to work with replies
-    if (!commentId) return;
+  const recurseCommentDelete = (commentId: string, comments: Comment[]) => {
     let updatedComments = [];
-    for (let comment of comments)
-      if (comment._id !== commentId) updatedComments.push(comment);
+    for (let c of [...comments])
+      if (c._id !== commentId) updatedComments.push(c);
+    if (updatedComments.length === comments.length)
+      for (let c of updatedComments)
+        c.comments = recurseCommentDelete(commentId, c.comments);
+    return updatedComments;
+  };
+
+  const onCommentDelete = (commentId: string) => {
+    if (!commentId) return;
+    let updatedComments = recurseCommentDelete(commentId, comments);
     setComments(updatedComments);
     alert(false, "Comment deleted!");
   };
