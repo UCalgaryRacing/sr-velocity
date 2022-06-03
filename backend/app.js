@@ -33,14 +33,13 @@ app.all("*", (req, res, next) => {
 
 // Setup routes
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/database", require("./routes/database")); // TODO: Rename to data
-app.use("/api/iot", require("./routes/iot")); // TODO: Rename to streaming
+app.use("/api/database", require("./routes/database"));
+app.use("/api/iot", require("./routes/iot"));
 
 // Begin Server
 const protocol = http.createServer(app);
-protocol.listen(process.env.GATEWAY_PORT, () =>
-  console.log(`Listening on port ${process.env.GATEWAY_PORT}`)
-);
+protocol.listen(process.env.GATEWAY_PORT, "0.0.0.0");
+console.log(`Listening on port ${process.env.GATEWAY_PORT}`);
 
 // Server and client sockets for socket-io data proxy
 const io = require("socket.io")(protocol, {
