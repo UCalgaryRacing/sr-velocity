@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/react-datetime-picker": "^3.4.1",
     "random-number": "0.0.9"
   }
 }

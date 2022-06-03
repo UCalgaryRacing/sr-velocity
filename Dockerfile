@@ -1,7 +1,7 @@
 FROM node:15.13.0
 
 LABEL version="0.1"
-LABEL description="Base docker image for Sr Velocity"
+LABEL description="Base docker image for SR Velocity"
 LABEL maintainer = ["justintijunel@gmail.com"]
 
 ENV GENERATE_SOURCEMAP = false
