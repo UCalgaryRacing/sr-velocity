@@ -33,9 +33,15 @@ export const SessionModal: React.FC<SessionModalProps> = (
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>();
   const [endTime, setEndTime] = useState<Date>();
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [, setOperatorId] = useState<string>("");
   const [file, setFile] = useState<File>();
+  const [, setOperatorId] = useState<string>("");
+  const [collections, setCollections] = useState<Collection[]>(
+    props.session
+      ? props.collections.filter((c) =>
+          props.session?.collectionIds.includes(c._id)
+        )
+      : []
+  );
   const [values, handleChange] = useForm(
     props.session
       ? props.session
@@ -43,10 +49,9 @@ export const SessionModal: React.FC<SessionModalProps> = (
   );
 
   useEffect(() => {
-    if (props.session) {
-      setStartTime(new Date(props.session.startTime));
-      props.session.endTime && setEndTime(new Date(props.session.endTime));
-    }
+    if (!props.session) return;
+    setStartTime(new Date(props.session.startTime));
+    props.session.endTime && setEndTime(new Date(props.session.endTime));
   }, [props.session]);
 
   const alert = (description: string) => {
@@ -59,10 +64,9 @@ export const SessionModal: React.FC<SessionModalProps> = (
   };
 
   const inProgress = () => {
-    if (props.session) {
-      if (props.session.endTime) return false;
-      else return true;
-    }
+    if (!props.session) return false;
+    if (props.session.endTime) return false;
+    else return true;
   };
 
   const onSubmit = (e: any) => {

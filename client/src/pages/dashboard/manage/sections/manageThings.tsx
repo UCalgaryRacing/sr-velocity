@@ -227,8 +227,8 @@ export const ManageThings: React.FC = () => {
                 id="manage-nav-search"
                 value={query}
                 onChange={(e: any) => {
-                  setQuery(e.target.value);
-                  onSearch(e.target.value);
+                  setQuery(e.target.value.trim());
+                  onSearch(e.target.value.trim());
                 }}
                 required
               />

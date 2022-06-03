@@ -3,7 +3,13 @@
 
 import React, { useCallback, useContext, useState } from "react";
 import DashNav from "components/navigation/dashNav";
-import { ToolTip, IconButton, TextButton, Alert } from "components/interface";
+import {
+  ToolTip,
+  IconButton,
+  TextButton,
+  Alert,
+  InputField,
+} from "components/interface";
 import { SessionModal } from "./modals/sessionModal";
 import { SessionCard } from "./cards/sessionCard";
 import { DashboardContext } from "../../dashboard";
@@ -29,12 +35,14 @@ export const SessionView: React.FC<SessionViewProps> = (
 ) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
+  const [query, setQuery] = useState<string>("");
+  const [sessions, setSessions] = useState<Session[]>(props.sessions);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const generateSessionCards = useCallback(() => {
     let cards: any[] = [];
-    for (const session of props.sessions) {
+    for (const session of sessions) {
       cards.push(
         <SessionCard
           key={session._id}
@@ -48,7 +56,16 @@ export const SessionView: React.FC<SessionViewProps> = (
       );
     }
     return cards;
-  }, [props.sessions, props.collections]);
+  }, [sessions, props.collections]);
+
+  const onSearch = (query: string) => {
+    let matchingSessions = [];
+    for (let session of [...props.sessions])
+      if (session.name.toLowerCase().includes(query.toLowerCase()))
+        // TODO : Search operators and collections too
+        matchingSessions.push(session);
+    setSessions(matchingSessions);
+  };
 
   return (
     <>
@@ -67,19 +84,40 @@ export const SessionView: React.FC<SessionViewProps> = (
           )}
           {props.viewChange}
         </div>
-        <div className="right">{props.thingChange}</div>
-      </DashNav>
-      {props.sessions.length === 0 && (
-        <div id="centered">
-          <div id="centered-content">
-            <b>No Sessions yet.</b>
-            <TextButton
-              title="Create a Session"
-              onClick={() => setShowModal(true)}
-            />
-          </div>
+        <div className="right">
+          {props.thingChange}
+          <InputField
+            name="search"
+            type="name"
+            placeholder="Search"
+            id="manage-nav-search"
+            value={query}
+            onChange={(e: any) => {
+              setQuery(e.target.value.trim());
+              onSearch(e.target.value.trim());
+            }}
+            required
+          />
         </div>
-      )}
+      </DashNav>
+      {props.sessions.length === 0 ||
+        (sessions.length === 0 && (
+          <div id="centered">
+            <div id="centered-content">
+              <b>
+                {sessions.length === 0
+                  ? "No matching Sessions."
+                  : "No Sessions yet."}
+              </b>
+              {props.sessions.length === 0 && (
+                <TextButton
+                  title="Create a Session"
+                  onClick={() => setShowModal(true)}
+                />
+              )}
+            </div>
+          </div>
+        ))}
       <div id="session-cards">{generateSessionCards()}</div>
       {showModal && (
         <SessionModal
