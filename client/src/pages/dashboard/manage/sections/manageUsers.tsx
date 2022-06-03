@@ -156,8 +156,7 @@ export const ManageUsers: React.FC = () => {
               <InputField
                 name="search"
                 type="name"
-                placeholder="Search"
-                id="manage-nav-search"
+                placeholder="Search..."
                 value={query}
                 onChange={(e: any) => {
                   setQuery(e.target.value);

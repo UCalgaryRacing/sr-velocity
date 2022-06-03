@@ -298,7 +298,6 @@ export const ManageSensors: React.FC = () => {
                     name="search"
                     type="name"
                     placeholder="Search"
-                    id="manage-nav-search"
                     value={query}
                     onChange={(e: any) => {
                       setQuery(e.target.value);
