@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "sr-velocity",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -61,7 +61,17 @@
     "segmented-control": "^0.1.17",
     "socket.io-client": "^4.5.0",
     "typescript": "^4.3.4",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "@types/downloadjs": "^1.4.3",
+    "@types/enzyme": "^3.10.8",
+    "@types/jquery": "^3.5.8",
+    "@types/rc-slider": "^8.6.4",
+    "@types/react-datetime-picker": "^3.4.1",
+    "@types/react-html-parser": "^2.0.2",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/uuid": "^8.3.4",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -87,16 +97,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@types/downloadjs": "^1.4.3",
-    "@types/enzyme": "^3.10.8",
-    "@types/jquery": "^3.5.8",
-    "@types/rc-slider": "^8.6.4",
-    "@types/react-datetime-picker": "^3.4.1",
-    "@types/react-html-parser": "^2.0.2",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/uuid": "^8.3.4",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6"
-  }
+  "proxy": "http://localhost:5001"
 }

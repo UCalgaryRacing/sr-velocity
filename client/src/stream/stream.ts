@@ -43,8 +43,7 @@ class Stream {
   }
 
   connect = (thingId: string) => {
-    const { GATEWAYSERVERIP } = require("./dataServerEnv");
-    this.socket = io(GATEWAYSERVERIP, {
+    this.socket = io("", {
       withCredentials: true,
       reconnection: false,
     });

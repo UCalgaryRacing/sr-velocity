@@ -1,14 +1,12 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import { GATEWAYSERVERIP } from "stream/dataServerEnv";
-
 export const request = (method: string, route: string, body: any = {}) => {
   return new Promise<any>((resolve, reject) => {
     if (!route.startsWith("/")) {
       route = "/" + route;
     }
-    route = GATEWAYSERVERIP + "/api" + route;
+    route = "/api" + route;
 
     let fetch_data: RequestInit = {
       method: method,
