@@ -143,7 +143,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
           title="Name"
           value={values.name}
           minLength={4}
-          maxLength={20}
+          maxLength={30}
           required
         />
         {!inProgress() && (

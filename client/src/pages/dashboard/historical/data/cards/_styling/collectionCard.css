@@ -4,7 +4,7 @@ Written by Justin Tijunelis
 */
 
 .collection-card {
-  min-height: 115px;
+  min-height: 155px;
   padding-right: 35px;
 }
 
@@ -20,8 +20,29 @@ Written by Justin Tijunelis
   right: 5px;
 }
 
-#collection-card-comment {
+#collection-card-data {
   position: absolute;
   top: 85px;
   right: 5px;
+}
+
+#collection-card-comment {
+  position: absolute;
+  top: 125px;
+  right: 5px;
+}
+
+.collection-session-cards {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--red);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.no-sessions {
+  font-weight: bold;
+  text-align: center;
+  margin: 5px;
 }

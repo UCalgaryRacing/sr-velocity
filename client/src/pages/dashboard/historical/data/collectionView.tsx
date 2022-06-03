@@ -24,8 +24,10 @@ interface CollectionViewProps {
   sessions: Session[];
   collections: Collection[];
   operators: Operator[];
-  onUpdate: (collection: Collection) => void;
-  onDelete: (collectionId: string) => void;
+  onCollectionUpdate: (collection: Collection) => void;
+  onCollectionDelete: (collectionId: string) => void;
+  onSessionUpdate: (session: Session) => void;
+  onSessionDelete: (sessionId: string) => void;
 }
 
 export const CollectionView: React.FC<CollectionViewProps> = (
@@ -51,9 +53,13 @@ export const CollectionView: React.FC<CollectionViewProps> = (
           key={collection._id}
           thing={props.thing}
           collection={collection}
+          collections={collections}
           sessions={props.sessions}
-          onUpdate={props.onUpdate}
-          onDelete={props.onDelete}
+          operators={props.operators}
+          onCollectionUpdate={props.onCollectionUpdate}
+          onCollectionDelete={props.onCollectionDelete}
+          onSessionUpdate={props.onSessionUpdate}
+          onSessionDelete={props.onSessionDelete}
         />
       );
     }
@@ -124,7 +130,7 @@ export const CollectionView: React.FC<CollectionViewProps> = (
         <CollectionModal
           show={showModal}
           toggle={(collection: Collection) => {
-            if (collection) props.onUpdate(collection);
+            if (collection) props.onCollectionUpdate(collection);
             setShowModal(false);
           }}
           thing={props.thing}

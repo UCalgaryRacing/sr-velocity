@@ -54,3 +54,16 @@ button {
   height: 100% !important;
   padding: 20% !important;
 }
+
+.icon-button .striked {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -0.2em;
+  right: -0.5px;
+}
+
+.icon-button .striked svg {
+  width: 100%;
+  height: 100%;
+}

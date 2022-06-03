@@ -251,8 +251,10 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
             sessions={sessions}
             collections={collections}
             operators={operators}
-            onUpdate={onCollectionUpdate}
-            onDelete={onCollectionDelete}
+            onCollectionUpdate={onCollectionUpdate}
+            onCollectionDelete={onCollectionDelete}
+            onSessionUpdate={onSessionUpdate}
+            onSessionDelete={onSessionDelete}
           />
         )}
         <Alert

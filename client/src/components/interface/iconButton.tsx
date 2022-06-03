@@ -3,6 +3,7 @@
 
 import React, { ButtonHTMLAttributes } from "react";
 import { CircularProgress } from "@mui/material";
+import { Remove } from "@mui/icons-material";
 import "./_styling/iconButton.css";
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,6 +11,7 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   img?: any; // Check for JSX
   text?: string;
   loading?: boolean;
+  striked?: boolean;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
@@ -17,6 +19,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   img,
   text,
   loading,
+  striked,
   ...props
 }) => {
   return (
@@ -29,6 +32,11 @@ export const IconButton: React.FC<IconButtonProps> = ({
       ) : (
         <>
           {!text && src && <img src={src} alt="" />}
+          {striked && (
+            <div className="striked">
+              <Remove htmlColor="#fff" />
+            </div>
+          )}
           {!text && img}
           {!img && !src && <div className="text">{text}</div>}
         </>

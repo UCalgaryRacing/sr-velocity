@@ -1,12 +1,13 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord, Justin Tijunelis
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { CommentView } from "./commentView";
 import { Alert, IconButton } from "components/interface";
 import { ConfirmModal } from "components/modals";
 import { CollectionModal } from "../modals/collectionModal";
+import { SessionCard } from "./sessionCard";
 import {
   CloseOutlined,
   Edit,
@@ -23,6 +24,7 @@ import {
   Comment,
   CommentType,
   isAuthAtLeast,
+  Operator,
   UserRole,
 } from "state";
 import { getComments, deleteCollection } from "crud";
@@ -31,9 +33,13 @@ import "./_styling/collectionCard.css";
 type CollectionCardProps = {
   thing: Thing;
   collection: Collection;
+  collections: Collection[];
   sessions: Session[];
-  onUpdate: (collection: Collection) => void;
-  onDelete: (collectionId: string) => void;
+  operators: Operator[];
+  onCollectionUpdate: (collection: Collection) => void;
+  onCollectionDelete: (collectionId: string) => void;
+  onSessionUpdate: (session: Session) => void;
+  onSessionDelete: (sessionId: string) => void;
 };
 
 export const CollectionCard: React.FC<CollectionCardProps> = (
@@ -43,6 +49,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = (
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [showSessions, setShowSessions] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -56,12 +63,33 @@ export const CollectionCard: React.FC<CollectionCardProps> = (
     setShowAlert(true);
   };
 
+  const generateSessions = useCallback(() => {
+    let cards: any[] = [];
+    for (const session of props.sessions.filter((s) =>
+      props.collection.sessionIds.includes(s._id)
+    )) {
+      cards.push(
+        <SessionCard
+          key={session._id}
+          thing={props.thing}
+          session={session}
+          collections={props.collections}
+          operators={props.operators}
+          onUpdate={props.onSessionUpdate}
+          onDelete={props.onSessionDelete}
+        />
+      );
+    }
+    if (cards.length > 0) return cards;
+    else return <div className="no-sessions">No sessions yet!</div>;
+  }, [props.sessions, showSessions]);
+
   const onDelete = () => {
     setDeleteLoading(true);
     deleteCollection(props.collection._id)
       .then(() => {
         setDeleteLoading(false);
-        props.onDelete(props.collection._id);
+        props.onCollectionDelete(props.collection._id);
       })
       .catch((_: any) => {
         setDeleteLoading(false);
@@ -136,38 +164,39 @@ export const CollectionCard: React.FC<CollectionCardProps> = (
           <b>{props.collection.name}</b>
         </div>
         <div>{ReactHtmlParser(props.collection.description)}</div>
-        {isAuthAtLeast(user, UserRole.LEAD) && (
-          <>
-            <IconButton
-              id="collection-card-delete"
-              img={<CloseOutlined />}
-              onClick={() => setShowConfirm(true)}
-            />
-            <IconButton
-              id="collection-card-edit"
-              img={<Edit />}
-              onClick={() => setShowModal(true)}
-            />
-          </>
-        )}
-        {isAuthAtLeast(user, UserRole.MEMBER) && (
-          <>
-            <IconButton
-              id="collection-card-comment"
-              img={
-                showComments ? (
-                  <CommentsDisabledOutlined />
-                ) : (
-                  <CommentOutlined />
-                )
-              }
-              onClick={() =>
-                showComments ? setShowComments(false) : fetchComments()
-              }
-              loading={commentsLoading}
-            />
-          </>
-        )}
+        <IconButton
+          id="collection-card-delete"
+          img={<CloseOutlined />}
+          onClick={() => setShowConfirm(true)}
+          disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+        />
+        <IconButton
+          id="collection-card-edit"
+          img={<Edit />}
+          onClick={() => setShowModal(true)}
+          disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+        />
+        <IconButton
+          id="collection-card-data"
+          img={<DataArray />}
+          striked={showSessions}
+          onClick={() => {
+            setShowComments(false);
+            setShowSessions(!showSessions);
+          }}
+        />
+        <IconButton
+          id="collection-card-comment"
+          img={
+            showComments ? <CommentsDisabledOutlined /> : <CommentOutlined />
+          }
+          onClick={() => {
+            showComments ? setShowComments(false) : fetchComments();
+            setShowSessions(false);
+          }}
+          loading={commentsLoading}
+          disabled={!isAuthAtLeast(user, UserRole.MEMBER)}
+        />
         <ConfirmModal
           title={
             "Are you sure you want to delete Collection '" +
@@ -183,7 +212,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = (
           <CollectionModal
             show={showModal}
             toggle={(collection: Collection) => {
-              if (collection) props.onUpdate(collection);
+              if (collection) props.onCollectionUpdate(collection);
               setShowModal(false);
             }}
             thing={props.thing}
@@ -208,6 +237,9 @@ export const CollectionCard: React.FC<CollectionCardProps> = (
           onUpdate={onCommentUpdate}
           onDelete={onCommentDelete}
         />
+      )}
+      {showSessions && (
+        <div className="collection-session-cards">{generateSessions()}</div>
       )}
     </div>
   );
