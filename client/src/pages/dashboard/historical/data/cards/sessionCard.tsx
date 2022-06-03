@@ -69,6 +69,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
       .catch((_: any) => {
         setDeleteLoading(false);
         setShowAlert(true);
+        alert(true, "Please try again...");
       });
   };
 
@@ -82,7 +83,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
       })
       .catch((_: any) => {
         setCommentsLoading(false);
-        setShowAlert(true);
+        alert(true, "Please try again...");
       });
   };
 

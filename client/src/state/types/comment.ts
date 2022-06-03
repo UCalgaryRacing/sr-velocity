@@ -10,7 +10,7 @@ export type Comment = {
   _id: string;
   userId: string;
   username: string;
-  lastUpdate: number;
+  time: number;
   content: string;
   sessionId?: string;
   collectionId?: string;

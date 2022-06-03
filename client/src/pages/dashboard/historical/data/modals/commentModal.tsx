@@ -40,11 +40,11 @@ export const CommentModal: React.FC<CommentModalProps> = (
     } else {
       setLoading(true);
       if (props.comment && !props.reply) {
-        const comment: any = { ...props.comment, content: text };
+        const comment: any = { ...props.comment, content: text, comments: [] };
         putComment(comment)
           .then(() => {
             setLoading(false);
-            props.toggle(comment);
+            props.toggle({ ...comment, comments: props.comment!.comments });
           })
           .catch((_: any) => {
             setLoading(false);
@@ -56,6 +56,7 @@ export const CommentModal: React.FC<CommentModalProps> = (
           username: user!.name,
           time: new Date().getTime(),
           content: text!,
+          comments: [],
         };
         if (props.reply && props.comment)
           comment["commentId"] = props.comment?._id;

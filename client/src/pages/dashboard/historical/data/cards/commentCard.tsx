@@ -65,7 +65,7 @@ export const CommentCard: React.FC<CommentCardProps> = (
       <div className="comment-user">
         {props.comment.username}
         <div className="comment-time">
-          {convertUnixTime(props.comment.lastUpdate)}
+          {convertUnixTime(props.comment.time)}
         </div>
       </div>
       <div className="comment-content">
