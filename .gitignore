@@ -1,5 +1,6 @@
+*/.env
 backend/node_modules
 backend/cert
 frontend/node_modules
 node_modules/
-*/.env
+backend/.env
