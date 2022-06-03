@@ -308,13 +308,6 @@ export const ManageSensors: React.FC = () => {
                 </div>
               </DashNav>
               <div id="manage-grid">{sensorCards}</div>
-              {noMatchingSensors && (
-                <div id="no-match">
-                  <div id="no-match-content">
-                    <b>No matching Sensors found...</b>
-                  </div>
-                </div>
-              )}
             </>
           ) : (
             <DashboardLoading>
@@ -334,6 +327,13 @@ export const ManageSensors: React.FC = () => {
               />
             </DashboardLoading>
           )}
+        </div>
+      )}
+      {noMatchingSensors && (
+        <div id="centered">
+          <div id="centered-content">
+            <b>No matching Sensors found...</b>
+          </div>
         </div>
       )}
       {showSensorModal && (

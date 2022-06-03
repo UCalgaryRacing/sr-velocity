@@ -170,8 +170,8 @@ export const ManageUsers: React.FC = () => {
         </div>
       )}
       {noMatchingUsers && (
-        <div id="no-match">
-          <div id="no-match-content">
+        <div id="centered">
+          <div id="centered-content">
             <b>No matching Users found...</b>
           </div>
         </div>
