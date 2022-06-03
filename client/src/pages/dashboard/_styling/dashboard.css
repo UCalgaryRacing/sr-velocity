@@ -31,6 +31,7 @@ Written by Justin Tijunelis
   font-size: var(--fz-lg);
   position: relative;
   top: 50%;
+  padding: 5px;
   max-width: 500px;
   margin: auto;
   -webkit-transform: translateY(-50%);
