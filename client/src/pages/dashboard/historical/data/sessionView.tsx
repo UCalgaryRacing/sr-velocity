@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Jonathan Breidfjord, Justin Tijunelis
 
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import DashNav from "components/navigation/dashNav";
 import {
   ToolTip,
@@ -16,7 +16,6 @@ import { DashboardContext } from "../../dashboard";
 import { Add } from "@mui/icons-material";
 import { Session, Collection, Thing, Operator } from "state";
 import { useWindowSize } from "hooks";
-import "./_styling/sessionView.css";
 
 interface SessionViewProps {
   refresh: any;
@@ -39,6 +38,10 @@ export const SessionView: React.FC<SessionViewProps> = (
   const [sessions, setSessions] = useState<Session[]>(props.sessions);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+
+  useEffect(() => setQuery(""), []);
+  useEffect(() => onSearch(query), [query]);
+  useEffect(() => setSessions(props.sessions), [props.sessions]);
 
   const generateSessionCards = useCallback(() => {
     let cards: any[] = [];
@@ -101,14 +104,12 @@ export const SessionView: React.FC<SessionViewProps> = (
             type="name"
             placeholder="Search..."
             value={query}
-            onChange={(e: any) => {
-              setQuery(e.target.value);
-              onSearch(e.target.value);
-            }}
+            onChange={(e: any) => setQuery(e.target.value)}
             required
           />
         </div>
       </DashNav>
+      <div id="grid">{generateSessionCards()}</div>
       {props.sessions.length === 0 ||
         (sessions.length === 0 && (
           <div id="centered">
@@ -127,7 +128,6 @@ export const SessionView: React.FC<SessionViewProps> = (
             </div>
           </div>
         ))}
-      <div id="session-cards">{generateSessionCards()}</div>
       {showModal && (
         <SessionModal
           show={showModal}

@@ -45,7 +45,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
   const [values, handleChange] = useForm(
     props.session
       ? props.session
-      : { name: "", collectionIds: null, operatorId: null }
+      : { name: "", collectionIds: [], operatorId: null }
   );
 
   useEffect(() => {
@@ -97,7 +97,8 @@ export const SessionModal: React.FC<SessionModalProps> = (
         })
         .catch((_: any) => {
           setLoading(false);
-          alert("Could not update session, please try again.");
+          // TODO: Check if status conflict
+          alert("Could not update Session, please try again.");
         });
     } else {
       if (!file) {
@@ -115,7 +116,8 @@ export const SessionModal: React.FC<SessionModalProps> = (
         })
         .catch((_: any) => {
           setLoading(false);
-          alert("Could not create session, please try again.");
+          // TODO: Check if status conflict
+          alert("Could not create Session, please try again.");
         });
     }
   };

@@ -13,6 +13,11 @@ Written by Justin Tijunelis
 #dashboard #dashboard-loading #dashboard-loading-content {
   text-align: center;
   max-width: 400px;
+  padding: 5px;
   width: 100%;
   margin: auto;
+}
+
+#dashboard #dashboard-loading #dashboard-loading-content .text-button {
+  margin-top: 20px;
 }

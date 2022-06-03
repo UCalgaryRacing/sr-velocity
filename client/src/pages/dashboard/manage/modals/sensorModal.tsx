@@ -116,7 +116,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
           type = "d";
         }
       }
-    } else if (numberType === "Discrete") {
+    } else if (numberType === "Discrete" && lower < 0) {
       if (lower < 0) {
         const absLower = Math.abs(lower);
         const absUpper = Math.abs(upper);
@@ -133,7 +133,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
           );
           type = "";
         }
-      } else {
+      } else if (numberType === "Discrete" && lower > 0) {
         if (upper <= BYTE1_MAX) type = "B";
         else if (upper <= BYTE2_MAX) type = "H";
         else if (upper <= BYTE4_MAX) type = "I";
@@ -286,8 +286,8 @@ export const SensorModal: React.FC<SensorModalProps> = (
           onChange={(value: any) => {
             setNumberType(value);
             if (value === "On/Off") {
-              values.upperBound = "";
-              values.lowerBound = "";
+              values.upperBound = "0";
+              values.lowerBound = "1";
               setPrecision(undefined);
             }
           }}

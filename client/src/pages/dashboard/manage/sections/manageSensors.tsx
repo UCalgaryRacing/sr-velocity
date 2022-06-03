@@ -52,6 +52,7 @@ export const ManageSensors: React.FC = () => {
   const [showSensorModal, setShowSensorModal] = useState<boolean>(false);
 
   useEffect(() => fetchThings(), []);
+  useEffect(() => onSearch(query), [query]);
   useEffect(() => fetchSensors(), [thing]);
   useEffect(() => generateSensorCards(sensors), [sensors]);
 
@@ -169,7 +170,6 @@ export const ManageSensors: React.FC = () => {
       fetchingThings ||
       fetchingSensors ? (
         <DashboardLoading>
-          {" "}
           {fetchingThings || fetchingSensors ? (
             <>
               <CircularProgress style={{ color: "black" }} />
@@ -299,10 +299,7 @@ export const ManageSensors: React.FC = () => {
                     type="name"
                     placeholder="Search"
                     value={query}
-                    onChange={(e: any) => {
-                      setQuery(e.target.value);
-                      onSearch(e.target.value);
-                    }}
+                    onChange={(e: any) => setQuery(e.target.value)}
                     required
                   />
                 </div>

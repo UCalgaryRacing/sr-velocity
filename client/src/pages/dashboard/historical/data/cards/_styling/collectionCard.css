@@ -1,0 +1,27 @@
+/*
+Copyright Schulich Racing, FSAE
+Written by Justin Tijunelis
+*/
+
+.collection-card {
+  min-height: 115px;
+  padding-right: 35px;
+}
+
+#collection-card-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#collection-card-edit {
+  position: absolute;
+  top: 45px;
+  right: 5px;
+}
+
+#collection-card-comment {
+  position: absolute;
+  top: 85px;
+  right: 5px;
+}

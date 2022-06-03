@@ -40,13 +40,12 @@ export const ManageOperators: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [fetching, setFetching] = useState<boolean>(true);
   const [noOperators, setNoOperators] = useState<boolean>(false);
-  const [noMatchingOperators, setNoMatchingOperators] =
-    useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showOperatorModal, setShowOperatorModal] = useState<boolean>(false);
 
   useEffect(() => fetchOperators(), []);
+  useEffect(() => onSearch(query), [query]);
   useEffect(
     () => generateOperatorCards(operators, things),
     [operators, things]
@@ -61,7 +60,6 @@ export const ManageOperators: React.FC = () => {
         if (operator.thingIds.includes(thingFilter))
           filteredOperators.push(operator);
       generateOperatorCards(filteredOperators, things);
-      setNoMatchingOperators(filteredOperators.length === 0);
     }
   }, [thingFilter]);
 
@@ -156,7 +154,6 @@ export const ManageOperators: React.FC = () => {
       if (thing.name.toLowerCase().includes(lowerQuery))
         matchingOperators.push(thing);
     generateOperatorCards(matchingOperators, things);
-    setNoMatchingOperators(matchingOperators.length === 0);
   };
 
   return (
@@ -232,10 +229,7 @@ export const ManageOperators: React.FC = () => {
                 type="name"
                 placeholder="Search..."
                 value={query}
-                onChange={(e: any) => {
-                  setQuery(e.target.value);
-                  onSearch(e.target.value);
-                }}
+                onChange={(e: any) => setQuery(e.target.value)}
                 required
               />
             </div>
@@ -243,7 +237,7 @@ export const ManageOperators: React.FC = () => {
           <div id="manage-grid">{operatorCards}</div>
         </div>
       )}
-      {noMatchingOperators && (
+      {operatorCards.length === 0 && (
         <div id="centered">
           <div id="centered-content">
             <b>No matching Operators found...</b>

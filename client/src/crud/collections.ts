@@ -13,7 +13,7 @@ export const getCollections = (thingId: string) => {
 };
 
 export const postCollection = (collection: Collection) => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<Collection>((resolve, reject) => {
     request("POST", "/database/collections/", collection)
       .then((res: any) => resolve(res.data))
       .catch((err: any) => reject(err));

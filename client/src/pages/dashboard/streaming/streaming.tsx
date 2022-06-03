@@ -121,14 +121,17 @@ const Streaming: React.FC = () => {
               return (
                 <>
                   <b>
-                    Could not fetch&nbsp;{fetchingThings ? "Things" : "Sensors"}
-                    .
+                    Could not fetch&nbsp;
+                    {fetchingThingsError ? "Things" : "Sensors"}.
                   </b>
                   <TextButton
                     title="Try Again"
                     onClick={() => {
-                      if (fetchingThings) fetchThings();
-                      else setFetchingSensorsError(false);
+                      if (fetchingThingsError) fetchThings();
+                      else {
+                        setCurrentThing(undefined);
+                        setFetchingSensorsError(false);
+                      }
                     }}
                   />
                 </>

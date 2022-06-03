@@ -40,12 +40,12 @@ export const ManageThings: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [fetching, setFetching] = useState<boolean>(true);
   const [noThings, setNoThings] = useState<boolean>(false);
-  const [noMatchingThings, setNoMatchingThings] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showThingModal, setShowThingModal] = useState<boolean>(false);
 
   useEffect(() => fetchThings(), []);
+  useEffect(() => onSearch(query), [query]);
   useEffect(() => generateThingCards(things, operators), [things, operators]);
 
   useEffect(() => {
@@ -57,7 +57,6 @@ export const ManageThings: React.FC = () => {
         if (thing.operatorIds.includes(operatorFilter))
           filteredThings.push(thing);
       generateThingCards(filteredThings, operators);
-      setNoMatchingThings(filteredThings.length === 0);
     }
   }, [operatorFilter]);
 
@@ -149,7 +148,6 @@ export const ManageThings: React.FC = () => {
       if (thing.name.toLowerCase().includes(lowerQuery))
         matchingThings.push(thing);
     generateThingCards(matchingThings, operators);
-    setNoMatchingThings(matchingThings.length === 0);
   };
 
   return (
@@ -224,10 +222,7 @@ export const ManageThings: React.FC = () => {
                 type="name"
                 placeholder="Search..."
                 value={query}
-                onChange={(e: any) => {
-                  setQuery(e.target.value);
-                  onSearch(e.target.value);
-                }}
+                onChange={(e: any) => setQuery(e.target.value)}
                 required
               />
             </div>
@@ -235,7 +230,7 @@ export const ManageThings: React.FC = () => {
           <div id="manage-grid">{thingCards}</div>
         </div>
       )}
-      {noMatchingThings && (
+      {thingCards.length === 0 && (
         <div id="centered">
           <div id="centered-content">
             <b>No matching Things found...</b>

@@ -28,7 +28,7 @@ enum ListType {
 interface DataViewProps {
   things: Thing[];
   thing: Thing;
-  onThingChange: (thing: Thing) => void;
+  onThingChange: (thing: Thing | undefined) => void;
 }
 
 const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
@@ -120,6 +120,7 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
   };
 
   const onCollectionUpdate = (collection: Collection) => {
+    console.log(collection);
     if (collection && collection._id) {
       let updatedCollections = [...collections];
       let updated = false;
@@ -133,12 +134,14 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
       updatedCollections.sort((a: Collection, b: Collection) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
+      console.log(updatedCollections);
       setCollections(updatedCollections);
       alert(updated ? "Collection updated!" : "Collection created!");
     }
   };
 
   const onCollectionDelete = (collectionId: string) => {
+    console.log("Delete");
     if (!collectionId) return;
     let updatedCollections = [];
     for (let collection of collections)
@@ -151,8 +154,16 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
     <SegmentedControl
       name="view"
       options={[
-        { label: "Sessions", value: ListType.SESSION, default: true },
-        { label: "Collections", value: ListType.COLLECTION },
+        {
+          label: "Sessions",
+          value: ListType.SESSION,
+          default: listType === ListType.SESSION,
+        },
+        {
+          label: "Collections",
+          value: ListType.COLLECTION,
+          default: listType === ListType.COLLECTION,
+        },
       ]}
       onChange={setListType}
     />
@@ -206,10 +217,10 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
           } else {
             return (
               <>
-                <b>Failed to fetch Collections, Operators, and Sessions.</b>
+                <b>Failed to fetch Sessions and Collections.</b>
                 <TextButton
                   title="Try Again"
-                  onClick={() => fetchCollectionsOperatorsSessions()}
+                  onClick={() => props.onThingChange(undefined)}
                 />
               </>
             );
@@ -219,7 +230,7 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
     );
   } else {
     return (
-      <>
+      <div id="data-view">
         {listType === ListType.SESSION ? (
           <SessionView
             refresh={refresh}
@@ -236,8 +247,10 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
           <CollectionView
             viewChange={viewChange}
             thingChange={thingChange}
+            thing={props.thing}
             sessions={sessions}
             collections={collections}
+            operators={operators}
             onUpdate={onCollectionUpdate}
             onDelete={onCollectionDelete}
           />
@@ -250,7 +263,7 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
           show={showAlert}
           slideOut
         />
-      </>
+      </div>
     );
   }
 };

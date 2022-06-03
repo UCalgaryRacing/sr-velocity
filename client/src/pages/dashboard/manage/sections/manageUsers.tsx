@@ -19,11 +19,11 @@ export const ManageUsers: React.FC = () => {
   const [userCards, setUserCards] = useState<any[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [fetching, setFetching] = useState<boolean>(true);
-  const [noMatchingUsers, setNoMatchingUsers] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
 
   useEffect(() => fetchUsers(), []);
+  useEffect(() => onSearch(query), [query]);
   useEffect(() => generateUserCards(users), [users]);
 
   useEffect(() => {
@@ -34,7 +34,6 @@ export const ManageUsers: React.FC = () => {
       for (const user of users)
         if (user.role === roleFilter) filteredUsers.push(user);
       generateUserCards(filteredUsers);
-      setNoMatchingUsers(filteredUsers.length === 0);
     }
   }, [roleFilter]);
 
@@ -111,7 +110,6 @@ export const ManageUsers: React.FC = () => {
       }
     }
     generateUserCards(matchingUsers);
-    setNoMatchingUsers(matchingUsers.length === 0);
   };
 
   return (
@@ -158,10 +156,7 @@ export const ManageUsers: React.FC = () => {
                 type="name"
                 placeholder="Search..."
                 value={query}
-                onChange={(e: any) => {
-                  setQuery(e.target.value);
-                  onSearch(e.target.value);
-                }}
+                onChange={(e: any) => setQuery(e.target.value)}
                 required
               />
             </div>
@@ -169,7 +164,7 @@ export const ManageUsers: React.FC = () => {
           <div id="manage-grid">{userCards}</div>
         </div>
       )}
-      {noMatchingUsers && (
+      {userCards.length === 0 && (
         <div id="centered">
           <div id="centered-content">
             <b>No matching Users found...</b>

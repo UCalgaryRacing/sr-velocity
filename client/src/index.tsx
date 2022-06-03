@@ -17,7 +17,6 @@ import Home from "pages/home/home";
 import Dashboard from "pages/dashboard/dashboard";
 import SignIn from "pages/auth/signIn";
 import SignUp from "pages/auth/signUp";
-import Profile from "pages/profile/profile";
 import Licenses from "pages/licenses/licenses";
 import NotFound from "pages/404/notFound";
 import AuthWrapper from "wrappers/authWrapper";

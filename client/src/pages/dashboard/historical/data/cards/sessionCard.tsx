@@ -44,7 +44,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
   const user = useAppSelector((state: RootState) => state.user);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -202,7 +202,7 @@ export const SessionCard: React.FC<SessionCardProps> = (
             <IconButton
               id="session-card-delete"
               img={<CloseOutlined />}
-              onClick={() => setShowConfirmModal(true)}
+              onClick={() => setShowConfirm(true)}
             />
             <IconButton
               id="session-card-edit"
@@ -242,8 +242,8 @@ export const SessionCard: React.FC<SessionCardProps> = (
             props.session.name +
             "'?"
           }
-          show={showConfirmModal}
-          toggle={() => setShowConfirmModal(false)}
+          show={showConfirm}
+          toggle={() => setShowConfirm(false)}
           onConfirm={onDelete}
           loading={deleteLoading}
         />

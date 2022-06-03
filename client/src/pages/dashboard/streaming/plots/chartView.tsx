@@ -338,8 +338,6 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                       ? " Create one or select a preset."
                       : ""}
                   </b>
-                  <br />
-                  <br />
                   <TextButton
                     title="Add Chart"
                     onClick={() => setShowChartModal(true)}

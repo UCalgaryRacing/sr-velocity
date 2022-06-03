@@ -5,6 +5,8 @@ Written by Justin Tijunelis
 
 #data-view {
   font-size: var(--fz-md);
+  min-height: 100%;
+  position: relative;
 }
 
 #data-view .data-comments ul {
@@ -53,4 +55,28 @@ Written by Justin Tijunelis
 
 #data-view .data-comments-date {
   margin: 0 auto;
+}
+
+#data-view #centered {
+  position: absolute;
+}
+
+#data-view #centered-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+#data-view #grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 5px;
+}
+
+@media only screen and (max-width: 1200px) {
+  #data-view #grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 5px;
+  }
 }
