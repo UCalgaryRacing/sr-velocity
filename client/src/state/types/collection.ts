@@ -6,5 +6,4 @@ import { Comment } from ".";
 export type Collection = {
   _id: string;
   name: string;
-  comments?: Comment[];
 };

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import {
   InputField,
   DropDown,
+  MultiSelect,
   TextButton,
   Alert,
   DropZone,
@@ -32,13 +33,13 @@ export const SessionModal: React.FC<SessionModalProps> = (
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>();
   const [endTime, setEndTime] = useState<Date>();
-  const [, setCollectionId] = useState<string>("");
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [, setOperatorId] = useState<string>("");
   const [file, setFile] = useState<File>();
   const [values, handleChange] = useForm(
     props.session
       ? props.session
-      : { name: "", collectionId: null, operatorId: null }
+      : { name: "", collectionIds: null, operatorId: null }
   );
 
   useEffect(() => {
@@ -115,6 +116,13 @@ export const SessionModal: React.FC<SessionModalProps> = (
     }
   };
 
+  const onCollectionChange = (selectedList: any[], _: any[]) => {
+    let collections = [];
+    for (let c of selectedList) collections.push(c.value);
+    setCollections(collections);
+    values.collectionIds = collections.map((c) => c._id);
+  };
+
   return (
     <>
       <BaseModal
@@ -139,28 +147,16 @@ export const SessionModal: React.FC<SessionModalProps> = (
           </>
         )}
         {props.collections.length > 0 && (
-          <DropDown
-            placeholder="Select Collection..."
-            options={(() => {
-              let options = [{ value: undefined, label: "None" }];
-              let collections = props.collections.map((c) => {
-                return { value: c._id, label: c.name };
-              });
-              // @ts-ignore
-              options = options.concat(collections);
-              return options;
-            })()}
-            value={(() => {
-              let c = props.collections.filter(
-                (c) => c._id === values.collectionId
-              );
-              if (c.length === 1) return { value: c[0]._id, label: c[0].name };
-              else return null;
-            })()}
-            onChange={(value: any) => {
-              values.collectionId = value.value;
-              setCollectionId(value.value);
-            }}
+          <MultiSelect
+            placeholder="Collections"
+            options={props.collections.map((c) => {
+              return { key: c.name, value: c };
+            })}
+            selectedValues={collections.map((c) => {
+              return { key: c.name, value: c };
+            })}
+            onSelect={onCollectionChange}
+            onRemove={onCollectionChange}
             isSearchable
           />
         )}

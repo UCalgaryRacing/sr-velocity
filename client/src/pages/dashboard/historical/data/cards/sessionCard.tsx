@@ -161,16 +161,23 @@ export const SessionCard: React.FC<SessionCardProps> = (
             ? convertUnixTime(props.session.endTime)
             : "IN PROGRESS"}
         </div>
-        {props.session.collectionId && (
-          <div>
-            <b>Collection:&nbsp;</b>
-            {
-              props.collections.filter(
-                (c) => c._id === props.session.collectionId
-              )[0].name
-            }
-          </div>
-        )}
+        <div>
+          <b>Associated Collection(s):&nbsp;</b>
+          {(() => {
+            let collectionsString = "";
+            let associatedCollections = props.collections.filter((c) =>
+              props.session.collectionIds.includes(c._id)
+            );
+            for (const c of associatedCollections)
+              collectionsString += c.name + ", ";
+            collectionsString = collectionsString.substring(
+              0,
+              collectionsString.length - 2
+            );
+            if (collectionsString.length === 0) return "None";
+            else return collectionsString;
+          })()}
+        </div>
         {props.session.operatorId && (
           <div>
             <b>Operator:&nbsp;</b>
@@ -187,6 +194,9 @@ export const SessionCard: React.FC<SessionCardProps> = (
             {humanFileSize(props.session.fileSize)}
           </div>
         )}
+        <div id="session-type">
+          {props.session.generated ? "Generated via SR Velocity" : "Uploaded"}
+        </div>
         {isAuthAtLeast(user, UserRole.LEAD) && (
           <>
             <IconButton

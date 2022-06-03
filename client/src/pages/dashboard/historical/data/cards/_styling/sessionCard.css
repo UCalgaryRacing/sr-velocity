@@ -31,3 +31,9 @@ Written by Justin Tijunelis
   top: 125px;
   right: 5px;
 }
+
+#session-type {
+  font-weight: bold;
+  font-style: italic;
+  color: var(--red);
+}
