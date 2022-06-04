@@ -38,7 +38,7 @@ app.use("/api/iot", require("./routes/iot"));
 
 // Begin Server
 const protocol = http.createServer(app);
-protocol.listen(process.env.GATEWAY_PORT, "0.0.0.0");
+protocol.listen(process.env.GATEWAY_PORT);
 console.log(`Listening on port ${process.env.GATEWAY_PORT}`);
 
 // Server and client sockets for socket-io data proxy
