@@ -1,0 +1,39 @@
+name: SR-Velocity Web App Deployment
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  environment:
+    name: Environment Configuration
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create .env file
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          KEY: ${{ secrets.KEY }}
+          WEB_APP_ENV: ${{ secrets.WEB_APP_ENVIRONMENT }}
+        run: |
+          mkdir -p certificates
+          touch ./certificates/cert.crt
+          echo "$CERTIFICATE" >> ./certificates/cert.crt
+          touch ./certificates/key.pem
+          echo "$KEY" >> ./certificates/key.pem
+          touch "$"$GITHUB_WORKSPACE"/.env"
+          echo "$WEB_APP_ENV" >> "$"$GITHUB_WORKSPACE"/.env"
+
+  deploy:
+    needs: environment
+    name: Docker Container Deployment
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy
+        run: |
+          sudo docker kill sr-velocity || true
+          sudo docker-compose build
+          sudo docker-compose up &

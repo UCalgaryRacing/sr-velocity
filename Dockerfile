@@ -1,21 +1,20 @@
-FROM node:latest
+FROM node:16
 
 LABEL version="1.0"
 LABEL description="Base docker image for SR Velocity"
 LABEL maintainer = ["justintijunel@gmail.com"]
 
-ENV NODE_OPTIONS=--max_old_space_size=8192
-# ENV GENERATE_SOURCEMAP = false
+ENV GENERATE_SOURCEMAP = false
 
 COPY ./client /client
 COPY ./backend /backend
 
-# WORKDIR /client
-# RUN npm install --force
-# RUN npm run build
+WORKDIR /client
+RUN npm install
+RUN npm run build --prod
 
 WORKDIR /backend
-RUN npm install --force
+RUN npm install
 
 EXPOSE 5001
 
