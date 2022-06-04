@@ -21,8 +21,8 @@ jobs:
           echo "$CERTIFICATE" >> ./certificates/cert.crt
           touch ./certificates/key.pem
           echo "$KEY" >> ./certificates/key.pem
-          touch "$"$GITHUB_WORKSPACE"/.env"
-          echo "$WEB_APP_ENV" >> "$"$GITHUB_WORKSPACE"/backend/.env"
+          touch ./backend/.env
+          echo "$WEB_APP_ENV" >> ./backend/.env
 
   deploy:
     needs: environment
