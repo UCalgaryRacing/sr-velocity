@@ -1,8 +1,6 @@
 name: SR-Velocity Web App Deployment
 
-on:
-  release:
-    types: [published]
+on: push
 
 jobs:
   environment:
@@ -24,7 +22,7 @@ jobs:
           touch ./certificates/key.pem
           echo "$KEY" >> ./certificates/key.pem
           touch "$"$GITHUB_WORKSPACE"/.env"
-          echo "$WEB_APP_ENV" >> "$"$GITHUB_WORKSPACE"/.env"
+          echo "$WEB_APP_ENV" >> "$"$GITHUB_WORKSPACE"/backend/.env"
 
   deploy:
     needs: environment
