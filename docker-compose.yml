@@ -1,8 +1,8 @@
-version: "3.9"
+version: "3"
 
 services:
   sr-velocity:
-    container_name: SR-VELOCITY
+    container_name: sr-velocity
     build:
       context: .
       dockerfile: Dockerfile
