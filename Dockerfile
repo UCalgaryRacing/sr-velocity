@@ -16,6 +16,4 @@ RUN npm run build --prod
 WORKDIR /backend
 RUN npm install
 
-EXPOSE 5001
-
 CMD ["node", "app.js"]

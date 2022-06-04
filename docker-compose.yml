@@ -3,6 +3,7 @@ version: "3"
 services:
   sr-velocity:
     container_name: sr-velocity
+    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile
