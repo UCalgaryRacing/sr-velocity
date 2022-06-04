@@ -35,7 +35,7 @@ auth.all(
           res.status(response.statusCode).end();
         }
       })
-      .catch((_) => {
+      .catch((err) => {
         res.status(500).end();
       });
   }

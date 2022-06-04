@@ -3,9 +3,10 @@ version: "3"
 services:
   sr-velocity:
     container_name: sr-velocity
-    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 5001:5001
+      - 8080:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
