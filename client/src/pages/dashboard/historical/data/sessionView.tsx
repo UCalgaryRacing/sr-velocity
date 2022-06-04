@@ -110,24 +110,23 @@ export const SessionView: React.FC<SessionViewProps> = (
         </div>
       </DashNav>
       <div id="grid">{generateSessionCards()}</div>
-      {props.sessions.length === 0 ||
-        (sessions.length === 0 && (
-          <div id="centered">
-            <div id="centered-content">
-              <b>
-                {sessions.length === 0
-                  ? "No matching Sessions."
-                  : "No Sessions yet."}
-              </b>
-              {props.sessions.length === 0 && (
-                <TextButton
-                  title="Create a Session"
-                  onClick={() => setShowModal(true)}
-                />
-              )}
-            </div>
+      {(props.sessions.length === 0 || sessions.length === 0) && (
+        <div id="centered">
+          <div id="centered-content">
+            <b>
+              {props.sessions.length === 0
+                ? "No Sessions yet."
+                : "No matching Sessions."}
+            </b>
+            {props.sessions.length === 0 && (
+              <TextButton
+                title="Create a Session"
+                onClick={() => setShowModal(true)}
+              />
+            )}
           </div>
-        ))}
+        </div>
+      )}
       {showModal && (
         <SessionModal
           show={showModal}

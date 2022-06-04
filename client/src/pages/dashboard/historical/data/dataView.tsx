@@ -120,7 +120,6 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
   };
 
   const onCollectionUpdate = (collection: Collection) => {
-    console.log(collection);
     if (collection && collection._id) {
       let updatedCollections = [...collections];
       let updated = false;
@@ -134,14 +133,12 @@ const DataView: React.FC<DataViewProps> = (props: DataViewProps) => {
       updatedCollections.sort((a: Collection, b: Collection) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
-      console.log(updatedCollections);
       setCollections(updatedCollections);
       alert(updated ? "Collection updated!" : "Collection created!");
     }
   };
 
   const onCollectionDelete = (collectionId: string) => {
-    console.log("Delete");
     if (!collectionId) return;
     let updatedCollections = [];
     for (let collection of collections)

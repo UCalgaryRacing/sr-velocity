@@ -108,24 +108,23 @@ export const CollectionView: React.FC<CollectionViewProps> = (
         </div>
       </DashNav>
       <div id="grid">{generateCollectionCards()}</div>
-      {props.collections.length === 0 ||
-        (collections.length === 0 && (
-          <div id="centered">
-            <div id="centered-content">
-              <b>
-                {collections.length === 0
-                  ? "No matching Collections."
-                  : "No Collections yet."}
-              </b>
-              {props.sessions.length === 0 && (
-                <TextButton
-                  title="Create a Collection"
-                  onClick={() => setShowModal(true)}
-                />
-              )}
-            </div>
+      {(props.collections.length === 0 || collections.length === 0) && (
+        <div id="centered">
+          <div id="centered-content">
+            <b>
+              {props.collections.length === 0
+                ? "No Collections yet."
+                : "No matching Collections."}
+            </b>
+            {props.sessions.length === 0 && (
+              <TextButton
+                title="Create a Collection"
+                onClick={() => setShowModal(true)}
+              />
+            )}
           </div>
-        ))}
+        </div>
+      )}
       {showModal && (
         <CollectionModal
           show={showModal}

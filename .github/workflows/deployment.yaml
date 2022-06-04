@@ -35,5 +35,5 @@ jobs:
       - name: Deploy
         run: |
           sudo docker kill sr-velocity || true
-          sudo docker-compose build
+          sudo docker-compose build --no-cache --pull
           sudo docker-compose up &

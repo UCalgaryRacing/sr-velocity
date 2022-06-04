@@ -44,7 +44,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
   );
   const [values, handleChange] = useForm(
     props.session
-      ? props.session
+      ? { ...props.session }
       : { name: "", collectionIds: [], operatorId: null }
   );
 
@@ -142,6 +142,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
           name="name"
           title="Name"
           value={values.name}
+          onChange={handleChange}
           minLength={4}
           maxLength={30}
           required
