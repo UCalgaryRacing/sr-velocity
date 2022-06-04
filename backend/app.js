@@ -44,7 +44,6 @@ console.log(`Listening on port ${process.env.GATEWAY_PORT}`);
 // Server and client sockets for socket-io data proxy
 const io = require("socket.io")(protocol, {
   cors: {
-    origin: "http://localhost:3000", // CHANGE WHEN DEPLOYING
     methods: ["GET", "POST"],
     credentials: true,
   },

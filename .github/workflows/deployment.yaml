@@ -1,6 +1,8 @@
 name: SR-Velocity Web App Deployment
 
-on: push
+on:
+  release:
+    types: [published]
 
 jobs:
   environment:
