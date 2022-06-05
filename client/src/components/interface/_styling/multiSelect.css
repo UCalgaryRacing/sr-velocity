@@ -9,10 +9,10 @@ Written by Justin Tijunelis
 }
 
 .searchWrapper {
-  min-height: 44px;
+  min-height: 44px !important;
   border-color: var(--red);
   border-radius: var(--border-radius);
-  padding-left: 10px;
+  padding-left: 13px;
 }
 
 .searchWrapper input::placeholder {
@@ -51,4 +51,9 @@ Written by Justin Tijunelis
 .multiSelectContainer .chip {
   background-color: var(--red);
   font-weight: bold;
+}
+
+.multiSelectContainer input {
+  margin-top: 0px !important;
+  height: 33px;
 }

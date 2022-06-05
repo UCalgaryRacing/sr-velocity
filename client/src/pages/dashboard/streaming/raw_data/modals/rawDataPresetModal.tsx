@@ -132,6 +132,7 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
           name="name"
           title="Name"
           value={values.name}
+          onChange={handleChange}
           minLength={4}
           maxLength={20}
           required
