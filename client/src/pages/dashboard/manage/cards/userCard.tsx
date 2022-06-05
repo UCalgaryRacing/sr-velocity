@@ -61,31 +61,24 @@ export const UserCard: React.FC<UserCardProps> = (props: UserCardProps) => {
       <div>
         <b>Role:</b>&nbsp;{props.user.role}
       </div>
-      {isAuthAtLeast(user, UserRole.ADMIN) &&
-        !props.onlyAdmin &&
-        user?._id !== props.user._id && (
-          <>
-            <IconButton
-              id="card-delete"
-              img={<CloseOutlined />}
-              onClick={() => setShowConfirmationModal(true)}
-            />
-          </>
-        )}
-      {isAuthAtLeast(user, UserRole.LEAD) &&
-        !props.onlyAdmin &&
-        user?._id !== props.user._id && (
-          <>
-            <IconButton
-              id="card-edit"
-              style={{
-                top: user?.role === "Lead" || props.onlyAdmin ? "5px" : "45px",
-              }}
-              img={<Edit />}
-              onClick={() => setShowUserModal(true)}
-            />
-          </>
-        )}
+      <IconButton
+        id="card-delete"
+        img={<CloseOutlined />}
+        onClick={() => setShowConfirmationModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.ADMIN) || props.onlyAdmin}
+      />
+      <IconButton
+        id="card-edit"
+        img={<Edit />}
+        onClick={() => setShowUserModal(true)}
+        disabled={
+          !(
+            isAuthAtLeast(user, UserRole.LEAD) &&
+            !props.onlyAdmin &&
+            user?._id !== props.user._id
+          )
+        }
+      />
       <ConfirmModal
         title={
           "Are you sure you want to delete User '" + props.user.name + "'?"

@@ -118,20 +118,18 @@ export const SensorCard: React.FC<SensorCardProps> = (
         <b>Upper Danger:&nbsp;</b>
         {props.sensor.upperDanger ? props.sensor.upperDanger : "N/A"}
       </div>
-      {isAuthAtLeast(user, UserRole.ADMIN) && (
-        <>
-          <IconButton
-            id="card-delete"
-            img={<CloseOutlined />}
-            onClick={() => setShowConfirmationModal(true)}
-          />
-          <IconButton
-            id="card-edit"
-            img={<Edit />}
-            onClick={() => setShowSensorModal(true)}
-          />
-        </>
-      )}
+      <IconButton
+        id="card-delete"
+        img={<CloseOutlined />}
+        onClick={() => setShowConfirmationModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+      />
+      <IconButton
+        id="card-edit"
+        img={<Edit />}
+        onClick={() => setShowSensorModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+      />
       <ConfirmModal
         title={
           "Are you sure you want to delete Sensor '" + props.sensor.name + "'?"

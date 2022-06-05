@@ -72,20 +72,18 @@ export const ThingCard: React.FC<ThingCardProps> = (props: ThingCardProps) => {
           })()}
         </div>
       )}
-      {isAuthAtLeast(user, UserRole.ADMIN) && (
-        <>
-          <IconButton
-            id="card-delete"
-            img={<CloseOutlined />}
-            onClick={() => setShowConfirmationModal(true)}
-          />
-          <IconButton
-            id="card-edit"
-            img={<Edit />}
-            onClick={() => setShowThingModal(true)}
-          />
-        </>
-      )}
+      <IconButton
+        id="card-delete"
+        img={<CloseOutlined />}
+        onClick={() => setShowConfirmationModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+      />
+      <IconButton
+        id="card-edit"
+        img={<Edit />}
+        onClick={() => setShowThingModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+      />
       <ConfirmModal
         title={
           "Are you sure you want to delete Thing '" + props.thing.name + "'?"

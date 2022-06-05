@@ -174,7 +174,7 @@ export const ManageOperators: React.FC = () => {
                   ? "Your organization has no Operators yet."
                   : "Could not fetch Operators."}
               </b>
-              {!error && isAuthAtLeast(user, UserRole.ADMIN) && (
+              {!error && isAuthAtLeast(user, UserRole.LEAD) && (
                 <TextButton
                   title="Create a new Operator"
                   onClick={() => setShowOperatorModal(true)}
@@ -193,22 +193,20 @@ export const ManageOperators: React.FC = () => {
         <div>
           <DashNav margin={context.margin}>
             <div className="left">
-              {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <>
-                  {size.width >= 916 ? (
-                    <ToolTip value="New Operator">
-                      <IconButton
-                        onClick={() => setShowOperatorModal(true)}
-                        img={<Add />}
-                      />
-                    </ToolTip>
-                  ) : (
-                    <TextButton
-                      title="New Operator"
-                      onClick={() => setShowOperatorModal(true)}
-                    />
-                  )}
-                </>
+              {size.width >= 916 ? (
+                <ToolTip value="New Operator">
+                  <IconButton
+                    onClick={() => setShowOperatorModal(true)}
+                    img={<Add />}
+                    disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+                  />
+                </ToolTip>
+              ) : (
+                <TextButton
+                  title="New Operator"
+                  onClick={() => setShowOperatorModal(true)}
+                  disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+                />
               )}
             </div>
             <div className="right">

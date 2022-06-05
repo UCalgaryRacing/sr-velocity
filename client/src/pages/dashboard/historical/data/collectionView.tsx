@@ -2,7 +2,16 @@
 // Written by Jonathan Breidfjord and Justin Tijunelis
 
 import React, { useState, useContext, useEffect, useCallback } from "react";
-import { Session, Collection, Thing, Operator } from "state";
+import {
+  Session,
+  Collection,
+  Thing,
+  Operator,
+  useAppSelector,
+  RootState,
+  isAuthAtLeast,
+  UserRole,
+} from "state";
 import DashNav from "components/navigation/dashNav";
 import {
   ToolTip,
@@ -35,6 +44,7 @@ export const CollectionView: React.FC<CollectionViewProps> = (
 ) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
+  const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
   const [collections, setCollections] = useState<Collection[]>(
     props.collections
@@ -85,12 +95,17 @@ export const CollectionView: React.FC<CollectionViewProps> = (
         <div className="left">
           {size.width >= 916 ? (
             <ToolTip value="New Session">
-              <IconButton img={<Add />} onClick={() => setShowModal(true)} />
+              <IconButton
+                img={<Add />}
+                onClick={() => setShowModal(true)}
+                disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+              />
             </ToolTip>
           ) : (
             <TextButton
               title="New Session"
               onClick={() => setShowModal(true)}
+              disabled={!isAuthAtLeast(user, UserRole.LEAD)}
             />
           )}
           {props.viewChange}

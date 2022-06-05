@@ -16,3 +16,8 @@ Written by Justin Tijunelis
 .text-button:hover {
   background-color: var(--black);
 }
+
+.text-button:disabled,
+.text-button:hover:disabled {
+  background-color: var(--medium-gray) !important;
+}

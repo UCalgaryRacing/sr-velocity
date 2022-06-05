@@ -14,7 +14,16 @@ import { SessionModal } from "./modals/sessionModal";
 import { SessionCard } from "./cards/sessionCard";
 import { DashboardContext } from "../../dashboard";
 import { Add } from "@mui/icons-material";
-import { Session, Collection, Thing, Operator } from "state";
+import {
+  Session,
+  Collection,
+  Thing,
+  Operator,
+  useAppSelector,
+  RootState,
+  isAuthAtLeast,
+  UserRole,
+} from "state";
 import { useWindowSize } from "hooks";
 
 interface SessionViewProps {
@@ -34,6 +43,7 @@ export const SessionView: React.FC<SessionViewProps> = (
 ) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
+  const user = useAppSelector((state: RootState) => state.user);
   const [query, setQuery] = useState<string>("");
   const [sessions, setSessions] = useState<Session[]>(props.sessions);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -84,15 +94,20 @@ export const SessionView: React.FC<SessionViewProps> = (
     <>
       <DashNav margin={context.margin}>
         <div className="left">
-          {props.sessions.length > 0 && props.refresh}
+          {props.refresh}
           {size.width >= 916 ? (
             <ToolTip value="New Session">
-              <IconButton img={<Add />} onClick={() => setShowModal(true)} />
+              <IconButton
+                img={<Add />}
+                onClick={() => setShowModal(true)}
+                disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+              />
             </ToolTip>
           ) : (
             <TextButton
               title="New Session"
               onClick={() => setShowModal(true)}
+              disabled={!isAuthAtLeast(user, UserRole.LEAD)}
             />
           )}
           {props.viewChange}

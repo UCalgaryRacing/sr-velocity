@@ -197,45 +197,39 @@ export const SessionCard: React.FC<SessionCardProps> = (
         <div id="session-type">
           {props.session.generated ? "Generated via SR Velocity" : "Uploaded"}
         </div>
-        {isAuthAtLeast(user, UserRole.LEAD) && (
-          <>
-            <IconButton
-              id="session-card-delete"
-              img={<CloseOutlined />}
-              onClick={() => setShowConfirm(true)}
-            />
-            <IconButton
-              id="session-card-edit"
-              img={<Edit />}
-              onClick={() => setShowModal(true)}
-            />
-          </>
-        )}
-        {isAuthAtLeast(user, UserRole.MEMBER) && (
-          <>
-            <IconButton
-              id="session-card-download"
-              img={<FileDownloadOutlined />}
-              onClick={() => downloadFile()}
-              loading={downloading}
-              disabled={props.session.endTime ? false : true}
-            />
-            <IconButton
-              id="session-card-comment"
-              img={
-                showComments ? (
-                  <CommentsDisabledOutlined />
-                ) : (
-                  <CommentOutlined />
-                )
-              }
-              onClick={() =>
-                showComments ? setShowComments(false) : fetchComments()
-              }
-              loading={commentsLoading}
-            />
-          </>
-        )}
+        <IconButton
+          id="session-card-delete"
+          img={<CloseOutlined />}
+          onClick={() => setShowConfirm(true)}
+          disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+        />
+        <IconButton
+          id="session-card-edit"
+          img={<Edit />}
+          onClick={() => setShowModal(true)}
+          disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+        />
+        <IconButton
+          id="session-card-download"
+          img={<FileDownloadOutlined />}
+          onClick={() => downloadFile()}
+          loading={downloading}
+          disabled={
+            (props.session.endTime ? false : true) ||
+            !isAuthAtLeast(user, UserRole.MEMBER)
+          }
+        />
+        <IconButton
+          id="session-card-comment"
+          img={
+            showComments ? <CommentsDisabledOutlined /> : <CommentOutlined />
+          }
+          onClick={() =>
+            showComments ? setShowComments(false) : fetchComments()
+          }
+          loading={commentsLoading}
+          disabled={!isAuthAtLeast(user, UserRole.MEMBER)}
+        />
         <ConfirmModal
           title={
             "Are you sure you want to delete Session '" +

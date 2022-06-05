@@ -124,6 +124,11 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
                     name === "Users"
                   )
                     return;
+                  if (
+                    !isAuthAtLeast(state.user, UserRole.MEMBER) &&
+                    name === "Profile"
+                  )
+                    return;
                   return (
                     <>
                       <MenuItem

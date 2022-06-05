@@ -254,19 +254,21 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
                   onClick={() => setShowChartModal(true)}
                 />
               )}
-              {isAuthAtLeast(user, UserRole.MEMBER) && charts.length > 0 && (
+              {charts.length > 0 && (
                 <>
                   {size.width >= 916 ? (
                     <ToolTip value="Save Preset">
                       <IconButton
                         img={<SaveOutlined />}
                         onClick={() => setShowPresetModal(true)}
+                        disabled={!isAuthAtLeast(user, UserRole.MEMBER)}
                       />
                     </ToolTip>
                   ) : (
                     <TextButton
                       title="Save Preset"
                       onClick={() => setShowPresetModal(true)}
+                      disabled={!isAuthAtLeast(user, UserRole.MEMBER)}
                     />
                   )}
                 </>

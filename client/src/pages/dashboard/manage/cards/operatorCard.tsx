@@ -68,20 +68,18 @@ export const OperatorCard: React.FC<OperatorCardProps> = (
           })()}
         </div>
       )}
-      {isAuthAtLeast(user, UserRole.ADMIN) && (
-        <>
-          <IconButton
-            id="card-delete"
-            img={<CloseOutlined />}
-            onClick={() => setShowConfirmationModal(true)}
-          />
-          <IconButton
-            id="card-edit"
-            img={<Edit />}
-            onClick={() => setShowOperatorModal(true)}
-          />
-        </>
-      )}
+      <IconButton
+        id="card-delete"
+        img={<CloseOutlined />}
+        onClick={() => setShowConfirmationModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+      />
+      <IconButton
+        id="card-edit"
+        img={<Edit />}
+        onClick={() => setShowOperatorModal(true)}
+        disabled={!isAuthAtLeast(user, UserRole.LEAD)}
+      />
       <ConfirmModal
         title={
           "Are you sure you want to delete Operator '" +

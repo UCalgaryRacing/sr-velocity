@@ -217,13 +217,9 @@ export const ManageSensors: React.FC = () => {
                 )}
               {!errorFetchingSensors && thing && (
                 <>
-                  {isAuthAtLeast(user, UserRole.ADMIN) && (
-                    <>
-                      <br />
-                      <br />
-                      <b>Or select a different Thing:</b>
-                    </>
-                  )}
+                  <br />
+                  <br />
+                  <b>Select a different Thing:</b>
                   <br />
                   <br />
                   <DropDown
@@ -249,36 +245,31 @@ export const ManageSensors: React.FC = () => {
             <>
               <DashNav margin={context.margin}>
                 <div className="left">
-                  {isAuthAtLeast(user, UserRole.ADMIN) && (
-                    <>
-                      {size.width >= 916 ? (
-                        <ToolTip value="New Sensor">
-                          <IconButton
-                            onClick={() => {
-                              if (sensors.length === 256)
-                                alert(
-                                  true,
-                                  "Each thing can only have 256 sensors."
-                                );
-                              else setShowSensorModal(true);
-                            }}
-                            img={<Add />}
-                          />
-                        </ToolTip>
-                      ) : (
-                        <TextButton
-                          title="New Sensor"
-                          onClick={() => {
-                            if (sensors.length === 256)
-                              alert(
-                                true,
-                                "Each thing can only have 256 sensors."
-                              );
-                            else setShowSensorModal(true);
-                          }}
-                        />
-                      )}
-                    </>
+                  {size.width >= 916 ? (
+                    <ToolTip value="New Sensor">
+                      <IconButton
+                        onClick={() => {
+                          if (sensors.length === 256)
+                            alert(
+                              true,
+                              "Each thing can only have 256 sensors."
+                            );
+                          else setShowSensorModal(true);
+                        }}
+                        img={<Add />}
+                        disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+                      />
+                    </ToolTip>
+                  ) : (
+                    <TextButton
+                      title="New Sensor"
+                      onClick={() => {
+                        if (sensors.length === 256)
+                          alert(true, "Each thing can only have 256 sensors.");
+                        else setShowSensorModal(true);
+                      }}
+                      disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+                    />
                   )}
                 </div>
                 <div className="right">

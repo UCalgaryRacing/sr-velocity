@@ -184,23 +184,23 @@ export const ManageThings: React.FC = () => {
         <div id="manage-content">
           <DashNav margin={context.margin}>
             <div className="left">
-              {isAuthAtLeast(user, UserRole.ADMIN) && (
-                <>
-                  {size.width >= 916 ? (
-                    <ToolTip value="New Thing">
-                      <IconButton
-                        onClick={() => setShowThingModal(true)}
-                        img={<Add />}
-                      />
-                    </ToolTip>
-                  ) : (
-                    <TextButton
-                      title="New Thing"
+              <>
+                {size.width >= 916 ? (
+                  <ToolTip value="New Thing">
+                    <IconButton
                       onClick={() => setShowThingModal(true)}
+                      img={<Add />}
+                      disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
                     />
-                  )}
-                </>
-              )}
+                  </ToolTip>
+                ) : (
+                  <TextButton
+                    title="New Thing"
+                    onClick={() => setShowThingModal(true)}
+                    disabled={!isAuthAtLeast(user, UserRole.ADMIN)}
+                  />
+                )}
+              </>
             </div>
             <div className="right">
               <DropDown
