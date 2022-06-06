@@ -30,7 +30,7 @@ export const OperatorModal: React.FC<OperatorModalProps> = (
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [values, handleChange] = useForm(
-    props.operator ? props.operator : { name: "" }
+    props.operator ? { ...props.operator } : { name: "" }
   );
 
   useEffect(() => {

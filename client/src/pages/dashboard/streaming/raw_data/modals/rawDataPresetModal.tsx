@@ -34,7 +34,7 @@ export const RawDataPresetModal: React.FC<RawDataPresetModalProps> = (
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [values, handleChange] = useForm(
-    props.rawDataPreset ? props.rawDataPreset : { name: "" }
+    props.rawDataPreset ? { ...props.rawDataPreset } : { name: "" }
   );
 
   useEffect(() => {

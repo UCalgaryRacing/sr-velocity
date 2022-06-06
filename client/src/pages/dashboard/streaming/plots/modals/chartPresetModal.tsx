@@ -26,7 +26,7 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [values, handleChange] = useForm(
-    props.chartPreset ? props.chartPreset : { name: "" }
+    props.chartPreset ? { ...props.chartPreset } : { name: "" }
   );
 
   const alert = (description: string) => {

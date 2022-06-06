@@ -32,7 +32,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [values, handleChange] = useForm(
-    props.chart ? props.chart : { name: "" }
+    props.chart ? { ...props.chart } : { name: "" }
   );
 
   useEffect(() => {
@@ -118,6 +118,7 @@ export const ChartModal: React.FC<ChartModalProps> = (
           name="name"
           title="Name"
           value={values.name}
+          onChange={handleChange}
           minLength={4}
           maxLength={20}
           required

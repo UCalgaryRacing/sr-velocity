@@ -37,7 +37,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = (
       : []
   );
   const [values, handleChange] = useForm(
-    props.collection ? props.collection : { name: "", sessionIds: [] }
+    props.collection ? { ...props.collection } : { name: "", sessionIds: [] }
   );
 
   useEffect(() => {
