@@ -96,7 +96,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         alert("The lower bound must be less than the upper bound.");
       } else setType(findOptimalType(lower, upper));
     }
-  }, [values, numberType, precision]);
+  }, [values.lowerBound, values.upperBound, numberType, precision]);
 
   const findOptimalType = (lower: number, upper: number) => {
     let type = "?";

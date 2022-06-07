@@ -79,4 +79,8 @@ Written by Justin Tijunelis
     grid-template-columns: 1fr;
     grid-gap: 5px;
   }
+
+  #data-view button {
+    margin: 0px;
+  }
 }

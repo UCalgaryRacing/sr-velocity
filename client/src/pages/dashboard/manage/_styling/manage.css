@@ -56,7 +56,7 @@ Written by Joey Van Lierop
 @media only screen and (max-width: 1000px) {
   #manage-grid {
     grid-template-columns: 1fr;
-    grid-gap: 10px;
+    grid-gap: 5px;
   }
 }
 

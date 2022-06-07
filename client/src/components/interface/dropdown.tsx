@@ -14,6 +14,9 @@ const style = {
       : state.isFocused
       ? "#ba183380"
       : "white",
+    paddingTop: 10,
+    cursor: "pointer",
+    height: 44,
   }),
   menu: (provided: any, state: any) => ({
     ...provided,
@@ -25,6 +28,10 @@ const style = {
     transition: "all .2s ease",
     transform: state.selectProps.menuIsOpen ? "rotate(180deg)" : null,
     color: "#ba1833",
+  }),
+  valueContainer: (base: any, state: any) => ({
+    ...base,
+    marginLeft: 5,
   }),
 };
 
