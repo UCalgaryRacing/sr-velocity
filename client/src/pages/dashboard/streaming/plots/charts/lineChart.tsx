@@ -441,7 +441,7 @@ const createChart = (chartId: number, interval: number[]) => {
   autoCursor.getResultTable().setTextFillStyle(theme.whiteFill);
   autoCursor
     .getResultTable()
-    .setBackground((background) => background.setFillStyle(theme.redFill));
+    .setBackground((background: any) => background.setFillStyle(theme.redFill));
 
   // Configure the axes
   chart
@@ -486,6 +486,8 @@ const createChart = (chartId: number, interval: number[]) => {
 
   // Allow scrolling while hovering over chart
   chart.engine.container.onwheel = null;
+  chart.engine.container.ontouchstart = null;
+  chart.engine.container.ontouchmove = null;
   return chart;
 };
 

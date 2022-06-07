@@ -2,8 +2,8 @@
 // Written by Justin Tijunelis
 
 import React from "react";
-import "./_styling/dropdown.css";
 import Select, { Props } from "react-select";
+import "./_styling/dropdown.css";
 
 const style = {
   option: (provided: any, state: any) => ({

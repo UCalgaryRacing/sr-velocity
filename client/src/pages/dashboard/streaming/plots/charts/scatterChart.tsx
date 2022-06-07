@@ -332,14 +332,14 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
         <div className="scatter-controls">
           <InputField
             name="lower"
-            title="Lower Heat Bound"
+            placeholder="Lower Heat Bound"
             type="number"
             value={values.lower}
             onChange={handleChange}
           />
           <InputField
             name="upper"
-            title="Upper Heat Bound"
+            placeholder="Upper Heat Bound"
             type="number"
             value={values.upper}
             onChange={handleChange}
@@ -407,7 +407,7 @@ const createChart = (chartId: number, sensors: Sensor[]) => {
   // Format the X-Axis
   let xSensor = sensors[0];
   let xTitle = xSensor.name;
-  xTitle += xSensor.unit ? "(" + xSensor.unit + ")" : "";
+  xTitle += xSensor.unit ? " (" + xSensor.unit + ")" : "";
   chart
     .getDefaultAxisX()
     .setTitle(xTitle)
@@ -459,6 +459,7 @@ const createChart = (chartId: number, sensors: Sensor[]) => {
   // Don't allow scrolling
   chart.engine.container.onwheel = null;
   chart.engine.container.ontouchstart = null;
+  chart.engine.container.ontouchmove = null;
   return chart;
 };
 
