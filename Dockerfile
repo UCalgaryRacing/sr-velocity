@@ -10,7 +10,7 @@ COPY ./client /client
 COPY ./backend /backend
 
 WORKDIR /client
-RUN npm install
+RUN npm install --force
 RUN npm run build --prod
 
 WORKDIR /backend
