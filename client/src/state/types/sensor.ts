@@ -10,6 +10,7 @@ export type Sensor = {
   frequency: number;
   unit?: string;
   canId: number;
+  canOffset: number;
   thingId: string;
   upperCalibration?: number;
   lowerCalibration?: number;

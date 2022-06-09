@@ -104,7 +104,13 @@ const Historical: React.FC = () => {
           />
         );
       case HistoricalSection.PLOTS:
-        return <PlotView />;
+        return (
+          <PlotView
+            things={things}
+            thing={currentThing}
+            onThingChange={setCurrentThing}
+          />
+        );
       default:
         return <></>;
     }

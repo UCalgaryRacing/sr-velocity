@@ -94,10 +94,10 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (chartPreset) setCharts(chartPreset.charts);
-    else setCharts([]);
-  }, [chartPreset]);
+  useEffect(
+    () => setCharts(chartPreset ? chartPreset.charts : []),
+    [chartPreset]
+  );
 
   useEffect(() => {
     generateCharts(charts);

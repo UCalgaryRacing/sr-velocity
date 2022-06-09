@@ -58,6 +58,10 @@ export const SensorCard: React.FC<SensorCardProps> = (
         0x{numberToHex(props.sensor.canId).toUpperCase()}
       </div>
       <div>
+        <b>Can Offset:&nbsp;</b>
+        {props.sensor.canOffset}&nbsp;bytes
+      </div>
+      <div>
         <b>Frequency:&nbsp;</b>
         {props.sensor.frequency}
       </div>

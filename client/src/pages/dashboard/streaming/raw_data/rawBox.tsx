@@ -15,7 +15,7 @@ interface RawBoxProps {
   onDelete: (sensorId: string) => void;
 }
 
-// TODO: Have a moving average of the last second?
+// TODO: Implement moving average
 const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   const onDatumCallback = useRef<() => void>(null);
   const [value, setValue] = useState<number>(0);

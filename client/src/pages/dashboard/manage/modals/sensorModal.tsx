@@ -25,6 +25,7 @@ const initialValues = {
   name: "",
   type: "",
   canId: "0x",
+  canOffset: "",
   frequency: "",
   unit: "",
   lowerBound: "",
@@ -40,6 +41,7 @@ const initialValues = {
 
 const numberFields = [
   "frequency",
+  "canOffset",
   "lowerCalibration",
   "upperCalibration",
   "conversionMultiplier",
@@ -244,6 +246,16 @@ export const SensorModal: React.FC<SensorModalProps> = (
           value={values.canId}
           minLength={8}
           maxLength={10}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          name="canOffset"
+          title="CAN Offset"
+          type="number"
+          value={values.canOffset}
+          min={0}
+          max={7}
           onChange={handleChange}
           required
         />

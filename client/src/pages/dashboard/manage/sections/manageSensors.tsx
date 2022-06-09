@@ -45,7 +45,6 @@ export const ManageSensors: React.FC = () => {
   const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
   const [noThings, setNoThings] = useState<boolean>(false);
   const [noSensors, setNoSensors] = useState<boolean>(false);
-  const [noMatchingSensors, setNoMatchingSensors] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [errorAlert, setErrorAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -158,7 +157,6 @@ export const ManageSensors: React.FC = () => {
       if (sensor.name.toLowerCase().includes(lowerQuery))
         matchingSensors.push(sensor);
     generateSensorCards(matchingSensors);
-    setNoMatchingSensors(matchingSensors.length === 0);
   };
 
   return (
@@ -317,7 +315,7 @@ export const ManageSensors: React.FC = () => {
           )}
         </div>
       )}
-      {noMatchingSensors && (
+      {sensorCards.length === 0 && (
         <div id="centered">
           <div id="centered-content">
             <b>No matching Sensors found...</b>
