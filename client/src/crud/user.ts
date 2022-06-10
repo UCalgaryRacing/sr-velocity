@@ -12,6 +12,14 @@ export const signIn = (credentials: any) => {
   });
 };
 
+export const renewUser = () => {
+  return new Promise<void>((resolve, reject) => {
+    request("POST", "/auth/renew")
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
+  });
+}
+
 export const registerUser = (credentials: any) => {
   return new Promise<void>((resolve, reject) => {
     request("POST", "/auth/signup", credentials)
@@ -22,10 +30,9 @@ export const registerUser = (credentials: any) => {
 
 export const signUserOut = () => {
   return new Promise<void>((resolve, reject) => {
-    // request("POST", "/auth/signout")
-    //   .then((_: any) => resolve())
-    //   .catch((err: any) => reject(err));
-    resolve();
+    request("POST", "/auth/signout")
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
   });
 };
 

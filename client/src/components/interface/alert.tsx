@@ -1,6 +1,9 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
+// I hate timeouts
+//@ts-nocheck
+
 import React, { useState, useEffect } from "react";
 import "./_styling/alert.css";
 
@@ -12,8 +15,11 @@ interface AlertProps {
   show: boolean;
   slideOut?: boolean;
   duration?: number;
+  onTimeout?: () => void;
   // TODO: Add a margin
 }
+
+let alertTimeout = null
 
 export const Alert: React.FC<AlertProps> = (props: AlertProps) => {
   const [showAlert, setShowAlert] = useState<boolean>(props.show);
@@ -26,14 +32,25 @@ export const Alert: React.FC<AlertProps> = (props: AlertProps) => {
 
   useEffect(() => {
     setShowAlert(props.show);
+
     if (props.show) timeoutAlert();
+    else {
+      if (alertTimeout != null) {
+        clearTimeout(alertTimeout)
+      }
+    }
   }, [props.show]);
 
   const timeoutAlert = () => {
-    setTimeout(
+    if (alertTimeout != null) {
+      clearTimeout(alertTimeout)
+    }
+
+    alertTimeout = setTimeout(
       () => {
         setShowAlert(false);
-        props.onDismiss();
+        // If there was a timeout, use it, otherwise use the on dismiss
+        props.onTimeout ? props.onTimeout() : props.onDismiss();
       },
       props.duration ? props.duration * 1000 : 3000
     );
