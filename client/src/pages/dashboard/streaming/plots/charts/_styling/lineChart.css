@@ -30,6 +30,17 @@ Written by Justin Tijunelis
   margin-bottom: 5px;
 }
 
+.line-legend .sensor .legend-item {
+  display: flex;
+}
+
+.line-legend .sensor .legend-item-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
 .line-legend .slope {
   font-style: italic;
 }

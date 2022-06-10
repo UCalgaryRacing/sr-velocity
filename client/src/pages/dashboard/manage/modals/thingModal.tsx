@@ -118,8 +118,8 @@ export const ThingModal: React.FC<ThingModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={4}
-          maxLength={20}
+          minLength={2}
+          maxLength={30}
           required
         />
         <MultiSelect

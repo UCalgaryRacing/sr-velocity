@@ -109,7 +109,7 @@ export const ChartPresetModal: React.FC<ChartPresetModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={4}
+          minLength={1}
           maxLength={20}
           required
         />

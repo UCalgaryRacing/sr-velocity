@@ -6,6 +6,7 @@ Written by Justin Tijunelis
 .dropdown > div {
   border: 1px solid var(--red);
   box-shadow: var(--red) auto 2px;
+  text-align: left !important;
 }
 
 .dropdown > div:hover {

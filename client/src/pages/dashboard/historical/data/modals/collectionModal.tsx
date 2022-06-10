@@ -109,7 +109,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={4}
+          minLength={2}
           maxLength={30}
           required
         />

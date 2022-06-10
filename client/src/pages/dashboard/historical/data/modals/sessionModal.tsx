@@ -143,7 +143,7 @@ export const SessionModal: React.FC<SessionModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={4}
+          minLength={2}
           maxLength={30}
           required
         />

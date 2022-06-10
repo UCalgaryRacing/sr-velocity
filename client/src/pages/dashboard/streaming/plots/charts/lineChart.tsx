@@ -186,8 +186,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     if (!lastValues || lastValues === {}) return;
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
-      <div>
-        {name + ": " + value.toFixed(2).replace(/[.,]00$/, "") + " " + unit}
+      <div className="legend-item">
+        <div className="legend-item-name">{name}</div>
+        {": " + value.toFixed(2).replace(/[.,]00$/, "") + " " + unit}
       </div>
     );
     let i = 0;

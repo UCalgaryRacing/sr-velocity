@@ -43,6 +43,8 @@ export const ManageSensors: React.FC = () => {
     useState<boolean>(false);
   const [fetchingThings, setFetchingThings] = useState<boolean>(true);
   const [fetchingSensors, setFetchingSensors] = useState<boolean>(false);
+  const [noThings, setNoThings] = useState<boolean>(false);
+  const [noSensors, setNoSensors] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [errorAlert, setErrorAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
@@ -63,6 +65,7 @@ export const ManageSensors: React.FC = () => {
         );
         if (things.length === 1) setThing(things[0]);
         setThings(things);
+        setNoThings(things.length === 0);
         setFetchingThings(false);
       })
       .catch((_: any) => {
@@ -81,6 +84,7 @@ export const ManageSensors: React.FC = () => {
             a.name.toLowerCase().localeCompare(b.name.toLowerCase())
           );
           setSensors(sensors);
+          setNoSensors(sensors.length === 0);
           setFetchingSensors(false);
         })
         .catch((_: any) => {
@@ -127,6 +131,7 @@ export const ManageSensors: React.FC = () => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
       setSensors(updatedSensors);
+      setNoSensors(false);
       if (updated) alert(false, "The Sensor was updated.");
       else alert(false, "The Sensor was created.");
     }
@@ -141,6 +146,7 @@ export const ManageSensors: React.FC = () => {
       }
     }
     setSensors(updatedSensors);
+    setNoSensors(updatedSensors.length === 0);
     alert(false, "The Sensor was deleted.");
   };
 
@@ -155,8 +161,8 @@ export const ManageSensors: React.FC = () => {
 
   return (
     <>
-      {things.length === 0 ||
-      sensors.length === 0 ||
+      {noThings ||
+      noSensors ||
       errorFetchingThings ||
       errorFetchingSensors ||
       fetchingThings ||
