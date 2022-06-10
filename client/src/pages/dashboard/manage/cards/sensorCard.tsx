@@ -93,20 +93,6 @@ export const SensorCard: React.FC<SensorCardProps> = (
         {props.sensor.upperBound}
       </div>
       <div>
-        <b>Lower Calibration:&nbsp;</b>
-        {props.sensor.lowerCalibration ? props.sensor.lowerCalibration : "N/A"}
-      </div>
-      <div>
-        <b>Upper Calibration:&nbsp;</b>
-        {props.sensor.upperCalibration ? props.sensor.upperCalibration : "N/A"}
-      </div>
-      <div>
-        <b>Conversion Multiplier:&nbsp;</b>
-        {props.sensor.conversionMultiplier
-          ? props.sensor.conversionMultiplier
-          : "N/A"}
-      </div>
-      <div>
         <b>Lower Warning:&nbsp;</b>
         {props.sensor.lowerWarning ? props.sensor.lowerWarning : "N/A"}
       </div>

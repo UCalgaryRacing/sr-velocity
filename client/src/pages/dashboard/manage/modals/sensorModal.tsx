@@ -25,7 +25,7 @@ const initialValues = {
   name: "",
   type: "",
   canId: "0x",
-  canOffset: "",
+  canOffset: "0",
   frequency: "",
   unit: "",
   lowerBound: "",
@@ -108,7 +108,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
     const BYTE8_MAX = 2 ** 64 - 1;
     const FLOAT_MAX = 3.402823466e38;
     if (numberType === "Decimal") {
-      console.log("floating");
       if (precision === 15) {
         type = "d";
       } else {
@@ -120,7 +119,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
         }
       }
     } else if (numberType === "Discrete" && lower < 0) {
-      console.log("signed");
       if (lower < 0) {
         const absLower = Math.abs(lower);
         const absUpper = Math.abs(upper);
@@ -139,7 +137,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
         }
       }
     } else if (numberType === "Discrete" && lower >= 0) {
-      console.log("unsigned");
       if (upper <= BYTE1_MAX) type = "B";
       else if (upper <= BYTE2_MAX) type = "H";
       else if (upper <= BYTE4_MAX) type = "I";
@@ -235,15 +232,15 @@ export const SensorModal: React.FC<SensorModalProps> = (
           title="Name"
           value={values.name}
           onChange={handleChange}
-          minLength={3}
-          maxLength={20}
+          minLength={2}
+          maxLength={30}
           required
         />
         <InputField
           name="canId"
           title="CAN ID ([0x]########)"
           value={values.canId}
-          minLength={8}
+          minLength={1}
           maxLength={10}
           onChange={handleChange}
           required
@@ -341,29 +338,6 @@ export const SensorModal: React.FC<SensorModalProps> = (
             />
           </div>
         )}
-        <div className="compressed-form">
-          <InputField
-            name="lowerCalibration"
-            title="Lower Calibration"
-            type="number"
-            value={values.lowerCalibration}
-            onChange={handleChange}
-          />
-          <InputField
-            name="upperCalibration"
-            title="Upper Calibration"
-            type="number"
-            value={values.upperCalibration}
-            onChange={handleChange}
-          />
-        </div>
-        <InputField
-          name="conversionMultiplier"
-          title="Conversion Multiplier"
-          type="number"
-          value={values.conversionMultiplier}
-          onChange={handleChange}
-        />
         <div className="compressed-form">
           <InputField
             name="lowerWarning"
