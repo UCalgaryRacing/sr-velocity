@@ -13,6 +13,7 @@ Written by Justin Tijunelis
   font-size: 0;
   position: relative;
   margin: 0;
+  pointer-events: all;
 }
 
 .icon-button:disabled,

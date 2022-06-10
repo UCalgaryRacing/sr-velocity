@@ -98,7 +98,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         alert("The lower bound must be less than the upper bound.");
       } else setType(findOptimalType(lower, upper));
     }
-  }, [values.lowerBound, values.upperBound, numberType, precision]);
+  }, [values, numberType, precision]);
 
   const findOptimalType = (lower: number, upper: number) => {
     let type = "?";
@@ -108,6 +108,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
     const BYTE8_MAX = 2 ** 64 - 1;
     const FLOAT_MAX = 3.402823466e38;
     if (numberType === "Decimal") {
+      console.log("floating");
       if (precision === 15) {
         type = "d";
       } else {
@@ -119,6 +120,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
         }
       }
     } else if (numberType === "Discrete" && lower < 0) {
+      console.log("signed");
       if (lower < 0) {
         const absLower = Math.abs(lower);
         const absUpper = Math.abs(upper);
@@ -135,15 +137,16 @@ export const SensorModal: React.FC<SensorModalProps> = (
           );
           type = "";
         }
-      } else if (numberType === "Discrete" && lower > 0) {
-        if (upper <= BYTE1_MAX) type = "B";
-        else if (upper <= BYTE2_MAX) type = "H";
-        else if (upper <= BYTE4_MAX) type = "I";
-        else if (upper <= BYTE8_MAX) type = "Q";
-        else {
-          alert("The upper bound is to large, it must be less than 2^64.");
-          type = "";
-        }
+      }
+    } else if (numberType === "Discrete" && lower >= 0) {
+      console.log("unsigned");
+      if (upper <= BYTE1_MAX) type = "B";
+      else if (upper <= BYTE2_MAX) type = "H";
+      else if (upper <= BYTE4_MAX) type = "I";
+      else if (upper <= BYTE8_MAX) type = "Q";
+      else {
+        alert("The upper bound is to large, it must be less than 2^64.");
+        type = "";
       }
     }
     return type;
@@ -166,11 +169,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
   const onSubmit = (e: any) => {
     e.preventDefault();
     let canIdValid =
-      (values.canId.length === 8 || values.canId.length === 10) &&
-      !(values.canId.length === 8 && !/[0-9a-fA-F]{8}/.test(values.canId)) &&
-      !(
-        values.canId.length === 10 && !/0[xX][0-9a-fA-F]{8}/.test(values.canId)
-      );
+      /[0-9a-fA-F]/.test(values.canId) || /0[xX][0-9a-fA-F]/.test(values.canId);
     if (!canIdValid || Number(values.canId) === 0) {
       alert("Please provide a valid CAN ID.");
       return;
@@ -179,11 +178,11 @@ export const SensorModal: React.FC<SensorModalProps> = (
       alert("Please select a type for the Sensor.");
       return;
     }
-    setLoading(true);
     if (props.sensor) {
       let sensor = cleanSensor({
         ...props.sensor,
         ...values,
+        type: type,
         canId: hexToNumber(values.canId),
       });
       putSensor(sensor)
@@ -298,8 +297,8 @@ export const SensorModal: React.FC<SensorModalProps> = (
           onChange={(value: any) => {
             setNumberType(value);
             if (value === "On/Off") {
-              values.upperBound = "0";
-              values.lowerBound = "1";
+              values.lowerBound = "0";
+              values.upperBound = "1";
               setPrecision(undefined);
             }
           }}
