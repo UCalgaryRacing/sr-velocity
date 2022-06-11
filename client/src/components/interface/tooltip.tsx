@@ -16,7 +16,7 @@ export const ToolTip: React.FC<ToolTipProps> = (props: ToolTipProps) => {
       overlay={<Tooltip id="tooltip">{props.value}</Tooltip>}
       placement="auto"
     >
-      {props.children}
+      <span>{props.children}</span>
     </OverlayTrigger>
   );
 };

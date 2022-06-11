@@ -15,6 +15,10 @@ Written by Justin Tijunelis
   font-size: var(--fz-lg);
   margin-bottom: 0px;
   text-decoration: underline;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 70%;
 }
 
 .card #card-delete {

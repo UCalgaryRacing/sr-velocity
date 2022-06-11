@@ -67,6 +67,15 @@ const SignIn: React.FC = () => {
           required
         />
         <TextButton title="Sign In" loading={loading} />
+        <TextButton
+          type="button"
+          title="Sign In as Guest"
+          onClick={() => {
+            values.email = "guest@email.com";
+            values.password = "fsae2022";
+            onSubmit(null);
+          }}
+        />
         <div id="redirect">
           <b>
             Don't have an account?&nbsp;<a href="/sign-up">Sign Up</a>

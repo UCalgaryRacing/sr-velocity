@@ -36,6 +36,12 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   }, []);
 
   useEffect(() => {
+    // On/Off for boolean
+    if (props.sensor.type === "?") {
+      setColor("#ba1833");
+      return;
+    }
+
     // Handle lower danger
     const lowerDanger = props.sensor.lowerDanger;
     if (lowerDanger && value <= lowerDanger) {
@@ -80,9 +86,13 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   return (
     <div className="raw-box" style={{ background: color }}>
       <div className="raw-box-title">{props.sensor.name}</div>
-      <div className="raw-box-value">
-        {value + (props.sensor.unit ? " " + props.sensor.unit : "")}
-      </div>
+      {props.sensor.type !== "?" ? (
+        <div className="raw-box-value">
+          {value + (props.sensor.unit ? " " + props.sensor.unit : "")}
+        </div>
+      ) : (
+        <div className="raw-box-value">{value === 0 ? "OFF" : "ON"}</div>
+      )}
       <div
         className="raw-box-close"
         onClick={() => props.onDelete(props.sensor._id)}

@@ -7,12 +7,11 @@ import {
   InputField,
   TextButton,
   Alert,
-  DropDown,
   SegmentedControl,
 } from "components/interface";
 import { postSensor, putSensor } from "crud";
 import { useForm } from "hooks";
-import { Sensor, Thing, numberToHex, hexToNumber, sensorTypes } from "state";
+import { Sensor, Thing, numberToHex, hexToNumber } from "state";
 
 interface SensorModalProps {
   show?: boolean;
@@ -338,38 +337,42 @@ export const SensorModal: React.FC<SensorModalProps> = (
             />
           </div>
         )}
-        <div className="compressed-form">
-          <InputField
-            name="lowerWarning"
-            title="Lower Warning"
-            type="number"
-            value={values.lowerWarning}
-            onChange={handleChange}
-          />
-          <InputField
-            name="upperWarning"
-            title="Upper Warning"
-            type="number"
-            value={values.upperWarning}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="compressed-form">
-          <InputField
-            name="lowerDanger"
-            title="Lower Danger"
-            type="number"
-            value={values.lowerDanger}
-            onChange={handleChange}
-          />
-          <InputField
-            name="upperDanger"
-            title="Upper Danger"
-            type="number"
-            value={values.upperDanger}
-            onChange={handleChange}
-          />
-        </div>
+        {numberType !== "On/Off" && (
+          <>
+            <div className="compressed-form">
+              <InputField
+                name="lowerWarning"
+                title="Lower Warning"
+                type="number"
+                value={values.lowerWarning}
+                onChange={handleChange}
+              />
+              <InputField
+                name="upperWarning"
+                title="Upper Warning"
+                type="number"
+                value={values.upperWarning}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="compressed-form">
+              <InputField
+                name="lowerDanger"
+                title="Lower Danger"
+                type="number"
+                value={values.lowerDanger}
+                onChange={handleChange}
+              />
+              <InputField
+                name="upperDanger"
+                title="Upper Danger"
+                type="number"
+                value={values.upperDanger}
+                onChange={handleChange}
+              />
+            </div>
+          </>
+        )}
         <TextButton title="Save" loading={loading} />
       </BaseModal>
       <Alert

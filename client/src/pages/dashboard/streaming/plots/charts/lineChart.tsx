@@ -483,7 +483,8 @@ const createChart = (chartId: number, interval: number[]) => {
           .setMajorTickStyle(tickStyling)
           .setMinorTickStyle(tickStyling)
           .setExtremeTickStyle(tickStyling)
-    );
+    )
+    .setInterval(-1, 1);
 
   // Allow scrolling while hovering over chart
   chart.engine.container.onwheel = null;

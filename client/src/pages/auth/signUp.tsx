@@ -91,7 +91,7 @@ const SignUp: React.FC = () => {
                   type="name"
                   title="Display Name"
                   value={values.name}
-                  minLength={6}
+                  minLength={4}
                   maxLength={20}
                   onChange={handleChange}
                   required
