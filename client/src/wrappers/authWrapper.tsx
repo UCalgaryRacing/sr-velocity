@@ -24,9 +24,7 @@ const AuthWrapper: React.FC = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [alertTime, setAlertTime] = useState<number>(
-    user
-      ? user?.expirationTime - Date.now() - 5 * 60 * 1000
-      : Math.pow(10, 1000)
+    user ? user?.expirationTime - Date.now() - 5 * 60 * 1000 : 0
   );
   const [showAlert, setShowAlert] = useState(false);
 
@@ -47,6 +45,7 @@ const AuthWrapper: React.FC = (props) => {
   }, [user]);
 
   useEffect(() => {
+    if (!user) return;
     if (renewTimeout != null) clearTimeout(renewTimeout);
     renewTimeout = setTimeout(() => setShowAlert(true), alertTime);
   }, [alertTime]);

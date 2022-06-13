@@ -60,6 +60,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const [streaming, setStreaming] = useState<boolean>(false);
   const [interval, setInterval] = useState<number[]>();
   const [window, setWindow] = useState<number>(5);
+  const [legend, setLegend] = useState<any>();
   const [updateTimer, setUpdateTimer] = useState<number>(
     SLOPE_COMPUTE_INTERVAL
   );
@@ -70,6 +71,16 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const [lineSeries, setLineSeries] = useState<{ [k: string]: LineSeries }>({});
   const [slopes, setSlopes] = useState<{ [k: string]: LineSeries }>({});
   const [lastValues, setLastValues] = useState<{
+    [key: number]: { [k1: string]: number };
+  }>(
+    (() => {
+      let last: any = {};
+      for (const sensor of props.sensors)
+        last[sensor.smallId] = { value: 0, slope: 0 };
+      return last;
+    })()
+  );
+  const [legendValues, setLegendValues] = useState<{
     [key: number]: { [k1: string]: number };
   }>(
     (() => {
@@ -111,7 +122,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setDisconnectSubId(
       props.stream.subscribeToDisconnection(disconnectCallbackRef)
     );
+    generateLegend();
     return () => {
+      unsubscribeFromStream();
       try {
         chart && chart.dispose();
       } catch (e) {}
@@ -167,6 +180,10 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     }
   }, [window]);
 
+  useEffect(() => {
+    generateLegend();
+  }, [legendValues]);
+
   const unsubscribeFromStream = () => {
     props.stream.unsubscribeFromConnection(connectionSubId);
     props.stream.unsubscribeFromStop(stopSubId);
@@ -182,8 +199,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setSlopes({});
   };
 
-  const generateLegend = useCallback(() => {
-    if (!lastValues || lastValues === {}) return;
+  const generateLegend = () => {
+    if (!legendValues || legendValues === {}) return;
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
       <div className="legend-item">
@@ -213,8 +230,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           </ToolTip>
           {generateSensor(
             sensor.name,
-            lastValues[sensor.smallId]
-              ? lastValues[sensor.smallId]["value"]
+            legendValues[sensor.smallId]
+              ? legendValues[sensor.smallId]["value"]
               : 0,
             sensor.unit ? sensor.unit : ""
           )}
@@ -229,7 +246,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           >
             {generateSensor(
               sensor.name + "'",
-              lastValues[sensor.smallId]["slope"],
+              legendValues[sensor.smallId]["slope"],
               (sensor.unit ? sensor.unit : "1") + "/s"
             )}
           </div>
@@ -237,8 +254,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       }
       i++;
     }
-    return legendElements;
-  }, [chart, lastValues, lineSeries, slopes]);
+    setLegend(legendElements);
+  };
 
   const toggleSlope = useCallback(
     (sensor: Sensor) => {
@@ -301,10 +318,9 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           x: timestamp,
           y: data[sensor.smallId],
         });
-        if (updateTime <= 0)
-          last[sensor.smallId]["value"] = data[sensor.smallId];
+        last[sensor.smallId]["value"] = data[sensor.smallId];
       }
-      if (slopes[sensor.smallId] && updateTime <= 0) {
+      if (slopes[sensor.smallId] && updateTimer == 0) {
         slopes[sensor.smallId].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
@@ -312,11 +328,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           sensor.frequency
         );
         slopes[sensor.smallId].add(slope);
-        if (updateTime <= 0 && slope.length !== 0)
+        if (slope.length !== 0)
           last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
       }
     }
-    setUpdateTimer(updateTime <= 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
+    if (updateTimer === 0) {
+      setLegendValues(last);
+    }
+    setUpdateTimer(updateTime < 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
     setLastValues(last);
     setStreaming(true);
   };
@@ -366,7 +385,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           })(),
         }}
       >
-        {generateLegend()}
+        {legend}
       </div>
       <div id={chartId.toString()} className="fill"></div>
       <div className="line-controls">
@@ -492,7 +511,6 @@ const createChart = (chartId: number, interval: number[]) => {
   chart.engine.container.ontouchmove = null;
 
   toggleGrid(chart);
-  toggleRightAxis(chart);
   return chart;
 };
 
