@@ -1,0 +1,38 @@
+#solution {
+  position: relative;
+  padding-top: 4.5%;
+  padding-bottom: 5%;
+  margin-bottom: 3%;
+  overflow: hidden;
+}
+#solution #solutionBackground {
+  background-image: linear-gradient(to top right, var(--black) 60%, var(--red));
+  transform: rotate(-5deg);
+  width: 120%;
+  margin-left: -10%;
+  height: 70vw;
+  max-height: 770px;
+  min-height: 50%;
+}
+#solution canvas {
+  height: 100% !important;
+}
+#theSolution {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 48%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+#solution #ourSolution {
+  font-size: 4.5vw;
+  text-align: center;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 5%;
+}
+#solution #solutionDescription {
+  width: 90%;
+  margin: auto;
+}

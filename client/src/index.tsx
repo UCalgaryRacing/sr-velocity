@@ -4,6 +4,8 @@
 // Camilla Abdrazakov, Abod Abbas, Jon Breidfjord, Arham Humayun,
 // Ryan Ward, James Nguy, Hilmi Saleh
 
+// @ts-nocheck
+
 // Library Imports
 import React from "react";
 import ReactDOM from "react-dom";
@@ -32,29 +34,39 @@ const App: React.FC = () => {
       <TopNavigation />
       <Router>
         <Switch>
-          <AuthWrapper>
-            <Route path="/">
+          <Route exact path="/">
+            <AuthWrapper>
               <Home />
-            </Route>
-            <Route path="/home">
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/home">
+            <AuthWrapper>
               <Home />
-            </Route>
-            <Route path="/dashboard">
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/dashboard">
+            <AuthWrapper>
               <Dashboard />
-            </Route>
-            <Route path="/sign-in">
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/sign-in">
+            <AuthWrapper>
               <SignIn />
-            </Route>
-            <Route path="/sign-up">
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/sign-up">
+            <AuthWrapper>
               <SignUp />
-            </Route>
-            <Route path="/licenses">
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/licenses">
+            <AuthWrapper>
               <Licenses />
-            </Route>
-            <Route>
-              <NotFound />
-            </Route>
-          </AuthWrapper>
+            </AuthWrapper>
+          </Route>
+          <Route>
+            <NotFound />
+          </Route>
         </Switch>
       </Router>
     </React.Fragment>

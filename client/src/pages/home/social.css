@@ -1,0 +1,48 @@
+#social {
+  position: relative;
+  padding-top: 3%;
+  padding-bottom: 3%;
+  overflow: hidden;
+  text-align: center;
+}
+#followUs {
+  font-size: 4.3vw;
+  text-align: center;
+  font-weight: 800;
+  background: -webkit-linear-gradient(left, var(--black), var(--red));
+  background: -o-linear-gradient(right, var(--black), var(--red));
+  background: -moz-linear-gradient(right, var(--black), var(--red));
+  background: linear-gradient(to right, var(--black), var(--red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#facebook {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}
+#twitter {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}
+#instagram {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}
+#linkedin {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}
+#link {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}
+#github {
+  height: 12vw !important;
+  width: 12vw !important;
+  margin: 3vw;
+}

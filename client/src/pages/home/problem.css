@@ -1,0 +1,28 @@
+#problem {
+  text-align: center;
+  position: relative;
+  height: 100%;
+  padding-bottom: 3%;
+  padding-top: 3%;
+  overflow: hidden;
+}
+#problem #problemStatement {
+  text-align: center;
+  width: 100%;
+}
+#problem #theProblem {
+  font-size: 4.5vw;
+  text-align: center;
+  font-weight: 800;
+  background: -webkit-linear-gradient(left, var(--black), var(--red));
+  background: -o-linear-gradient(right, var(--black), var(--red));
+  background: -moz-linear-gradient(right, var(--black), var(--red));
+  background: linear-gradient(to right, var(--black), var(--red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#problem #logo {
+  width: 80%;
+  margin-top: 20px;
+}
