@@ -24,7 +24,7 @@ import {
   DropDown,
 } from "components/interface";
 import { DashboardLoading } from "pages/dashboard/loading";
-import { Add } from "@mui/icons-material";
+import { Add, CachedOutlined } from "@mui/icons-material";
 import { SensorModal } from "../modals/sensorModal";
 import { useWindowSize } from "hooks";
 
@@ -53,7 +53,7 @@ export const ManageSensors: React.FC = () => {
   useEffect(() => fetchThings(), []);
   useEffect(() => onSearch(query), [query]);
   useEffect(() => fetchSensors(), [thing]);
-  useEffect(() => generateSensorCards(sensors), [sensors]);
+  useEffect(() => onSearch(query), [sensors]);
 
   const fetchThings = () => {
     setFetchingThings(true);
@@ -243,6 +243,19 @@ export const ManageSensors: React.FC = () => {
             <>
               <DashNav margin={context.margin}>
                 <div className="left">
+                  {size.width >= 916 ? (
+                    <ToolTip value="Refresh">
+                      <IconButton
+                        img={<CachedOutlined />}
+                        onClick={() => fetchSensors()}
+                      />
+                    </ToolTip>
+                  ) : (
+                    <TextButton
+                      title="Refresh"
+                      onClick={() => fetchSensors()}
+                    />
+                  )}
                   {size.width >= 916 ? (
                     <ToolTip value="New Sensor">
                       <IconButton

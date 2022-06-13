@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { IconButton, ToolTip } from "components/interface";
-import { LineChart, ScatterChart } from "./charts";
+import { LineChart, ScatterChart } from ".";
 import { Sensor, Chart, ChartType } from "state";
 import { ChartModal, ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";

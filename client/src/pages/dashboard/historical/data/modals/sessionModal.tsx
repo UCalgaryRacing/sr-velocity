@@ -65,7 +65,11 @@ export const SessionModal: React.FC<SessionModalProps> = (
   };
 
   const onFileDrop = (acceptedFiles: any[]) => {
-    setFile(acceptedFiles[0]);
+    if (acceptedFiles[0].name.endsWith(".log")) {
+      // TODO: Parse log files!
+    } else {
+      setFile(acceptedFiles[0]);
+    }
   };
 
   const inProgress = () => {

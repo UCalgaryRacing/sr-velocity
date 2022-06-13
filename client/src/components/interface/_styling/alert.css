@@ -23,6 +23,8 @@ Written by Justin Tijunelis
   height: 150px;
   padding: 5px;
   border-radius: var(--border-radius);
+  background-color: var(--red);
+  cursor: pointer;
 }
 
 .sliding-alert-card {

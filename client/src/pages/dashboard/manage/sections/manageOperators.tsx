@@ -25,7 +25,7 @@ import {
 import { DashboardLoading } from "pages/dashboard/loading";
 import DashNav from "components/navigation/dashNav";
 import { getOperators, getThings } from "crud";
-import { Add } from "@mui/icons-material";
+import { Add, CachedOutlined } from "@mui/icons-material";
 import { useWindowSize } from "hooks";
 
 export const ManageOperators: React.FC = () => {
@@ -46,10 +46,7 @@ export const ManageOperators: React.FC = () => {
 
   useEffect(() => fetchOperators(), []);
   useEffect(() => onSearch(query), [query]);
-  useEffect(
-    () => generateOperatorCards(operators, things),
-    [operators, things]
-  );
+  useEffect(() => onSearch(query), [operators, things]);
 
   useEffect(() => {
     if (thingFilter === "All") {
@@ -193,6 +190,16 @@ export const ManageOperators: React.FC = () => {
         <div>
           <DashNav margin={context.margin}>
             <div className="left">
+              {size.width >= 916 ? (
+                <ToolTip value="Refresh">
+                  <IconButton
+                    img={<CachedOutlined />}
+                    onClick={() => fetchOperators()}
+                  />
+                </ToolTip>
+              ) : (
+                <TextButton title="Refresh" onClick={() => fetchOperators()} />
+              )}
               {size.width >= 916 ? (
                 <ToolTip value="New Operator">
                   <IconButton

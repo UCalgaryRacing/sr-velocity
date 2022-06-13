@@ -5,13 +5,23 @@ import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "pages/dashboard/dashboard";
 import { UserCard } from "../cards";
 import { CircularProgress } from "@mui/material";
-import { InputField, Alert, DropDown, TextButton } from "components/interface";
+import {
+  InputField,
+  Alert,
+  DropDown,
+  TextButton,
+  ToolTip,
+  IconButton,
+} from "components/interface";
+import { CachedOutlined } from "@mui/icons-material";
 import { User, UserRole } from "state";
 import { getUsers } from "crud";
 import { DashboardLoading } from "pages/dashboard/loading";
 import DashNav from "components/navigation/dashNav";
+import { useWindowSize } from "hooks";
 
 export const ManageUsers: React.FC = () => {
+  const size = useWindowSize();
   const context = useContext(DashboardContext);
   const [roleFilter, setRoleFilter] = useState<string>("All");
   const [query, setQuery] = useState<string>("");
@@ -24,7 +34,7 @@ export const ManageUsers: React.FC = () => {
 
   useEffect(() => fetchUsers(), []);
   useEffect(() => onSearch(query), [query]);
-  useEffect(() => generateUserCards(users), [users]);
+  useEffect(() => onSearch(query), [users]);
 
   useEffect(() => {
     if (roleFilter === "All") {
@@ -135,7 +145,18 @@ export const ManageUsers: React.FC = () => {
       ) : (
         <div>
           <DashNav margin={context.margin}>
-            <div className="left" style={{ marginBottom: 0 }}></div>
+            <div className="left" style={{ marginBottom: 0 }}>
+              {size.width >= 916 ? (
+                <ToolTip value="Refresh">
+                  <IconButton
+                    img={<CachedOutlined />}
+                    onClick={() => fetchUsers()}
+                  />
+                </ToolTip>
+              ) : (
+                <TextButton title="Refresh" onClick={() => fetchUsers()} />
+              )}
+            </div>
             <div className="right">
               <DropDown
                 placeholder="Filter by Role..."

@@ -25,7 +25,7 @@ import {
   isAuthAtLeast,
   UserRole,
 } from "state";
-import { Add } from "@mui/icons-material";
+import { Add, CachedOutlined } from "@mui/icons-material";
 import { useWindowSize } from "hooks";
 
 export const ManageThings: React.FC = () => {
@@ -46,7 +46,7 @@ export const ManageThings: React.FC = () => {
 
   useEffect(() => fetchThings(), []);
   useEffect(() => onSearch(query), [query]);
-  useEffect(() => generateThingCards(things, operators), [things, operators]);
+  useEffect(() => onSearch(query), [things, operators]);
 
   useEffect(() => {
     if (operatorFilter === "All") {
@@ -185,6 +185,16 @@ export const ManageThings: React.FC = () => {
           <DashNav margin={context.margin}>
             <div className="left">
               <>
+                {size.width >= 916 ? (
+                  <ToolTip value="Refresh">
+                    <IconButton
+                      img={<CachedOutlined />}
+                      onClick={() => fetchThings()}
+                    />
+                  </ToolTip>
+                ) : (
+                  <TextButton title="Refresh" onClick={() => fetchThings()} />
+                )}
                 {size.width >= 916 ? (
                   <ToolTip value="New Thing">
                     <IconButton

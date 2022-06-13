@@ -13,12 +13,12 @@ export const signIn = (credentials: any) => {
 };
 
 export const renewUser = () => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<User>((resolve, reject) => {
     request("POST", "/auth/renew")
-      .then((_: any) => resolve())
+      .then((user: User) => resolve(user))
       .catch((err: any) => reject(err));
   });
-}
+};
 
 export const registerUser = (credentials: any) => {
   return new Promise<void>((resolve, reject) => {

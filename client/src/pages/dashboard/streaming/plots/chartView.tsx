@@ -2,7 +2,7 @@
 // Written by Justin Tijunelis
 
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { ChartBox } from "./chartBox";
+import { ChartBox } from "components/charts/dynamic";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add, CachedOutlined } from "@mui/icons-material";
 import GridLayout from "react-grid-layout";
@@ -32,7 +32,7 @@ import { useWindowSize } from "hooks";
 import { ChartPresetModal } from "./modals/chartPresetModal";
 import { requestMissingData } from "crud";
 import { Stream } from "stream/stream";
-import "./_styling/chartView.css";
+import "./chartView.css";
 
 interface ChartViewProps {
   sensors: Sensor[];

@@ -23,6 +23,7 @@ export type User = {
   email: string;
   organizationId: string;
   role: UserRole;
+  expirationTime: number;
 };
 
 export const isAuthAtLeast = (user: User | null, role: UserRole) => {

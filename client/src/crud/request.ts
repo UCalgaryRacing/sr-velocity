@@ -1,6 +1,8 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
+let onUnauthorized: any = null;
+
 export const request = (
   method: string,
   route: string,
@@ -38,9 +40,16 @@ export const request = (
             resolve({});
           }
         } else {
+          if (res.status === 401 && onUnauthorized) {
+            onUnauthorized();
+          }
           reject(res);
         }
       })
       .catch((err: any) => reject(err));
   });
+};
+
+export const bindOnUnAuthorized = (callback: any) => {
+  onUnauthorized = callback;
 };
