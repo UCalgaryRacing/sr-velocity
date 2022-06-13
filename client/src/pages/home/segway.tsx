@@ -22,7 +22,7 @@ export const Segway: React.FC = () => {
             },
             particles: {
               number: {
-                value: 30,
+                value: 40,
                 density: {
                   enable: true,
                 },

@@ -23,7 +23,7 @@ export const View: React.FC = () => {
             },
             particles: {
               number: {
-                value: 30,
+                value: 40,
                 density: {
                   enable: true,
                 },

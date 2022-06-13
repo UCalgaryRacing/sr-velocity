@@ -21,7 +21,7 @@ export const Intro: React.FC = () => {
             },
             particles: {
               number: {
-                value: 50,
+                value: 40,
                 density: {
                   enable: true,
                 },

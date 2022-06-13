@@ -1,0 +1,16 @@
+#not-found {
+  display: flex;
+  width: 80%;
+  margin: auto;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+#not-found img {
+  width: 100%;
+}
+
+#not-found #title {
+  font-size: 100px;
+}

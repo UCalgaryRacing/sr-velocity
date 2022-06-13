@@ -34,6 +34,11 @@ const TopNavigation: React.FC = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           {window.location.pathname !== "/dashboard" && (
             <Nav className="mr-auto">
+              {window.location.pathname !== "/dashboard" && (
+                <Nav.Link href="/">
+                  <b>SR Velocity</b>
+                </Nav.Link>
+              )}
               <Nav.Link href="/dashboard">
                 <b>Dashboard</b>
               </Nav.Link>
