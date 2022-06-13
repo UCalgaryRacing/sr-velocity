@@ -26,7 +26,7 @@ import savitzkyGolay from "ml-savitzky-golay";
 import { useWindowSize } from "hooks";
 import "./_styling/lineChart.css";
 
-const SLOPE_COMPUTE_INTERVAL = 1000; // milliseconds
+const UPDATE_INTERVAL = 1000; // milliseconds
 const MAX_FREQUENCY = 24;
 const colors: string[] = ["#C22D2D", "#0071B2", "#009E73", "#E69D00"];
 const theme = {
@@ -61,9 +61,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const [interval, setInterval] = useState<number[]>();
   const [window, setWindow] = useState<number>(5);
   const [legend, setLegend] = useState<any>();
-  const [updateTimer, setUpdateTimer] = useState<number>(
-    SLOPE_COMPUTE_INTERVAL
-  );
+  const [updateTimer, setUpdateTimer] = useState<number>(0);
 
   // Chart state
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
@@ -332,10 +330,8 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
           last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
       }
     }
-    if (updateTimer === 0) {
-      setLegendValues(last);
-    }
-    setUpdateTimer(updateTime < 0 ? SLOPE_COMPUTE_INTERVAL : updateTime);
+    if (updateTimer === 0) setLegendValues(last);
+    setUpdateTimer(updateTime < 0 ? UPDATE_INTERVAL : updateTime);
     setLastValues(last);
     setStreaming(true);
   };

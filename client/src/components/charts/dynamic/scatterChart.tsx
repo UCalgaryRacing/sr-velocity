@@ -83,8 +83,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       return last;
     })()
   );
-  const [updateTimer, setUpdateTimer] = useState<number>(UPDATE_INTERVAL);
-  const [legend, setLegend] = useState<any>();
+  const [updateTimer, setUpdateTimer] = useState<number>(0);
   const [values, handleChange] = useForm({
     lower: "",
     upper: "",
@@ -113,9 +112,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     setConnectionSubId(
       props.stream.subscribeToConnection(connectionCallbackRef)
     );
-    generateLegend();
     return () => {
-      unsubscribeFromStream();
       try {
         chart && chart.dispose();
       } catch (e) {}
@@ -147,17 +144,13 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
     if (boundsValid()) onUpdatedData();
   }, [values]);
 
-  useEffect(() => {
-    generateLegend();
-  }, [lastLegendValues]);
-
   const unsubscribeFromStream = () => {
     props.stream.unsubscribeFromConnection(connectionSubId);
     props.stream.unsubscribeFromSensors(dataSubId);
     props.stream.unsubscribeFromDataUpdate(dataUpdateSubId);
   };
 
-  const generateLegend = () => {
+  const generateLegend = useCallback(() => {
     if (!lastValues || lastValues === {}) return;
     let legendElements: any = [];
     const generateSensor = (name: string, value: number, unit: string) => (
@@ -185,8 +178,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
       );
       i++;
     }
-    setLegend(legendElements);
-  };
+    return legendElements;
+  }, [lastLegendValues]);
 
   const onConnection = () => {
     if (pointSeries) pointSeries.clear();
@@ -332,7 +325,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = (
           })(),
         }}
       >
-        {legend}
+        {generateLegend()}
       </div>
       <div id={chartId.toString()} className="fill"></div>
       {props.sensors.length > 2 && (

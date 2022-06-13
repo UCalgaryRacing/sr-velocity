@@ -145,7 +145,7 @@ export const ManageUsers: React.FC = () => {
       ) : (
         <div>
           <DashNav margin={context.margin}>
-            <div className="left" style={{ marginBottom: 0 }}>
+            <div className="left">
               {size.width >= 916 ? (
                 <ToolTip value="Refresh">
                   <IconButton
