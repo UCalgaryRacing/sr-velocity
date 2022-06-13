@@ -13,7 +13,12 @@ import {
 } from "components/interface";
 import { BaseModal } from "components/modals";
 import { Session, Collection, Operator, Thing } from "state";
-import { postSession, putSession } from "crud";
+import {
+  postSession,
+  putSession,
+  uploadSessionFile,
+  deleteSession,
+} from "crud";
 import { useForm } from "hooks";
 
 interface SessionModalProps {
@@ -95,29 +100,41 @@ export const SessionModal: React.FC<SessionModalProps> = (
           setLoading(false);
           props.toggle(session);
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          // TODO: Check if status conflict
-          alert("Could not update Session, please try again.");
+          if (err.status === 409) alert("The Session name must be unique.");
+          else alert("Could not create Session, please try again.");
         });
     } else {
       if (!file) {
         alert("A file must be selected to create a session.");
         return;
       }
-      let session = {
+      let newSession = {
         ...values,
         startTime: startTime!.getTime(),
         endTime: !inProgress() ? endTime!.getTime() : null,
+        thingId: props.thing._id,
       };
-      postSession(session)
+      postSession(newSession)
         .then((session: Session) => {
-          // TODO - Attempt to upload the file
+          let formData = new FormData();
+          formData.append("file", file);
+          uploadSessionFile(session._id, formData)
+            .then((_: any) => {
+              setLoading(false);
+              props.toggle(session);
+            })
+            .catch((_: any) => {
+              setLoading(false);
+              alert("Failed to upload file.");
+              deleteSession(session._id);
+            });
         })
-        .catch((_: any) => {
+        .catch((err: any) => {
           setLoading(false);
-          // TODO: Check if status conflict
-          alert("Could not create Session, please try again.");
+          if (err.status === 409) alert("The Session name must be unique.");
+          else alert("Could not create Session, please try again.");
         });
     }
   };

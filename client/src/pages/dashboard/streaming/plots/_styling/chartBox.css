@@ -36,7 +36,7 @@ Written by Justin Tijunelis
   line-height: 0px;
 }
 
-.chart-box .chart-controls > .icon-button {
+.chart-box .chart-controls .icon-button {
   margin-left: 5px !important;
 }
 

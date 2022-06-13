@@ -149,7 +149,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
       interval[0] + offset,
       interval[1] + offset,
       false,
-      !streaming // Disable scrolling when disconnected
+      !streaming // Disable scrolling when disconnected - TODO: Allow timeline to move while streaming
     );
   }, [interval, streaming, props.stream]);
 
@@ -490,6 +490,9 @@ const createChart = (chartId: number, interval: number[]) => {
   chart.engine.container.onwheel = null;
   chart.engine.container.ontouchstart = null;
   chart.engine.container.ontouchmove = null;
+
+  toggleGrid(chart);
+  toggleRightAxis(chart);
   return chart;
 };
 
@@ -579,52 +582,61 @@ const toggleGrid = (chart: any) => {
   var font = new FontSettings({});
   font = font.setFamily("helvetica");
   font = font.setWeight("bold");
-  axis.setTickStyle((visibleTick: any) => {
-    const hideGrid = visibleTick.getGridStrokeStyle().fillStyle.color.r !== 1;
-    return visibleTick
-      .setTickStyle(emptyLine)
-      .setLabelFont(font)
-      .setLabelFillStyle(new SolidFill({ color: ColorHEX("#000") }))
-      .setGridStrokeStyle(
-        new SolidLine({
-          thickness: 1.5,
-          fillStyle: new SolidFill({
-            color: ColorHEX(hideGrid ? "#FFF" : "#777777"),
-          }),
-        })
-      );
-  });
+  axis.setTickStrategy(
+    AxisTickStrategies.Numeric,
+    (strategy: NumericTickStrategy) =>
+      strategy
+        .setMinorTickStyle((visibleTicks) =>
+          // @ts-ignore
+          visibleTicks.setGridStrokeStyle(
+            new SolidLine({
+              thickness: 0.15,
+              fillStyle: theme.lightGrayFill,
+            })
+          )
+        )
+        .setMajorTickStyle((visibleTicks) =>
+          visibleTicks.setGridStrokeStyle(
+            new SolidLine({
+              thickness: 0.15,
+              fillStyle: theme.lightGrayFill,
+            })
+          )
+        )
+  );
 };
 
 const toggleRightAxis = (chart: any) => {
-  if (chart.getAxes()[2]) {
-    chart.getAxes()[2].dispose();
-  } else {
-    chart.addAxisY(true);
-    var axis = chart.getAxes()[2];
-    var font = new FontSettings({});
-    font = font.setFamily("helvetica");
-    font = font.setWeight("bold");
-    axis.setTickStyle((visibleTick: any) =>
-      visibleTick
-        .setTickStyle(emptyLine)
-        .setLabelFont(font)
-        .setLabelFillStyle(new SolidFill({ color: ColorHEX("#000") }))
-        .setGridStrokeStyle(
-          new SolidLine({
-            thickness: 1,
-            fillStyle: new SolidFill({ color: ColorHEX("#FFF") }),
-          })
-        )
-    );
-    axis
-      .setScrollStrategy(AxisScrollStrategies.expansion)
-      .setMouseInteractions(false) // TODO
-      .setStrokeStyle(
-        new SolidLine({
-          thickness: 3,
-          fillStyle: new SolidFill({ color: ColorHEX("#C8C8C8") }),
-        })
-      );
-  }
+  chart.addAxisY({ opposite: true });
+  var axis = chart.getAxes()[2];
+  var font = new FontSettings({});
+  font = font.setFamily("helvetica");
+  font = font.setWeight("bold");
+  const tickStyling = (tickStyle: any) =>
+    tickStyle
+      .setGridStrokeStyle(emptyLine)
+      .setLabelFont((font: FontSettings) =>
+        font.setFamily("helvetica").setStyle("italic").setSize(8)
+      )
+      .setLabelFillStyle(theme.darkFill)
+      .setLabelPadding(-14)
+      .setTickPadding(1)
+      .setTickLength(3);
+  axis
+    .setTitle("")
+    .setScrollStrategy(AxisScrollStrategies.fitting)
+    .setTickStrategy("Empty")
+    .setMouseInteractions(false)
+    .setStrokeStyle(
+      new SolidLine({ thickness: 1, fillStyle: theme.lightGrayFill })
+    )
+    .setTickStrategy(
+      AxisTickStrategies.Numeric,
+      (strategy: NumericTickStrategy) =>
+        strategy
+          .setMajorTickStyle(tickStyling)
+          .setMinorTickStyle(tickStyling)
+          .setExtremeTickStyle(tickStyling)
+    )
+    .setInterval(-1, 1);
 };

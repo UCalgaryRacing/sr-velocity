@@ -1,7 +1,12 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-export const request = (method: string, route: string, body: any = {}) => {
+export const request = (
+  method: string,
+  route: string,
+  body: any = {},
+  file = false
+) => {
   return new Promise<any>((resolve, reject) => {
     if (!route.startsWith("/")) {
       route = "/" + route;
@@ -10,16 +15,18 @@ export const request = (method: string, route: string, body: any = {}) => {
 
     let fetch_data: RequestInit = {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
       credentials: "include",
     };
 
-    if (method !== "GET") {
+    if (!file)
+      fetch_data.headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      };
+
+    if (method !== "GET" && !file) {
       fetch_data.body = JSON.stringify(body);
-    }
+    } else if (file) fetch_data.body = body;
 
     fetch(route, fetch_data)
       .then(async (res) => {

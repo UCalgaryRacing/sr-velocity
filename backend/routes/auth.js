@@ -9,7 +9,14 @@ const call = require("../utilities/call");
 const { withMinimumAuth } = require("../middleware/auth");
 
 auth.all(
-  ["/login", "/signup", "/forgotPassword", "/changePassword", "/validate", "/renew"],
+  [
+    "/login",
+    "/signup",
+    "/forgotPassword",
+    "/changePassword",
+    "/validate",
+    "/renew",
+  ],
   async (req, res) => {
     call(process.env.DATABASE_MS_ROUTE + "/auth" + req.path, req.method, {
       headers: req.headers,

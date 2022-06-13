@@ -30,7 +30,7 @@ export const ThingModal: React.FC<ThingModalProps> = (
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertDescription, setAlertDescription] = useState<string>("");
   const [values, handleChange] = useForm(
-    props.thing ? props.thing : { name: "" }
+    props.thing ? { ...props.thing } : { name: "" }
   );
 
   useEffect(() => {
@@ -80,10 +80,12 @@ export const ThingModal: React.FC<ThingModalProps> = (
           else alert("Please try again...");
         });
     } else {
-      postThing({
+      let thing = {
         ...values,
         operatorIds: operatorIds,
-      })
+      };
+      console.log(thing);
+      postThing(thing)
         .then((thing: Thing) => {
           setLoading(false);
           props.toggle(thing);

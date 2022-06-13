@@ -10,4 +10,5 @@ export type Session = {
   generated: boolean;
   collectionIds: string[];
   operatorId?: string;
+  thingId: string;
 };

@@ -36,6 +36,14 @@ export const deleteSession = (sessionId: string) => {
   });
 };
 
+export const uploadSessionFile = (sessionId: string, formData: FormData) => {
+  return new Promise<void>((resolve, reject) => {
+    request("POST", "/database/sessions/" + sessionId + "/file", formData, true)
+      .then((_: any) => resolve())
+      .catch((err: any) => reject(err));
+  });
+};
+
 export const downloadSessionFile = (sessionId: string) => {
   return new Promise<any>((resolve, reject) => {
     request("GET", "/database/sessions/" + sessionId + "/file")
