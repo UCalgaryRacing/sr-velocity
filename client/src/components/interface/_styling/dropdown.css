@@ -35,6 +35,10 @@ Written by Justin Tijunelis
 
 .dropdown *[class*="-option"] {
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .dropdown *[class*="-option"]:active {

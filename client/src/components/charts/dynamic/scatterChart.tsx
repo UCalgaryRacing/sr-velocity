@@ -42,14 +42,14 @@ const colorMap = colormap({
   alpha: 1,
 });
 
-interface ScatterChartProps {
+interface DynamicScatterChartProps {
   allSensors: Sensor[];
   sensors: Sensor[];
   stream: Stream;
 }
 
-export const ScatterChart: React.FC<ScatterChartProps> = (
-  props: ScatterChartProps
+export const DynamicScatterChart: React.FC<DynamicScatterChartProps> = (
+  props: DynamicScatterChartProps
 ) => {
   const size = useWindowSize();
 

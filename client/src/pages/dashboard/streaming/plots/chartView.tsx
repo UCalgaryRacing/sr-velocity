@@ -2,10 +2,9 @@
 // Written by Justin Tijunelis
 
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { ChartBox } from "components/charts/dynamic";
+import { ChartBox, ChartBoxType } from "components/charts/chartBox";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add, CachedOutlined } from "@mui/icons-material";
-import GridLayout from "react-grid-layout";
 import { DashboardLoading } from "pages/dashboard/loading";
 import {
   IconButton,
@@ -29,7 +28,7 @@ import { ChartModal } from "components/modals";
 import { CircularProgress } from "@mui/material";
 import DashNav from "components/navigation/dashNav";
 import { useWindowSize } from "hooks";
-import { ChartPresetModal } from "./modals/chartPresetModal";
+import { ChartPresetModal } from "../../../../components/modals/chartPresetModal";
 import { requestMissingData } from "crud";
 import { Stream } from "stream/stream";
 import "./chartView.css";
@@ -125,6 +124,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           onDelete={onDeleteChart}
           onUpdate={onChartUpdate}
           charts={charts}
+          type={ChartBoxType.DYNAMIC}
         />
       );
     }
@@ -214,7 +214,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
           <CircularProgress style={{ color: "black" }} />
           <br />
           <br />
-          <b>Fetching presets...</b>
+          <b>Fetching Presets...</b>
         </DashboardLoading>
       ) : (
         <>

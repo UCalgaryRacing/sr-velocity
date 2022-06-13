@@ -36,12 +36,14 @@ const theme = {
   redFill: new SolidFill({ color: ColorHEX("#C22D2D") }),
 };
 
-interface LineChartProps {
+interface DynamicLineChartProps {
   sensors: Sensor[];
   stream: Stream;
 }
 
-export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
+export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
+  props: DynamicLineChartProps
+) => {
   const size = useWindowSize();
 
   // Stream subscriptions

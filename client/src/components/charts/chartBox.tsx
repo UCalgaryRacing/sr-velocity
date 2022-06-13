@@ -3,21 +3,29 @@
 
 import React, { useState } from "react";
 import { IconButton, ToolTip } from "components/interface";
-import { LineChart, ScatterChart } from ".";
-import { Sensor, Chart, ChartType } from "state";
+import { DynamicLineChart, DynamicScatterChart } from "./dynamic";
+import { StaticLineChart, StaticScatterChart } from "./static";
+import { Sensor, Chart, ChartType, Session } from "state";
 import { ChartModal, ConfirmModal } from "components/modals";
 import { CloseOutlined, Edit } from "@mui/icons-material";
 import { Stream } from "stream/stream";
-import "./_styling/chartBox.css";
+import "./chartBox.css";
+
+export enum ChartBoxType {
+  DYNAMIC = "dynamic",
+  STATIC = "static",
+}
 
 interface ChartBoxProps {
   chart: Chart;
   allSensors: Sensor[];
   sensors: Sensor[];
-  stream: Stream;
+  stream?: Stream;
   onDelete?: (chartId: string) => void;
   onUpdate?: (chart: Chart) => void;
   charts: Chart[];
+  session?: Session;
+  type: ChartBoxType;
 }
 
 export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
@@ -42,17 +50,39 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
         {(() => {
           switch (props.chart.type) {
             case ChartType.LINE:
-              return (
-                <LineChart sensors={props.sensors} stream={props.stream} />
-              );
+              if (props.type === ChartBoxType.DYNAMIC) {
+                return (
+                  <DynamicLineChart
+                    sensors={props.sensors}
+                    stream={props.stream!}
+                  />
+                );
+              } else {
+                return (
+                  <StaticLineChart
+                    sensors={props.sensors}
+                    session={props.session!}
+                  />
+                );
+              }
             case ChartType.SCATTER:
-              return (
-                <ScatterChart
-                  allSensors={props.allSensors}
-                  sensors={props.sensors}
-                  stream={props.stream}
-                />
-              );
+              if (props.type === ChartBoxType.STATIC) {
+                return (
+                  <DynamicScatterChart
+                    allSensors={props.allSensors}
+                    sensors={props.sensors}
+                    stream={props.stream!}
+                  />
+                );
+              } else {
+                return (
+                  <StaticScatterChart
+                    allSensors={props.allSensors}
+                    sensors={props.sensors}
+                    session={props.session!}
+                  />
+                );
+              }
             default:
               return <></>; // Show error
           }
