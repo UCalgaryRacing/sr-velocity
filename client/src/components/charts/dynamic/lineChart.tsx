@@ -62,12 +62,14 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   const [window, setWindow] = useState<number>(5);
   const [legend, setLegend] = useState<any>();
   const [updateTimer, setUpdateTimer] = useState<number>(0);
+  const [stopExpanding, setStopExpanding] = useState<boolean>(false);
 
   // Chart state
   const [chartId, _] = useState<number>(Math.trunc(Math.random() * 100000));
   const [chart, setChart] = useState<any>();
   const [lineSeries, setLineSeries] = useState<{ [k: string]: LineSeries }>({});
   const [slopes, setSlopes] = useState<{ [k: string]: LineSeries }>({});
+  const [currentTimestamp, setCurrentTimestamp] = useState<number>(0);
   const [lastValues, setLastValues] = useState<{
     [key: number]: { [k1: string]: number };
   }>(
@@ -156,13 +158,36 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
   useEffect(() => {
     if (!chart || !interval) return;
     const offset = props.stream.getFirstTimeStamp();
+    const stopExpanding = interval[1] + offset < currentTimestamp;
     chart.getDefaultAxisX().setInterval(
       interval[0] + offset,
       interval[1] + offset,
       false,
-      !streaming // Disable scrolling when disconnected - TODO: Allow timeline to move while streaming
+      !streaming || stopExpanding // Disable scrolling when disconnected
     );
+    setStopExpanding(stopExpanding);
   }, [interval, streaming, props.stream]);
+
+  useEffect(() => {
+    if (!interval) return;
+    if (stopExpanding)
+      setStopExpanding(
+        chart.getDefaultAxisX().getInterval().end < currentTimestamp
+      );
+  }, [currentTimestamp]);
+
+  useEffect(() => {
+    if (!interval) return;
+    const offset = props.stream.getFirstTimeStamp();
+    chart
+      .getDefaultAxisX()
+      .setInterval(
+        interval[0] + offset,
+        interval[1] + offset,
+        false,
+        !streaming || !stopExpanding
+      );
+  }, [stopExpanding]);
 
   useEffect(() => {
     for (const sensor of props.sensors) {
@@ -334,6 +359,7 @@ export const LineChart: React.FC<LineChartProps> = (props: LineChartProps) => {
     setUpdateTimer(updateTime < 0 ? UPDATE_INTERVAL : updateTime);
     setLastValues(last);
     setStreaming(true);
+    setCurrentTimestamp(props.stream.getCurrentTimeStamp());
   };
 
   const onUpdatedData = () => {

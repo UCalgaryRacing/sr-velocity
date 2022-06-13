@@ -150,12 +150,18 @@ class Stream {
     else return 0;
   };
 
+  getCurrentTimeStamp = () => {
+    if (this.historicalData.length > 0)
+      return this.historicalData[this.historicalData.length - 1]["ts"];
+    else return 0;
+  };
+
   worthGettingHistoricalData = () => {
     if (this.historicalData.length > 0) {
       // Only worth it if we are missing more than 30 seconds of data
       let firstTimeStamp = this.historicalData[0]["ts"];
       let secondsOfDataOnServer = firstTimeStamp / 1000;
-      return secondsOfDataOnServer >= 30;
+      return secondsOfDataOnServer >= 5;
     } else return false;
   };
 
