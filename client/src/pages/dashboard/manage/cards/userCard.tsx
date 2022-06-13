@@ -45,7 +45,7 @@ export const UserCard: React.FC<UserCardProps> = (props: UserCardProps) => {
 
   return (
     <div
-      className="card"
+      className="card user-card"
       style={{ color: props.user.role === "Pending" ? "#777777" : "#171717" }}
     >
       <div className="card-title">

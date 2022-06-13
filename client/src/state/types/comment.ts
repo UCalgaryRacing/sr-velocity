@@ -2,8 +2,11 @@
 // Written by Justin Tijunelis
 
 export enum CommentType {
-  SESSION = "Session",
-  COLLECTION = "Collection",
+  SESSION = "sessionId",
+  COLLECTION = "collectionId",
+  THING = "thingId",
+  SENSOR = "sensorId",
+  OPERATOR = "operatorId",
 }
 
 export type Comment = {
@@ -14,6 +17,9 @@ export type Comment = {
   content: string;
   sessionId?: string;
   collectionId?: string;
+  thingId?: string;
+  sensorId?: string;
+  operatorId?: string;
   commentId?: string;
   comments: Comment[];
 };

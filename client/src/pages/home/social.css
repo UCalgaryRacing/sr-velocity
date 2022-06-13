@@ -16,6 +16,9 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+#social a:hover .social-svg-mask {
+  fill: black !important;
+}
 #facebook {
   height: 12vw !important;
   width: 12vw !important;

@@ -4,3 +4,4 @@
 export * from "./baseModal";
 export * from "./chartModal";
 export * from "./confirmModal";
+export * from "./commentModal";

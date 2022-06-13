@@ -2,13 +2,12 @@
 // Written by Justin Tijunelis
 
 import React, { useState } from "react";
-import { ConfirmModal } from "components/modals";
-import { CommentModal } from "../modals/commentModal";
+import { ConfirmModal, CommentModal } from "components/modals";
 import { Alert } from "components/interface";
 import { Comment, useAppSelector, RootState, CommentType } from "state";
 import ReactHtmlParser from "react-html-parser";
 import { deleteComment } from "crud";
-import "./_styling/commentCard.css";
+import "./commentCard.css";
 
 interface CommentCardProps {
   comment: Comment;

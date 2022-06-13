@@ -3,7 +3,7 @@
 
 import React, { useCallback, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { CommentView } from "./commentView";
+import { CommentView } from "components/cards";
 import { Alert, IconButton } from "components/interface";
 import { ConfirmModal } from "components/modals";
 import { CollectionModal } from "../modals/collectionModal";

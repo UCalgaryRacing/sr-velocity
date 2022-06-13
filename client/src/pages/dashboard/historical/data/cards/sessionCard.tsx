@@ -22,7 +22,7 @@ import {
   RootState,
   CommentType,
 } from "state";
-import { CommentView } from "./commentView";
+import { CommentView } from "components/cards";
 import { deleteSession, getComments, downloadSessionFile } from "crud";
 import { ConfirmModal } from "components/modals";
 import { SessionModal } from "../modals/sessionModal";

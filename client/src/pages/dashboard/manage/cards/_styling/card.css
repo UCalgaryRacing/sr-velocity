@@ -6,7 +6,6 @@ Written by Justin Tijunelis
 .card {
   border-radius: var(--border-radius) !important;
   border: 1px solid var(--red) !important;
-  min-height: 87px;
   padding: 5px;
   font-size: var(--fz-xs);
 }
@@ -31,4 +30,20 @@ Written by Justin Tijunelis
   position: absolute;
   top: 45px;
   right: 5px;
+}
+
+.card #card-comment {
+  position: absolute;
+  top: 85px;
+  right: 5px;
+}
+
+.card .thing-card,
+.card .operator-card,
+.card .sensor-card {
+  min-height: 115px;
+}
+
+.user-card {
+  min-height: 87px;
 }

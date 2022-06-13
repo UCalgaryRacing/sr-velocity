@@ -13,7 +13,7 @@ export default class Problem extends React.Component {
               fontWeight: "600",
               margin: "auto",
               marginTop: "3%",
-              maxWidth: 1000,
+              maxWidth: 1600,
               paddingLeft: 20,
               paddingRight: 20,
             }}

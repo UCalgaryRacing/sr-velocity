@@ -2,11 +2,11 @@
 // Written by Justin Tijunelis
 
 import React, { useCallback, useState } from "react";
-import { CommentModal } from "../modals/commentModal";
+import { CommentModal } from "components/modals/";
 import { CommentCard } from "./commentCard";
 import { Comment, CommentType } from "state";
 import { TextButton } from "components/interface";
-import "./_styling/commentView.css";
+import "./commentView.css";
 
 type CommentViewProps = {
   contextId: string;

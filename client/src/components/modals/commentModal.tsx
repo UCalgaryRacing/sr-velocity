@@ -60,9 +60,7 @@ export const CommentModal: React.FC<CommentModalProps> = (
         };
         if (props.reply && props.comment)
           comment["commentId"] = props.comment?._id;
-        if (props.type === CommentType.SESSION)
-          comment["sessionId"] = props.contextId;
-        else comment["collectionId"] = props.contextId;
+        comment[props.type] = props.contextId;
         postComment(comment)
           .then((comment: Comment) => {
             setLoading(false);
