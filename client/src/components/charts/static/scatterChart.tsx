@@ -66,11 +66,12 @@ export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
   });
 
   useEffect(() => {
+    let cleanedData = { ...data };
     if (data) {
       // Clear any old sensors
       for (const [key, _] of Object.entries(data)) {
         if (props.sensors.filter((s) => s._id === key).length === 0) {
-          delete data[key];
+          delete cleanedData[key];
         }
       }
 
@@ -98,7 +99,7 @@ export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
 
     // Fetch the data
     setFetching(true);
-    const getData = async () => {
+    const getData = async (data: any) => {
       let newData: any = { ...data };
       for (const sensor of props.sensors) {
         if (data && data[sensor._id] && data[sensor._id].length !== 0) continue;
@@ -115,7 +116,7 @@ export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
       setFetching(false);
       setData(newData);
     };
-    getData();
+    getData(cleanedData);
   }, [props.sensors, props.session]);
 
   useEffect(() => {

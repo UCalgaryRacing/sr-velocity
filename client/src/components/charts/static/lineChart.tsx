@@ -52,11 +52,12 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
   const [data, setData] = useState<{ [k: string]: any[] }>();
 
   useEffect(() => {
+    let cleanData = { ...data };
     if (data) {
       // Clear any old sensors
       for (const [key, _] of Object.entries(data)) {
         if (props.sensors.filter((s) => s._id === key).length === 0) {
-          delete data[key];
+          delete cleanData[key];
         }
       }
 
@@ -84,7 +85,7 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
 
     // Fetch the data
     setFetching(true);
-    const getData = async () => {
+    const getData = async (data: any) => {
       let newRange = [0, 1];
       let newData: any = { ...data };
       for (const sensor of props.sensors) {
@@ -123,7 +124,7 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
       setFetching(false);
       setData(newData);
     };
-    getData();
+    getData(cleanData);
   }, [props.sensors, props.session]);
 
   useEffect(() => {
