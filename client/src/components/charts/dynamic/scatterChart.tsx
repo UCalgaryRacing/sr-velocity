@@ -168,7 +168,7 @@ export const DynamicScatterChart: React.FC<DynamicScatterChartProps> = (
           style={{ color: colors[i] }}
         >
           {generateSensor(
-            sensor.name + (i === 0 ? "(X)" : i === 1 ? "(Y)" : "(Heat)"),
+            sensor.name + (i === 2 ? "(Heat)" : ""),
             lastLegendValues[sensor.smallId]
               ? lastLegendValues[sensor.smallId]
               : 0,

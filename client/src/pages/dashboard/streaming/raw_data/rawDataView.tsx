@@ -39,7 +39,6 @@ interface RawDataViewProps {
   onThingChange: (thing: Thing) => void;
 }
 
-// TODO: Show how long the telemetry has been running
 const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
   const size = useWindowSize();
   const context = useContext(DashboardContext);
@@ -244,23 +243,21 @@ const RawDataView: React.FC<RawDataViewProps> = (props: RawDataViewProps) => {
               )}
             </div>
             <div className="right">
-              {props.things.length > 1 && (
-                <DropDown
-                  placeholder="Select Thing..."
-                  options={props.things.map((thing) => {
-                    return { value: thing._id, label: thing.name };
-                  })}
-                  onChange={(value: any) => {
-                    for (const thing of props.things)
-                      if (thing._id === value.value) props.onThingChange(thing);
-                  }}
-                  defaultValue={{
-                    value: props.thing._id,
-                    label: props.thing.name,
-                  }}
-                  isSearchable
-                />
-              )}
+              <DropDown
+                placeholder="Select Thing..."
+                options={props.things.map((thing) => {
+                  return { value: thing._id, label: thing.name };
+                })}
+                onChange={(value: any) => {
+                  for (const thing of props.things)
+                    if (thing._id === value.value) props.onThingChange(thing);
+                }}
+                defaultValue={{
+                  value: props.thing._id,
+                  label: props.thing.name,
+                }}
+                isSearchable
+              />
             </div>
           </DashNav>
           <div id="raw-data-boxes">{boxes}</div>

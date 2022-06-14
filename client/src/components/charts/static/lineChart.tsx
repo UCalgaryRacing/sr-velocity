@@ -76,7 +76,6 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
     }
 
     // Fetch the data
-    setLineSeries({});
     setFetching(true);
     const getData = async () => {
       let newRange = [0, 1];
