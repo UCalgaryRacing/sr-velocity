@@ -53,6 +53,13 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
 
   useEffect(() => {
     if (data) {
+      // Clear any old sensors
+      for (const [key, _] of Object.entries(data)) {
+        if (props.sensors.filter((s) => s._id === key).length === 0) {
+          delete data[key];
+        }
+      }
+
       // Check if any sensors have changed
       if (Object.keys(data).length === props.sensors.length) {
         let changed = false;

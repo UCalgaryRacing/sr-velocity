@@ -67,6 +67,13 @@ export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
 
   useEffect(() => {
     if (data) {
+      // Clear any old sensors
+      for (const [key, _] of Object.entries(data)) {
+        if (props.sensors.filter((s) => s._id === key).length === 0) {
+          delete data[key];
+        }
+      }
+
       // Check if any sensors have changed
       if (Object.keys(data).length === props.sensors.length) {
         let changed = false;
@@ -135,17 +142,22 @@ export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
   const updateData = () => {
     if (!data || !pointSeries) return;
     const filledData = { ...data };
-    const filled = fillData(
+    let filled = fillData(
       data[props.sensors[0]._id],
       data[props.sensors[1]._id]
     );
     filledData[props.sensors[0]._id] = filled[0];
-    filledData[props.sensors[0]._id] = filled[1];
+    filledData[props.sensors[1]._id] = filled[1];
+    if (props.sensors.length > 2) {
+      console.log(props.sensors.length);
+      filled = fillData(filled[0], data[props.sensors[2]._id]);
+      filledData[props.sensors[2]._id] = filled[1];
+    }
     let pointData: any[] = [];
     let i = 0;
     for (const sensor of props.sensors) {
       let j = 0;
-      for (const datum of data[sensor._id]) {
+      for (const datum of filledData[sensor._id]) {
         if (i === 0)
           pointData.push({ x: datum.y, pointSize: 3, color: defaultColor });
         if (i === 1) pointData[j].y = datum.y;
