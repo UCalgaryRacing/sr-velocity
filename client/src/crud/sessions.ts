@@ -51,3 +51,14 @@ export const downloadSessionFile = (sessionId: string) => {
       .catch((err: any) => reject(err));
   });
 };
+
+export const getSessionSensorData = (sessionId: string, sensorId: string) => {
+  return new Promise<any>((resolve, reject) => {
+    request(
+      "GET",
+      "/database/data/session/" + sessionId + "/sensor/" + sensorId
+    )
+      .then((data: any) => resolve(data))
+      .catch((err: any) => reject(err));
+  });
+};

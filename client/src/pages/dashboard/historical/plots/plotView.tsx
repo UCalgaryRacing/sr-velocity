@@ -1,7 +1,13 @@
 // Copyright Schulich Racing, FSAE
 // Written by Justin Tijunelis
 
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { useWindowSize } from "hooks";
 import { DashboardContext } from "../../dashboard";
 import { SaveOutlined, Add } from "@mui/icons-material";
@@ -92,10 +98,25 @@ const PlotView: React.FC<PlotViewProps> = (props: PlotViewProps) => {
       });
   }, []);
 
-  useEffect(
-    () => setCharts(chartPreset ? chartPreset.charts : []),
-    [chartPreset]
-  );
+  useEffect(() => {
+    if (chartPreset) {
+      let changed = false;
+      if (charts.length === chartPreset.charts.length) {
+        for (const chart of charts) {
+          if (
+            chartPreset.charts.filter((c) => c._id === chart._id).length === 0
+          ) {
+            changed = false;
+          }
+        }
+      } else {
+        setCharts(chartPreset ? chartPreset.charts : []);
+      }
+      if (changed) setCharts(chartPreset.charts);
+    } else {
+      setCharts([]);
+    }
+  }, [chartPreset]);
 
   const alert = (error: boolean, description: string) => {
     setAlertDescription(description);
@@ -103,13 +124,85 @@ const PlotView: React.FC<PlotViewProps> = (props: PlotViewProps) => {
     setShowAlert(true);
   };
 
-  const generateCharts = useCallback(() => {
-    let chartUI: any = [];
-    for (const chart of charts) {
+  const onChartUpdate = useCallback(
+    (chart: Chart) => {
+      if (chart && chart._id) {
+        let updatedCharts = [...charts];
+        let updated = false;
+        for (let i in updatedCharts) {
+          if (updatedCharts[i]._id === chart._id) {
+            updatedCharts[i] = chart;
+            updated = true;
+          }
+        }
+        if (!updated) updatedCharts.push(chart);
+        updatedCharts.sort((a: Chart, b: Chart) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setCharts(updatedCharts);
+        if (updated) alert(false, "The Chart was updated.");
+        else alert(false, "The Chart was created.");
+      }
+      setShowChartModal(false);
+    },
+    [charts]
+  );
+
+  const onDeleteChart = useCallback(
+    (chartId: string) => {
+      setCharts((prevCharts) =>
+        prevCharts.filter((prevChart) => {
+          return prevChart._id !== chartId;
+        })
+      );
+    },
+    [charts]
+  );
+
+  const onPresetUpdate = useCallback(
+    (preset: ChartPreset) => {
+      if (preset && preset._id) {
+        let updatedPresets = [...chartPresets];
+        let updated = false;
+        for (let i in updatedPresets) {
+          if (updatedPresets[i]._id === preset._id) {
+            updatedPresets[i] = preset;
+            updated = true;
+          }
+        }
+        if (!updated) updatedPresets.push(preset);
+        updatedPresets.sort((a: ChartPreset, b: ChartPreset) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+        setChartPresets(updatedPresets);
+        setChartPreset(preset);
+        if (updated) alert(false, "The Preset was updated.");
+        else alert(false, "The Preset was saved.");
+      }
+      setShowPresetModal(false);
+    },
+    [chartPresets]
+  );
+
+  const onDeletePreset = useCallback(
+    (presetId: string) => {
+      let updatedPresets = [];
+      for (const preset of chartPresets)
+        if (preset._id !== presetId) updatedPresets.push(preset);
+      setChartPresets(updatedPresets);
+      setChartPreset(undefined);
+      alert(false, "The Preset was deleted.");
+    },
+    [chartPresets]
+  );
+
+  const generateCharts = useMemo(() => {
+    if (!session || sensors.length === 0) return;
+    return charts.map((chart) => {
       let chartSensors: Sensor[] = [];
       for (const id of chart.sensorIds)
         chartSensors.push(sensors.filter((s) => s._id === id)[0]);
-      chartUI.push(
+      return (
         <ChartBox
           key={chart._id}
           chart={chart}
@@ -119,70 +212,11 @@ const PlotView: React.FC<PlotViewProps> = (props: PlotViewProps) => {
           onUpdate={onChartUpdate}
           charts={charts}
           type={ChartBoxType.STATIC}
+          session={session}
         />
       );
-    }
-    return chartUI;
+    });
   }, [charts]);
-
-  const onChartUpdate = (chart: Chart) => {
-    if (chart && chart._id) {
-      let updatedCharts = [...charts];
-      let updated = false;
-      for (let i in updatedCharts) {
-        if (updatedCharts[i].name === chart.name) {
-          updatedCharts[i] = chart;
-          updated = true;
-        }
-      }
-      if (!updated) updatedCharts.push(chart);
-      updatedCharts.sort((a: Chart, b: Chart) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-      );
-      setCharts(updatedCharts);
-      if (updated) alert(false, "The Chart was updated.");
-      else alert(false, "The Chart was created.");
-    }
-    setShowChartModal(false);
-  };
-
-  const onDeleteChart = (chartId: string) => {
-    let updatedCharts = [];
-    for (let chart of [...charts])
-      if (chart._id !== chartId) updatedCharts.push(chart);
-    setCharts(updatedCharts);
-  };
-
-  const onNewPreset = (preset: ChartPreset) => {
-    if (preset && preset._id) {
-      let updatedPresets = [...chartPresets];
-      let updated = false;
-      for (let i in updatedPresets) {
-        if (updatedPresets[i]._id === preset._id) {
-          updatedPresets[i] = preset;
-          updated = true;
-        }
-      }
-      if (!updated) updatedPresets.push(preset);
-      updatedPresets.sort((a: ChartPreset, b: ChartPreset) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-      );
-      setChartPresets(updatedPresets);
-      setChartPreset(preset);
-      if (updated) alert(false, "The Preset was updated.");
-      else alert(false, "The Preset was saved.");
-    }
-    setShowPresetModal(false);
-  };
-
-  const onDeletePreset = (presetId: string) => {
-    let updatedPresets = [];
-    for (const preset of chartPresets)
-      if (preset._id !== presetId) updatedPresets.push(preset);
-    setChartPresets(updatedPresets);
-    setChartPreset(undefined);
-    alert(false, "The Preset was deleted.");
-  };
 
   return (
     <>
@@ -329,7 +363,7 @@ const PlotView: React.FC<PlotViewProps> = (props: PlotViewProps) => {
               />
             </div>
           </DashNav>
-          <div id="chart-view">{generateCharts()}</div>
+          <div id="chart-view">{generateCharts}</div>
           {charts.length === 0 && (
             <div id="dashboard-loading">
               <div id="dashboard-loading-content">
@@ -359,7 +393,7 @@ const PlotView: React.FC<PlotViewProps> = (props: PlotViewProps) => {
           {showPresetModal && (
             <ChartPresetModal
               show={showPresetModal}
-              toggle={onNewPreset}
+              toggle={onPresetUpdate}
               chartPreset={chartPreset}
               charts={charts}
               thing={props.thing}

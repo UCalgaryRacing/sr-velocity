@@ -93,10 +93,25 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
     };
   }, []);
 
-  useEffect(
-    () => setCharts(chartPreset ? chartPreset.charts : []),
-    [chartPreset]
-  );
+  useEffect(() => {
+    if (chartPreset) {
+      let changed = false;
+      if (charts.length === chartPreset.charts.length) {
+        for (const chart of charts) {
+          if (
+            chartPreset.charts.filter((c) => c._id === chart._id).length === 0
+          ) {
+            changed = false;
+          }
+        }
+      } else {
+        setCharts(chartPreset ? chartPreset.charts : []);
+      }
+      if (changed) setCharts(chartPreset.charts);
+    } else {
+      setCharts([]);
+    }
+  }, [chartPreset]);
 
   useEffect(() => {
     generateCharts(charts);
@@ -136,7 +151,7 @@ const ChartView: React.FC<ChartViewProps> = (props: ChartViewProps) => {
       let updatedCharts = [...charts];
       let updated = false;
       for (let i in updatedCharts) {
-        if (updatedCharts[i].name === chart.name) {
+        if (updatedCharts[i]._id === chart._id) {
           updatedCharts[i] = chart;
           updated = true;
         }

@@ -73,22 +73,22 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
   const [slopes, setSlopes] = useState<{ [k: string]: LineSeries }>({});
   const [currentTimestamp, setCurrentTimestamp] = useState<number>(0);
   const [lastValues, setLastValues] = useState<{
-    [key: number]: { [k1: string]: number };
+    [key: string]: { [k1: string]: number };
   }>(
     (() => {
       let last: any = {};
       for (const sensor of props.sensors)
-        last[sensor.smallId] = { value: 0, slope: 0 };
+        last[sensor._id] = { value: 0, slope: 0 };
       return last;
     })()
   );
   const [legendValues, setLegendValues] = useState<{
-    [key: number]: { [k1: string]: number };
+    [key: string]: { [k1: string]: number };
   }>(
     (() => {
       let last: any = {};
       for (const sensor of props.sensors)
-        last[sensor.smallId] = { value: 0, slope: 0 };
+        last[sensor._id] = { value: 0, slope: 0 };
       return last;
     })()
   );
@@ -112,8 +112,8 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
   useEffect(() => {
     if (!chart) return;
     initializeLineSeries();
-    const smallIds = props.sensors.map((s) => s.smallId);
-    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    const _ids = props.sensors.map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, _ids));
     setStopSubId(props.stream.subscribeToStop(stopCallbackRef));
     setDataUpdateSubId(
       props.stream.subscribeToDataUpdate(missingDataCallbackRef)
@@ -136,8 +136,8 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
   useEffect(() => {
     for (const sensor of props.sensors) {
       let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
-      if (lineSeries[sensor.smallId] && sensorData.length > 0)
-        lineSeries[sensor.smallId].add(sensorData);
+      if (lineSeries[sensor._id] && sensorData.length > 0)
+        lineSeries[sensor._id].add(sensorData);
     }
   }, [lineSeries]);
 
@@ -147,14 +147,14 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
       (() => {
         let last: any = {};
         for (const sensor of props.sensors)
-          last[sensor.smallId] = { value: 0, slope: 0 };
+          last[sensor._id] = { value: 0, slope: 0 };
         return last;
       })()
     );
     props.stream.unsubscribeFromSensors(dataSubId);
     initializeLineSeries();
-    const smallIds = props.sensors.map((s) => s.smallId);
-    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, smallIds));
+    const _ids = props.sensors.map((s) => s.smallId);
+    setDataSubId(props.stream.subscribeToSensors(dataCallbackRef, _ids));
   }, [props.sensors]);
 
   useEffect(() => {
@@ -193,14 +193,14 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
 
   useEffect(() => {
     for (const sensor of props.sensors) {
-      if (slopes[sensor.smallId]) {
-        slopes[sensor.smallId].clear();
+      if (slopes[sensor._id]) {
+        slopes[sensor._id].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
           window,
           sensor.frequency
         );
-        if (slope.length > 0) slopes[sensor.smallId].add(slope);
+        if (slope.length > 0) slopes[sensor._id].add(slope);
       }
     }
   }, [window]);
@@ -236,33 +236,25 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
     let i = 0;
     for (const sensor of props.sensors) {
       legendElements.push(
-        <div
-          key={sensor.smallId}
-          className="sensor"
-          style={{ color: colors[i] }}
-        >
+        <div key={sensor._id} className="sensor" style={{ color: colors[i] }}>
           <ToolTip value="Derivative">
             <IconButton
               text={"∂"}
               onClick={() => toggleSlope(sensor)}
               style={{
                 backgroundColor: colors[i],
-                textDecoration: slopes[sensor.smallId]
-                  ? "line-through"
-                  : "none",
+                textDecoration: slopes[sensor._id] ? "line-through" : "none",
               }}
             />
           </ToolTip>
           {generateSensor(
             sensor.name,
-            legendValues[sensor.smallId]
-              ? legendValues[sensor.smallId]["value"]
-              : 0,
+            legendValues[sensor._id] ? legendValues[sensor._id]["value"] : 0,
             sensor.unit ? sensor.unit : ""
           )}
         </div>
       );
-      if (slopes[sensor.smallId]) {
+      if (slopes[sensor._id]) {
         legendElements.push(
           <div
             className="sensor slope"
@@ -271,7 +263,7 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
           >
             {generateSensor(
               sensor.name + "'",
-              legendValues[sensor.smallId]["slope"],
+              legendValues[sensor._id]["slope"],
               (sensor.unit ? sensor.unit : "1") + "/s"
             )}
           </div>
@@ -285,15 +277,14 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
   const toggleSlope = useCallback(
     (sensor: Sensor) => {
       let dxdts = { ...slopes };
-      if (dxdts[sensor.smallId]) {
-        dxdts[sensor.smallId].dispose();
-        delete dxdts[sensor.smallId];
+      if (dxdts[sensor._id]) {
+        dxdts[sensor._id].dispose();
+        delete dxdts[sensor._id];
       } else {
         let sensorIndex = 0;
         for (const i in props.sensors)
-          if (props.sensors[i].smallId === sensor.smallId)
-            sensorIndex = Number(i);
-        dxdts[sensor.smallId] = createSeries(
+          if (props.sensors[i]._id === sensor._id) sensorIndex = Number(i);
+        dxdts[sensor._id] = createSeries(
           chart,
           sensor.name + "'",
           sensor.unit,
@@ -305,10 +296,10 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
           sensor.frequency
         );
         if (slope.length === 0) {
-          dxdts[sensor.smallId].dispose();
+          dxdts[sensor._id].dispose();
           return;
         }
-        dxdts[sensor.smallId].add(slope);
+        dxdts[sensor._id].add(slope);
       }
       setSlopes(dxdts);
     },
@@ -338,23 +329,23 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
     let last = { ...lastValues };
     let updateTime = updateTimer - getDataRate(props.sensors);
     for (const sensor of props.sensors) {
-      if (data[sensor.smallId] && lineSeries[sensor.smallId]) {
-        lineSeries[sensor.smallId].add({
+      if (data[sensor._id] && lineSeries[sensor._id]) {
+        lineSeries[sensor._id].add({
           x: timestamp,
-          y: data[sensor.smallId],
+          y: data[sensor._id],
         });
-        last[sensor.smallId]["value"] = data[sensor.smallId];
+        last[sensor._id]["value"] = data[sensor._id];
       }
-      if (slopes[sensor.smallId] && updateTimer == 0) {
-        slopes[sensor.smallId].clear();
+      if (slopes[sensor._id] && updateTimer == 0) {
+        slopes[sensor._id].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
           window,
           sensor.frequency
         );
-        slopes[sensor.smallId].add(slope);
+        slopes[sensor._id].add(slope);
         if (slope.length !== 0)
-          last[sensor.smallId]["slope"] = slope[slope.length - 1].y;
+          last[sensor._id]["slope"] = slope[slope.length - 1].y;
       }
     }
     if (updateTimer === 0) setLegendValues(last);
@@ -369,17 +360,17 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
     for (const [_, series] of Object.entries(slopes)) series.clear();
     for (const sensor of props.sensors) {
       let sensorData = props.stream.getHistoricalSensorData(sensor.smallId);
-      if (lineSeries[sensor.smallId] && sensorData.length > 0)
-        lineSeries[sensor.smallId].add(sensorData);
+      if (lineSeries[sensor._id] && sensorData.length > 0)
+        lineSeries[sensor._id].add(sensorData);
     }
     for (const sensor of props.sensors) {
-      if (slopes[sensor.smallId]) {
+      if (slopes[sensor._id]) {
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
           window,
           sensor.frequency
         );
-        if (slope.length > 0) slopes[sensor.smallId].add(slope);
+        if (slope.length > 0) slopes[sensor._id].add(slope);
       }
     }
     if (interval) {
@@ -542,7 +533,7 @@ const generateLineSeries = (chart: any, sensors: Sensor[]) => {
   let lineSeries: any = {};
   let i = 0;
   for (const sensor of sensors) {
-    lineSeries[sensor.smallId] = createSeries(
+    lineSeries[sensor._id] = createSeries(
       chart,
       sensor.name,
       sensor.unit,
@@ -646,39 +637,4 @@ const toggleGrid = (chart: any) => {
           )
         )
   );
-};
-
-const toggleRightAxis = (chart: any) => {
-  chart.addAxisY({ opposite: true });
-  var axis = chart.getAxes()[2];
-  var font = new FontSettings({});
-  font = font.setFamily("helvetica");
-  font = font.setWeight("bold");
-  const tickStyling = (tickStyle: any) =>
-    tickStyle
-      .setGridStrokeStyle(emptyLine)
-      .setLabelFont((font: FontSettings) =>
-        font.setFamily("helvetica").setStyle("italic").setSize(8)
-      )
-      .setLabelFillStyle(theme.darkFill)
-      .setLabelPadding(-14)
-      .setTickPadding(1)
-      .setTickLength(3);
-  axis
-    .setTitle("")
-    .setScrollStrategy(AxisScrollStrategies.fitting)
-    .setTickStrategy("Empty")
-    .setMouseInteractions(false)
-    .setStrokeStyle(
-      new SolidLine({ thickness: 1, fillStyle: theme.lightGrayFill })
-    )
-    .setTickStrategy(
-      AxisTickStrategies.Numeric,
-      (strategy: NumericTickStrategy) =>
-        strategy
-          .setMajorTickStyle(tickStyling)
-          .setMinorTickStyle(tickStyling)
-          .setExtremeTickStyle(tickStyling)
-    )
-    .setInterval(-1, 1);
 };
