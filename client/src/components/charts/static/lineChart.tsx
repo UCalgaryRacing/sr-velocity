@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { Sensor, Session } from "state";
-import { IconButton, RangeSlider, SingleSlider } from "components/interface";
+import { RangeSlider } from "components/interface";
 import {
   lightningChart,
   AxisScrollStrategies,
@@ -41,7 +41,8 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
 
   // Control State
   const [fetching, setFetching] = useState<boolean>(false);
-  const [interval, setInterval] = useState<number[]>();
+  const [range, setRange] = useState<number[]>([-1, -1]);
+  const [interval, setInterval] = useState<number[]>([0, 1]);
   const [window, setWindow] = useState<number>(5);
 
   // Chart State
@@ -78,6 +79,7 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
     setLineSeries({});
     setFetching(true);
     const getData = async () => {
+      let newRange = [0, 1];
       let newData: any = { ...data };
       for (const sensor of props.sensors) {
         if (data && data[sensor._id] && data[sensor._id].length !== 0) continue;
@@ -87,9 +89,30 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
             sensor._id
           );
           newData[sensor._id] = sensorData.data;
+          if (sensorData.data.length > 0) {
+            if (newRange[0] > sensorData.data[0].x)
+              newRange[0] = Math.max(0, sensorData.data[0].x / (60 * 100));
+            if (newRange[1] < sensorData.data[sensorData.data.length - 1].x)
+              newRange[1] = Number(
+                (
+                  Math.round(
+                    (sensorData.data[sensorData.data.length - 1].x /
+                      (60 * 100)) *
+                      4
+                  ) / 4
+                ).toFixed(2)
+              );
+          }
         } catch (e) {
           newData[sensor._id] = [];
         }
+      }
+      if (
+        (newRange[0] === -1 && newRange[1] === -1) ||
+        newRange[1] > range[1]
+      ) {
+        setRange(newRange);
+        setInterval([newRange[0] * 60 * 100, newRange[1] * 60 * 100]);
       }
       setFetching(false);
       setData(newData);
@@ -120,6 +143,13 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
     setLineSeries(generateLineSeries(chart, props.sensors));
   }, [data]);
 
+  useEffect(() => {
+    if (chart)
+      chart
+        .getDefaultAxisX()
+        .setInterval(interval[0], interval[1], false, true);
+  }, [interval, chart]);
+
   const generateLegend = useCallback(() => {
     if (!data) return;
     let legendElements: any = [];
@@ -131,7 +161,6 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
     );
     let i = 0;
     for (const sensor of props.sensors) {
-      console.log(data[sensor._id]);
       legendElements.push(
         <div
           key={sensor._id}
@@ -184,18 +213,18 @@ export const StaticLineChart: React.FC<StaticLineChartProps> = (
         <div className="line-controls">
           <RangeSlider
             title="Interval"
-            tipFormatter={(value: any) => `${value / 4} minutes`}
-            min={0}
-            max={120}
+            tipFormatter={(value: any) => `${value / 10} minutes`}
+            min={range[0]}
+            max={range[1]}
             step={1}
-            lowerValue={0}
-            upperValue={1}
+            lowerValue={interval[0]}
+            upperValue={interval[1]}
             unit="minutes"
             onChange={(interval: number[]) => {
               setInterval(
                 interval.map(
                   // Milliseconds
-                  (x) => (x / 4) * 60 * 1000
+                  (x) => (x / 10) * 60 * 1000
                 )
               );
             }}
@@ -247,7 +276,7 @@ const createChart = (chartId: number) => {
   chart
     .getDefaultAxisX()
     .setTitle("")
-    .setScrollStrategy(AxisScrollStrategies.fitting)
+    .setScrollStrategy(AxisScrollStrategies.progressive)
     .setInterval(0, 1)
     .setTickStrategy("Empty")
     .setMouseInteractions(false)

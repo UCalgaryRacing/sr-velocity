@@ -48,5 +48,5 @@ interface StaticScatterChartProps {
 export const StaticScatterChart: React.FC<StaticScatterChartProps> = (
   props: StaticScatterChartProps
 ) => {
-  return <div></div>;
+  return <div id="hi"></div>;
 };

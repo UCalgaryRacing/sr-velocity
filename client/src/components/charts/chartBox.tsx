@@ -66,7 +66,7 @@ export const ChartBox: React.FC<ChartBoxProps> = (props: ChartBoxProps) => {
                 );
               }
             case ChartType.SCATTER:
-              if (props.type === ChartBoxType.STATIC) {
+              if (props.type === ChartBoxType.DYNAMIC) {
                 return (
                   <DynamicScatterChart
                     allSensors={props.allSensors}
