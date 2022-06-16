@@ -1,26 +1,30 @@
 [
   {
-    "name": "Camilla",
-    "src": "assets/pics/Camilla.jpg"
-  },
-  {
     "name": "Jon B",
-    "src": "assets/pics/nopic.png"
-  },
-  {
-    "name": "Jon M",
-    "src": "assets/pics/nopic.png"
-  },
-  {
-    "name": "Joey",
-    "src": "assets/pics/nopic.png"
+    "src": "assets/teamPictures/nopic.png",
+    "linkedin": "https://www.linkedin.com/in/jbreidfjord/"
   },
   {
     "name": "Justin",
-    "src": "assets/pics/nopic.png"
+    "src": "assets/teamPictures/nopic.png",
+    "linkedin": "www.linkedin.com/in/justinf34"
+  },
+  {
+    "name": "Jon M",
+    "src": "assets/teamPictures/nopic.png",
+    "linkedin": "https://www.linkedin.com/in/jonathan-mulyk-2b91471b2/"
+  },
+  {
+    "name": "Joey",
+    "src": "assets/teamPictures/nopic.png"
   },
   {
     "name": "Arham",
-    "src": "assets/pics/Arham.jpg"
+    "src": "assets/teamPictures/Arham.jpg"
+  },
+  {
+    "name": "Camilla",
+    "src": "assets/teamPictures/Camilla.jpg",
+    "linkedin": "https://www.linkedin.com/in/camilla-abdrazakov-4b077b1b2/"
   }
 ]
