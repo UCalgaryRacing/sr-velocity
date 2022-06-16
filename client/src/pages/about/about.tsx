@@ -9,23 +9,12 @@ import "./about.css";
 
 const About: React.FC = () => {
   return (
-    <div id="aboutPage" style={{ marginTop: "80px" }}>
-      <p
-        style={{
-          textAlign: "center",
-          fontSize: "xx-large",
-          borderBottomStyle: "solid",
-          borderBottomColor: "#C22E2D",
-          paddingBottom: "20px",
-          marginBottom: "50px",
-        }}
-      >
-        Meet the Makers
-      </p>
-      <CardDeck style={{ justifyContent: "center" }}>
+    <div id="about">
+      <div id="header">Meet the Makers</div>
+      <div className="people">
         {leads.map((member: any) => {
           return (
-            <div style={{ textAlign: "center" }}>
+            <div className="person">
               <Member
                 name={member.name}
                 src={member.src}
@@ -35,7 +24,7 @@ const About: React.FC = () => {
             </div>
           );
         })}
-      </CardDeck>
+      </div>
       {/* <CardDeck style={{ justifyContent: "center" }}>
         {this.teamMembers}
       </CardDeck>
