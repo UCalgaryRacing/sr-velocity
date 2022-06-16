@@ -1,8 +1,10 @@
 #about {
-  margin-top: 66px;
+  text-align: center;
+  padding: 5px;
 }
 
 #about #header {
+  margin-top: 66px;
   font-size: 4.5vw;
   text-align: center;
   font-weight: 800;
@@ -14,6 +16,7 @@
   -webkit-text-fill-color: transparent;
 }
 #about #sub-header {
+  margin-top: 66px;
   font-size: 3vw;
   text-align: center;
   font-weight: 800;
@@ -36,5 +39,27 @@
   justify-content: center;
 }
 
-#about #socialmedia {
+#about img {
+  max-width: 70%;
+  min-width: 300px;
+  margin: auto;
+}
+
+#about #design-section {
+  margin-top: 30px !important;
+  text-align: left;
+}
+
+#about .design-header {
+  max-width: 800px;
+  text-align: left;
+  margin: auto;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+#about .design-description {
+  max-width: 800px;
+  text-align: left;
+  margin: auto;
 }
