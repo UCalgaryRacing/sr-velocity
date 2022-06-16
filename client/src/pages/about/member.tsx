@@ -1,5 +1,5 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
+// Written by Justin Tijunelis & Jonathan Breidfjord
 
 import { Card, Figure } from "react-bootstrap";
 import { SocialIcon } from "react-social-icons";
