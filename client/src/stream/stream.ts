@@ -43,7 +43,7 @@ class Stream {
   }
 
   connect = (thingId: string) => {
-    this.socket = io("localhost:8080", {
+    this.socket = io("", {
       withCredentials: true,
       reconnection: false,
     });
