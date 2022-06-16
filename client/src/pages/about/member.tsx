@@ -1,19 +1,18 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React from "react";
-import { Figure, Card, CardDeck } from "react-bootstrap";
+import { Card, Figure } from "react-bootstrap";
 import { SocialIcon } from "react-social-icons";
 import "./member.css";
 
-interface MemberProps {
-  src?: string;
+export interface IMember {
+  src: string;
   name: string;
-  description: string;
+  description?: string;
   linkedin?: string;
 }
 
-export const Member: React.FC<MemberProps> = (props: MemberProps) => {
+export const Member = ({ member }: { member: IMember }) => {
   return (
     <div
       className="member-card"
@@ -24,17 +23,17 @@ export const Member: React.FC<MemberProps> = (props: MemberProps) => {
           <Figure.Image
             width={250}
             height={250}
-            src={props.src}
+            src={member.src}
             roundedCircle
           />
           <Card.Title>
-            <b>{props.name}</b>
+            <b>{member.name}</b>
           </Card.Title>
-          <Card.Text style={{ opacity: "0.5" }}>{props.description}</Card.Text>
+          <Card.Text style={{ opacity: "0.5" }}>{member.description}</Card.Text>
 
           <div id="socialMedia">
-            {props.linkedin ? (
-              <SocialIcon id="linkedin" url={props.linkedin} target="_blank" />
+            {member.linkedin ? (
+              <SocialIcon id="linkedin" url={member.linkedin} target="_blank" />
             ) : null}
           </div>
         </Card.Body>
