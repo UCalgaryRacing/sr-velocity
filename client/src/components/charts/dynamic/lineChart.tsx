@@ -329,15 +329,15 @@ export const DynamicLineChart: React.FC<DynamicLineChartProps> = (
     let last = { ...lastValues };
     let updateTime = updateTimer - getDataRate(props.sensors);
     for (const sensor of props.sensors) {
-      if (data[sensor._id] && lineSeries[sensor._id]) {
+      if (data[sensor.smallId] && lineSeries[sensor._id]) {
         lineSeries[sensor._id].add({
           x: timestamp,
-          y: data[sensor._id],
+          y: data[sensor.smallId],
         });
-        last[sensor._id]["value"] = data[sensor._id];
+        last[sensor._id]["value"] = data[sensor.smallId];
       }
-      if (slopes[sensor._id] && updateTimer == 0) {
-        slopes[sensor._id].clear();
+      if (slopes[sensor.smallId] && updateTimer == 0) {
+        slopes[sensor.smallId].clear();
         let slope = getSlope(
           props.stream.getHistoricalSensorData(sensor.smallId),
           window,
