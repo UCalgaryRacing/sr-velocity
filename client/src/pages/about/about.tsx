@@ -32,7 +32,7 @@ const About: React.FC = () => {
             above architecture was created. A micro-service architecture was
             utilized for ease of concurrent development, deployment, and future
             scalability. Most of our design goals centered around developing a
-            generic, and real-time telemetry system, which was reflected with
+            generic and real-time telemetry system, which was reflected with
             cache databases and efficient storage and transmission of data. We
             discovered that we could host telemetry for every FSAE vehicle at
             Michigan, 2022 (both months).
@@ -40,12 +40,12 @@ const About: React.FC = () => {
           <div className="design-header">Validation</div>
           <div className="design-description">
             In addition to the labelled technologies; GitHub, Jira, Docker,
-            Postman, AWS, C, and Legato were used in creating SR Velocity. When
+            Postman, AWS, C, and Legato were used in creating SR Velocity. In
             test design, we did not feel that unit testing and high code
             coverage were appropriate for the scope of the project, or its
             timelines. Instead, we focused mainly on end-to-end testing via
             simulation, and Postman has tested and documented all of our API
-            Endpoints. Through the simulator, we tested new streaming/storage
+            endpoints. Through the simulator, we tested new streaming/storage
             related features to acceptance. Other testing, mainly UI, involved
             ad-hoc and beta testing through our team.
           </div>
@@ -72,7 +72,7 @@ const About: React.FC = () => {
             costs (LTE) are also reduced by ~90% from the encoding discussed
             later ($3.90/hr to $0.26/hr). The cost of hosting one FSAE vehicle
             (including data costs) at low scale is ~$0.46/hr, with economies of
-            scale, cost approaches data transmission cost.
+            scale, cost approaches data transmission cost ($0.26/hr).
           </div>
         </div>
         <div id="sub-header">Database Schema</div>
@@ -80,12 +80,12 @@ const About: React.FC = () => {
         <div id="design-section">
           <div className="design-header">Overview</div>
           <div className="design-description">
-            As you can see, We have a highly relational database, and thus use a
-            SQL database. Based on our requirements for genericism, we use a
-            multi-tenant database to host organizations (e.g., Schulich Racing,
-            FSAE, etc.). Our Go API service provides security via JWT and API
-            Key. We prevent "cross-tenant" CRUD operations through propogation.
-            Postman documentation is coming soon.
+            As you can see, we have a highly relational database, and thus use
+            SQL. Based on our requirements for genericism, we use a multi-tenant
+            database to host organizations (e.g., Schulich Racing, FSAE, etc.).
+            Our Go API service provides security via JWT and API Key. We prevent
+            "cross-tenant" CRUD operations through propogation. Postman
+            documentation is coming soon.
           </div>
           <div className="design-header">Operator-Sensor-Thing</div>
           <div className="design-description">
@@ -113,7 +113,7 @@ const About: React.FC = () => {
             often, the true data savings are 90%. The rest of the software fills
             in the gaps, but also benefits from less data being queued. When
             users enter sensors into the UI, the sensor's type is automatically
-            fit into the smallest C type based on range. On this frontend, the
+            fit into the smallest C-type based on range. On this frontend, the
             charts are rendered via GPU so we decimate streaming frequency to 24
             Hz. However, data is always stored at its natural frequency, in CSV
             and time series format.
@@ -131,8 +131,7 @@ const About: React.FC = () => {
             simply provides an interface for a "Thing" to send its data.
             Fortunately, the above diagram is a blueprint for another FSAE team,
             hobby developer, or company to collect data from their "Thing". The
-            best part of the design is two-way communication, making for a
-            new-era of opportunities for FSAE teams. Any device with a
+            best part of the design is two-way communication. Any device with a
             connection to Wi-Fi or mobile networks can utilize SR Velocity.
           </div>
         </div>
@@ -148,19 +147,19 @@ const About: React.FC = () => {
           each subteams implements their own standard and processes. However,
           the team always seeks to improve and implement changes that save time
           and deliver higher quality work. Our team believes is enabling others
-          to do their work, and encourages others to take leadership and
-          ownership of their work.
+          and encourages members to take leadership and ownership of their work.
         </div>
         <div className="design-header">A Case Study</div>
         <div className="design-description">
-          Schulich Racing's software team is likely the largest in North
+          Schulich Racing's software sub-team is likely the largest in North
           America, possibly the world. Over 3 years since its founding, 13
-          people members have joined, with 6 currently active. A book called
+          people members have joined, with 8 currently active. A book called
           "Turn the Ship Around!" by L. David Marquet, inspired its creation. In
           the book, we seek to turn followers into leaders through their best
           utilization and position to succeed. By taking a hint from the
           software industry, we danced around with Agile development.
         </div>
+        <br />
         <div className="design-description">
           In the dancing, we played with Jira. While it was nice to visualize a
           timeline and have a "bunch of things to do", we found that this could
