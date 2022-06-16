@@ -1,7 +1,7 @@
 // Copyright Schulich Racing FSAE
 // Written by Justin Tijunelis
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CardDeck } from 'react-bootstrap';
 import "./about.css";
 import leads from "./leads.json";
@@ -9,13 +9,6 @@ import { Member } from "./member";
 import members from "./members.json";
 
 const About: React.FC = () => {
-   const [teamMembers, setTeamMembers] = useState<JSX.Element[]>([]);
-
-   useEffect(() => {
-      const memberElements = members.map(member => <Member member={member} />);
-      setTeamMembers(memberElements);
-   }, [setTeamMembers]);
-
    return (
       <div id="about">
          <div id="header">Meet the Makers</div>
@@ -24,7 +17,7 @@ const About: React.FC = () => {
          </div>
          <div className="people">
             <CardDeck style={{ justifyContent: "center" }}>
-               {teamMembers}
+               {members.map(member => <Member member={member} />)}
             </CardDeck>
          </div>
          <div id="header">Meet the Design</div>
