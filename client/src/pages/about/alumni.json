@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Tyler",
+    "src": "/assets/pics/Tyler.jpg"
+  },
+  {
+    "name": "Will",
+    "src": "assets/pics/Will.jpg"
+  },
+  {
+    "name": "Evan",
+    "src": "assets/pics/Evan.jpg"
+  },
+  {
+    "name": "Hilmi",
+    "src": "assets/pics/Hilmi.jpg"
+  },
+  {
+    "name": "Ryan",
+    "src": "assets/pics/RyanW.jpg"
+  },
+  {
+    "name": "James",
+    "src": "assets/pics/James.png"
+  },
+  {
+    "name": "Aidan",
+    "src": "assets/pics/Aiden.png"
+  }
+]

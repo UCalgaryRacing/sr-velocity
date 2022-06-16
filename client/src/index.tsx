@@ -19,6 +19,7 @@ import Home from "pages/home/home";
 import Dashboard from "pages/dashboard/dashboard";
 import SignIn from "pages/auth/signIn";
 import SignUp from "pages/auth/signUp";
+import About from "pages/about/about";
 import Licenses from "pages/licenses/licenses";
 import NotFound from "pages/404/notFound";
 import AuthWrapper from "wrappers/authWrapper";
@@ -57,6 +58,11 @@ const App: React.FC = () => {
           <Route exact path="/sign-up">
             <AuthWrapper>
               <SignUp />
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/about">
+            <AuthWrapper>
+              <About />
             </AuthWrapper>
           </Route>
           <Route exact path="/licenses">
