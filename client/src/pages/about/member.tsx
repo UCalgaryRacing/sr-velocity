@@ -4,6 +4,7 @@
 import React from "react";
 import { Figure, Card, CardDeck } from "react-bootstrap";
 import { SocialIcon } from "react-social-icons";
+import "./member.css";
 
 interface MemberProps {
   src?: string;
@@ -15,7 +16,7 @@ interface MemberProps {
 export const Member: React.FC<MemberProps> = (props: MemberProps) => {
   return (
     <div
-      id="memberCard"
+      className="member-card"
       style={{ paddingBottom: "20px", border: "0px solid !important" }}
     >
       <Card border="light">

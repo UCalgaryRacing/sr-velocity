@@ -30,6 +30,12 @@ const About: React.FC = () => {
       </CardDeck>
       <TopNav />
       <BottomNav /> */}
+      <div id="header">Meet the Design</div>
+      <div id="sub-header">High-Level System Architecture</div>
+      <div id="sub-header">Database Schema</div>
+      <div id="sub-header">Variable Frequency Data Encoding</div>
+      <div id="sub-header">Hardware State Machine</div>
+      <div id="header">Enough Design, Just Look at the Code</div>
     </div>
   );
 };

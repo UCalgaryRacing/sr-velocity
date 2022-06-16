@@ -1,18 +1,15 @@
 [
   {
     "name": "Camilla",
-    "src": "assets/pics/Camilla.jpg",
-    "linkedin": "https://www.linkedin.com/in/camilla-abdrazakov-4b077b1b2/"
+    "src": "assets/pics/Camilla.jpg"
   },
   {
     "name": "Jon B",
-    "src": "assets/pics/nopic.png",
-    "linkedin": "https://www.linkedin.com/in/jonathan-mulyk-2b91471b2/"
+    "src": "assets/pics/nopic.png"
   },
   {
     "name": "Jon M",
-    "src": "assets/pics/nopic.png",
-    "linkedin": "https://www.linkedin.com/in/jonathan-mulyk-2b91471b2/"
+    "src": "assets/pics/nopic.png"
   },
   {
     "name": "Joey",
@@ -20,8 +17,7 @@
   },
   {
     "name": "Justin",
-    "src": "assets/pics/nopic.png",
-    "linkedin": "www.linkedin.com/in/justinf34"
+    "src": "assets/pics/nopic.png"
   },
   {
     "name": "Arham",
