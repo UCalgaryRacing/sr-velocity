@@ -16,9 +16,7 @@ const About: React.FC = () => {
             {leads.map(lead => <Member member={lead} />)}
          </div>
          <div className="people">
-            <CardDeck style={{ justifyContent: "center" }}>
-               {members.map(member => <Member member={member} />)}
-            </CardDeck>
+            {members.map(member => <Member member={member} />)}
          </div>
          <div id="header">Meet the Design</div>
          <div id="sub-header">High-Level System Architecture</div>
