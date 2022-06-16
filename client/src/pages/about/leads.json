@@ -1,15 +1,15 @@
 [
   {
     "name": "Justin",
-    "src": "assets/teamPictures/Justin.jpg",
+    "src": "assets/pics/Justin.jpg",
     "linkedin": "https://www.linkedin.com/in/justintijun/"
   },
   {
     "name": "Kevin",
-    "src": "assets/teamPictures/Kevin.jpg"
+    "src": "assets/pics/Kevin.jpg"
   },
   {
     "name": "Jeremy",
-    "src": "assets/teamPictures/Jeremy.jpg"
+    "src": "assets/pics/Jeremy.jpg"
   }
 ]
