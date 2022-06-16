@@ -1,30 +1,38 @@
 [
   {
-    "name": "Tyler",
-    "src": "/assets/pics/Tyler.jpg"
+    "name": "Tyler Sawatzky",
+    "src": "/assets/teamPictures/Tyler.jpg"
   },
   {
-    "name": "Will",
-    "src": "assets/pics/Will.jpg"
+    "name": "Will Ehman",
+    "src": "assets/teamPictures/Will.jpg"
   },
   {
-    "name": "Evan",
-    "src": "assets/pics/Evan.jpg"
+    "name": "Evan Waddell",
+    "src": "assets/teamPictures/Evan.jpg"
   },
   {
-    "name": "Hilmi",
-    "src": "assets/pics/Hilmi.jpg"
+    "name": "Hilmi Saleh",
+    "src": "assets/teamPictures/Hilmi.jpeg"
   },
   {
-    "name": "Ryan",
-    "src": "assets/pics/RyanW.jpg"
+    "name": "Ryan Ward",
+    "src": "assets/teamPictures/Ryan.jpg"
   },
   {
-    "name": "James",
-    "src": "assets/pics/James.png"
+    "name": "James Nguy",
+    "src": "assets/teamPictures/James.jpg"
   },
   {
-    "name": "Aidan",
-    "src": "assets/pics/Aiden.png"
+    "name": "Aidan Johnstone",
+    "src": "assets/teamPictures/Aidan.jpg"
+  },
+  {
+    "name": "Dylan Rae",
+    "src": "assets/teamPictures/Dylan.jpeg"
+  },
+  {
+    "name": "Camilla Abdrazakov",
+    "src": "assets/teamPictures/Camilla.jpg"
   }
 ]

@@ -18,7 +18,7 @@ export const Member = ({ member }: { member: IMember }) => {
       className="member-card"
       style={{ paddingBottom: "20px", border: "0px solid !important" }}
     >
-      <Card border="light">
+      <Card border="none">
         <Card.Body>
           <Figure.Image
             width={250}
@@ -26,16 +26,12 @@ export const Member = ({ member }: { member: IMember }) => {
             src={member.src}
             roundedCircle
           />
+          <br />
+          <br />
           <Card.Title>
             <b>{member.name}</b>
           </Card.Title>
           <Card.Text style={{ opacity: "0.5" }}>{member.description}</Card.Text>
-
-          <div id="socialMedia">
-            {member.linkedin ? (
-              <SocialIcon id="linkedin" url={member.linkedin} target="_blank" />
-            ) : null}
-          </div>
         </Card.Body>
       </Card>
     </div>

@@ -1,8 +1,12 @@
 #about {
   text-align: center;
   padding: 5px;
+  max-width: 1200px;
+  margin: auto;
 }
-
+#about .card {
+  border: 1px solid var(--white) !important;
+}
 #about #header {
   margin-top: 66px;
   font-size: 4.5vw;

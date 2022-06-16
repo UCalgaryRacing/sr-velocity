@@ -6,6 +6,8 @@ import { CardDeck } from "react-bootstrap";
 import { SocialIcon } from "react-social-icons";
 import { Member } from "./member";
 import leads from "./leads.json";
+import members from "./members.json";
+import alumni from "./alumni.json";
 import "./about.css";
 
 const About: React.FC = () => {
@@ -152,7 +154,7 @@ const About: React.FC = () => {
         <div className="design-header">A Case Study</div>
         <div className="design-description">
           Schulich Racing's software team is likely the largest in North
-          America, possibly the world. Over 3 years since its founding, 17
+          America, possibly the world. Over 3 years since its founding, 13
           people members have joined, with 6 currently active. A book called
           "Turn the Ship Around!" by L. David Marquet, inspired its creation. In
           the book, we seek to turn followers into leaders through their best
@@ -174,6 +176,25 @@ const About: React.FC = () => {
           have actively improved design and organization processes, but in
           accordance to what's best for their team.
         </div>
+      </div>
+      <div id="header">Meet the Makers</div>
+      <div id="sub-header">Leads</div>
+      <div className="people">
+        {leads.map((lead) => (
+          <Member member={lead} />
+        ))}
+      </div>
+      <div id="sub-header">Members</div>
+      <div className="people">
+        {members.map((member) => (
+          <Member member={member} />
+        ))}
+      </div>
+      <div id="sub-header">Alumni</div>
+      <div className="people">
+        {alumni.map((member) => (
+          <Member member={member} />
+        ))}
       </div>
       <div id="header">Meet the Code</div>
       <div id="social">

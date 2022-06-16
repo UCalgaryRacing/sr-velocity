@@ -1,15 +1,14 @@
 [
   {
-    "name": "Justin",
-    "src": "assets/teamPictures/Justin.jpg",
-    "linkedin": "https://www.linkedin.com/in/justintijun/"
+    "name": "Justin Tijunėlis",
+    "src": "assets/teamPictures/Justin.jpg"
   },
   {
-    "name": "Kevin",
+    "name": "Kevin Chow",
     "src": "assets/teamPictures/Kevin.jpg"
   },
   {
-    "name": "Jeremy",
+    "name": "Jeremy Bilic",
     "src": "assets/teamPictures/Jeremy.jpg"
   }
 ]
