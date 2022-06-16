@@ -1,8 +1,7 @@
 // Copyright Schulich Racing FSAE
-// Written by Justin Tijunelis
+// Written by Jonathan Breidfjord & Justin Tijunelis
 
 import React from "react";
-import { CardDeck } from 'react-bootstrap';
 import "./about.css";
 import leads from "./leads.json";
 import { Member } from "./member";
