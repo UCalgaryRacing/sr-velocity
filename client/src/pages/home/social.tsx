@@ -6,7 +6,7 @@ export default class Social extends React.Component {
   render = () => {
     return (
       <div id="social">
-        <h1 id="followUs">Follow Us, Say Hello, or See the Code</h1>
+        <h1 id="followUs">Follow Us or Say Hello</h1>
         <div id="socialDescription" style={{ marginTop: "3%" }}>
           <h1
             style={{
@@ -41,12 +41,6 @@ export default class Social extends React.Component {
           <SocialIcon
             id="link"
             url="https://www.schulichracing.ca/"
-            target="_blank"
-            bgColor="#ba1833"
-          />
-          <SocialIcon
-            id="github"
-            url="https://github.com/SchulichRacingElectrical"
             target="_blank"
             bgColor="#ba1833"
           />

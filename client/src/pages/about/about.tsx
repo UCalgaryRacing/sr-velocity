@@ -195,16 +195,8 @@ const About: React.FC = () => {
           <Member member={member} />
         ))}
       </div>
-      <div id="header">Meet the Code</div>
+      <div id="header"></div>
       <div id="social">
-        <div id="socialMedia" style={{ width: "100%" }}>
-          <SocialIcon
-            id="github"
-            url="https://github.com/SchulichRacingElectrical"
-            target="_blank"
-            bgColor="#ba1833"
-          />
-        </div>
         <h1
           style={{
             color: "#191919",
