@@ -84,7 +84,7 @@ export const Segway: React.FC = () => {
             fingertips.
           </h1>
           <h1 style={{ color: "#fff", fontSize: "2.5vw", marginBottom: "2%" }}>
-            Finally, we eliminate paper with a data annotation.
+            Finally, we eliminate paper with data annotation.
           </h1>
         </div>
       </div>

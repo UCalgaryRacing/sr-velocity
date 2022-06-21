@@ -25,8 +25,8 @@ export default class Problem extends React.Component {
                 marginBottom: "2%",
               }}
             >
-              A telemetry system designed to work with a toaster, car, or
-              factory.
+              A telemetry system designed to work with a toaster, car, factory,
+              or rocket.
             </h1>
             <h1
               style={{

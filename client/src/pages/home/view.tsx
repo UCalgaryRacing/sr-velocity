@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
 import type { Engine } from "tsparticles-engine";
 import { loadFull } from "tsparticles";
-import { TextButton } from "components/interface";
 import "./view.css";
 
 export const View: React.FC = () => {
