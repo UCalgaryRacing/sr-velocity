@@ -34,5 +34,22 @@
   {
     "name": "Camilla Abdrazakov",
     "src": "assets/teamPictures/Camilla.jpg"
+  },
+  {
+    "name": "Justin Tijunėlis",
+    "src": "assets/teamPictures/Justin.jpg"
+  },
+  {
+    "name": "Jeremy Bilic",
+    "src": "assets/teamPictures/Jeremy.jpg"
+  },
+  {
+    "name": "Justin Flores",
+    "src": "assets/teamPictures/JustinF.jpeg",
+    "linkedin": "www.linkedin.com/in/justinf34"
+  },
+  {
+    "name": "Joey Van Lierop",
+    "src": "assets/teamPictures/nopic.png"
   }
 ]

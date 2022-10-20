@@ -1,14 +1,15 @@
 [
   {
-    "name": "Justin Tijunėlis",
-    "src": "assets/teamPictures/Justin.jpg"
+    "name": "Jon Breidfjord",
+    "src": "assets/teamPictures/JonB.jpeg"
   },
+  {
+    "name": "Jon Mulyk",
+    "src": "assets/teamPictures/JonM.jpeg"
+  },
+
   {
     "name": "Kevin Chow",
     "src": "assets/teamPictures/Kevin.jpg"
-  },
-  {
-    "name": "Jeremy Bilic",
-    "src": "assets/teamPictures/Jeremy.jpg"
   }
 ]

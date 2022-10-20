@@ -1,23 +1,22 @@
 [
   {
-    "name": "Jon Breidfjord",
-    "src": "assets/teamPictures/JonB.jpeg"
+    "name": "Arham Humayun",
+    "src": "assets/teamPictures/Arham.jpg"
   },
   {
-    "name": "Jon Mulyk",
-    "src": "assets/teamPictures/JonM.jpeg"
+    "name": "Hamza Amar",
+    "src": "assets/teamPictures/Hamza.jpg"
   },
   {
-    "name": "Justin Flores",
-    "src": "assets/teamPictures/JustinF.jpeg",
-    "linkedin": "www.linkedin.com/in/justinf34"
-  },
-  {
-    "name": "Joey Van Lierop",
+    "name": "Mohammad Al-Ahdal",
     "src": "assets/teamPictures/nopic.png"
   },
   {
-    "name": "Arham Humayun",
-    "src": "assets/teamPictures/Arham.jpg"
+    "name": "Ernesto Eliezer Barreto",
+    "src": "assets/teamPictures/nopic.png"
+  },
+  {
+    "name": "Navjot Singh Saroa",
+    "src": "assets/teamPictures/Navjot.jpg"
   }
 ]
