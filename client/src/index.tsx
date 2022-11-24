@@ -23,6 +23,7 @@ import About from "pages/about/about";
 import Licenses from "pages/licenses/licenses";
 import NotFound from "pages/404/notFound";
 import AuthWrapper from "wrappers/authWrapper";
+import Request from "pages/request/request"
 
 // Styling Imports
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -68,6 +69,11 @@ const App: React.FC = () => {
           <Route exact path="/licenses">
             <AuthWrapper>
               <Licenses />
+            </AuthWrapper>
+          </Route>
+          <Route exact path="/request">
+            <AuthWrapper>
+              <Request />
             </AuthWrapper>
           </Route>
           <Route>
