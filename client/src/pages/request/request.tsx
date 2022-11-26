@@ -1,16 +1,17 @@
+import React from "react";
 import { useState } from 'react';
 
-export const request = () => {
+const Request = () => {
 
   const[name, setName] = useState("")
   const[email, setEmail] = useState("")
   const[inquiry, setInquiry] = useState("")
 
-  const handleSubmit = (event:any) => {
-
-  }
+  // const handleSubmit = () => {
+  //   pass
+  // }
   return (
-    <form onSubmit={handleSubmit}>
+    <form >
       <label>
         Name:
         <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
@@ -23,9 +24,11 @@ export const request = () => {
         Inquiry:
         <textarea placeholder="Enter question here" value={inquiry} onChange={(e) => setInquiry(e.target.value)}/>
       </label>
-      <input type="submit" />
+      <button type="submit">Submit</button>
     </form>
   )
 }
+
+export default Request;
 
 
