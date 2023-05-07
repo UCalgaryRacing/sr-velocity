@@ -166,7 +166,7 @@ export const SensorModal: React.FC<SensorModalProps> = (
     e.preventDefault();
     let canIdValid =
       /[0-9a-fA-F]/.test(values.canId) || /0[xX][0-9a-fA-F]/.test(values.canId);
-    if (!canIdValid || Number(values.canId) === 0) {
+    if (!canIdValid) {
       alert("Please provide a valid CAN ID.");
       return;
     }

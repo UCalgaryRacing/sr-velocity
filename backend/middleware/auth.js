@@ -62,7 +62,7 @@ const isApiKeyValid = async (apiKey) => {
 };
 
 const isNewRoomSecretValid = (secret) => {
-  return secret === process.env.ROOM_SECRET;
+  return secret === process.env.NEW_ROOM_SECRET;
 };
 
 module.exports = {

@@ -43,6 +43,7 @@ class Stream {
   }
 
   connect = (thingId: string) => {
+    console.log("connecting to stream for thing: ", thingId);
     this.socket = io("", {
       withCredentials: true,
       reconnection: false,
@@ -82,6 +83,7 @@ class Stream {
 
     // On a piece of data, notify the data subscribers
     this.socket.on("data", (data: { [key: string]: number }) => {
+      console.log("stream data: ", data);
       for (const [, pair] of Object.entries(this.dataSubscribers)) {
         if (data[pair.smallSensorId]) {
           pair.func.current &&
@@ -180,12 +182,14 @@ class Stream {
     func: React.RefObject<(datum: number, timestamp: number) => void>,
     smallSensorId: number
   ) => {
+    console.log("Subscribing to sensor: " + smallSensorId);
     let functionId: string = uuidv4();
     this.dataSubscribers[functionId] = { smallSensorId, func };
     return functionId;
   };
 
   unsubscribeFromSensor = (functionId: string) => {
+    console.log("unsubscribing from functionId" + functionId);
     if (this.dataSubscribers[functionId])
       delete this.dataSubscribers[functionId];
   };
@@ -205,6 +209,7 @@ class Stream {
   };
 
   subscribeToDataUpdate = (func: React.RefObject<() => void>) => {
+    console.log("Subscribing to data update");
     let functionId: string = uuidv4();
     this.dataUpdateSubscribers[functionId] = func;
     return functionId;

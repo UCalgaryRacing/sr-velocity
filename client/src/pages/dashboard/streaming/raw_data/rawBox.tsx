@@ -74,11 +74,12 @@ const RawBox: React.FC<RawBoxProps> = (props: RawBoxProps) => {
   }, [value]);
 
   const onDatum = (data: number, _: number) => {
+    console.log("onDatum", data);
     if (!data) return;
+    setValue(data);
     let timeBetweenTimestamps = 1000 / props.sensor.frequency;
     let lastUpdate = updateTimeout - timeBetweenTimestamps;
     if (lastUpdate <= 0) {
-      setValue(data);
       setUpdateTimeout(UPDATE_TIMEOUT);
     } else setUpdateTimeout(lastUpdate);
   };

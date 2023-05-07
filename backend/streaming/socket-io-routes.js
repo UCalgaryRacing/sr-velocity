@@ -7,6 +7,7 @@ let roomCollection = {};
 let queuedUsers = {};
 
 const handleSocketSession = (io, socket) => {
+  console.log("handling socket session");
   let currentConnection = { room: undefined };
 
   /**
@@ -14,7 +15,9 @@ const handleSocketSession = (io, socket) => {
    * When the room is created, all queued users will be notified.
    */
   socket.on("new room", (credentials) => {
+    console.log("new room", credentials);
     if (isNewRoomSecretValid(credentials.secret)) {
+      console.log("new room secret valid")
       roomCollection[credentials.thingId] = { creatorId: socket.id };
       currentConnection.room = credentials.thingId;
       socket.join(credentials.thingId);
@@ -27,6 +30,7 @@ const handleSocketSession = (io, socket) => {
       }
       socket.emit("room created");
     } else {
+      console.log("new room secret invalid")
       socket.emit("room creation error");
     }
   });
@@ -36,6 +40,7 @@ const handleSocketSession = (io, socket) => {
    * otherwise, they are added to a queue.
    */
   socket.on("join room", (thingId) => {
+    console.log("join room", thingId);
     if (roomCollection[thingId]) {
       socket.join(thingId);
       currentConnection.room = thingId;
@@ -52,6 +57,7 @@ const handleSocketSession = (io, socket) => {
    * notified. If the socket belongs to a client, they will leave automatically.
    */
   socket.on("disconnect", async () => {
+    console.log("disconnect");
     const room = currentConnection.room;
     if (
       room &&
@@ -71,6 +77,7 @@ const handleSocketSession = (io, socket) => {
    * in the room.
    */
   socket.on("data", (data) => {
+    console.log("data", data);
     if (currentConnection.room && roomCollection[currentConnection.room]) {
       socket.to(currentConnection.room).emit("data", data);
     }
