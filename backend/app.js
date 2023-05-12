@@ -44,7 +44,7 @@ console.log(`Listening on port ${process.env.GATEWAY_PORT}`);
 // Server and client sockets for socket-io data proxy
 const io = require("socket.io")(protocol, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -62,7 +62,7 @@ io.use(async (socket, next) => {
     if (keyValid) {
       next();
     } else {
-      console.log("Unauthorized socket connection.")
+      console.log("Unauthorized socket connection.");
       const err = new Error("Not authorized.");
       err.status = 401;
       next(err);
